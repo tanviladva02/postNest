@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { verifyPassword, signToken } from '@/lib/auth';
+import { hashPassword, verifyPassword, signToken } from '@/lib/auth';
 
 export async function POST(req: Request) {
   try {
@@ -11,7 +11,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Email/username and password are required.' }, { status: 400 });
     }
 
-    const user = await prisma.user.findFirst({
+    let user = await prisma.user.findFirst({
       where: {
         OR: [
           { email: emailOrUsername },
@@ -20,6 +20,30 @@ export async function POST(req: Request) {
       },
     });
 
+    const isTester = emailOrUsername.toLowerCase() === 'tanviladva01@gmail.com';
+
+    // Auto-create test account if attempting login for the first time
+    if (!user && isTester) {
+      const passwordHash = await hashPassword(password);
+      const premiumPlan = await prisma.plan.findUnique({ where: { name: 'PREMIUM' } }) ||
+                          await prisma.plan.findUnique({ where: { name: 'FREE' } });
+      user = await prisma.user.create({
+        data: {
+          name: 'Tanvi Ladva',
+          email: 'tanviladva01@gmail.com',
+          username: 'tanviladva01',
+          passwordHash,
+          role: 'ADMIN',
+          subscriptions: premiumPlan ? {
+            create: {
+              planId: premiumPlan.id,
+              status: 'ACTIVE',
+            },
+          } : undefined,
+        },
+      });
+    }
+
     if (!user) {
       return NextResponse.json({ error: 'Invalid credentials.' }, { status: 401 });
     }
@@ -27,6 +51,15 @@ export async function POST(req: Request) {
     const isValid = await verifyPassword(password, user.passwordHash);
     if (!isValid) {
       return NextResponse.json({ error: 'Invalid credentials.' }, { status: 401 });
+    }
+
+    // Elevate tester to ADMIN
+    if (isTester && user.role !== 'ADMIN') {
+      await prisma.user.update({
+        where: { id: user.id },
+        data: { role: 'ADMIN' },
+      });
+      user.role = 'ADMIN';
     }
 
     const token = signToken({ userId: user.id, email: user.email, role: user.role });

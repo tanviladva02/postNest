@@ -27,9 +27,14 @@ export async function POST(req: Request) {
         return NextResponse.json({ error: limits.reason }, { status: 429 });
       }
 
-      // 2. Moderation Quality Check
-      const modResult = await validatePostQuality(title, content, id);
-      targetStatus = modResult.recommendedStatus;
+      // 2. Moderation Quality Check (bypass for testing account)
+      const isTester = user.email?.toLowerCase() === 'tanviladva01@gmail.com';
+      if (isTester) {
+        targetStatus = 'PUBLISHED';
+      } else {
+        const modResult = await validatePostQuality(title, content, id);
+        targetStatus = modResult.recommendedStatus;
+      }
     }
 
     let post;

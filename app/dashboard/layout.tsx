@@ -24,8 +24,11 @@ export default async function DashboardLayout({
     redirect('/login?redirect=/dashboard');
   }
 
+  const isTestAccount = user.email?.toLowerCase() === 'tanviladva01@gmail.com';
   const activeSub = user.subscriptions[0];
-  const planName = activeSub?.plan?.displayName || 'Early Bird Free';
+  const planName = isTestAccount
+    ? 'Unlimited Testing Tier'
+    : (activeSub?.plan?.displayName || 'Early Bird Free');
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-[#090d16] text-slate-900 dark:text-slate-100 flex flex-col md:flex-row transition-colors">

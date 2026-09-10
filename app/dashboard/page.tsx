@@ -21,16 +21,20 @@ export default async function DashboardOverviewPage() {
   if (!user) return null;
 
   const limits = await checkUserPublishingLimits(user.id);
+  const isUnlimited = Boolean(limits.isUnlimited || user.email?.toLowerCase() === 'tanviladva01@gmail.com');
 
   // Calculate percentages
-  const dailyPercentage = limits.dailyLimit > 0
+  const dailyPercentage = isUnlimited
+    ? 0
+    : limits.dailyLimit > 0
     ? Math.min(100, Math.round((limits.currentDailyCount / limits.dailyLimit) * 100))
     : 0;
 
-  const monthlyPercentage = Math.min(
-    100,
-    Math.round((limits.currentMonthlyCount / limits.monthlyLimit) * 100)
-  );
+  const monthlyPercentage = isUnlimited
+    ? 0
+    : limits.monthlyLimit > 0
+    ? Math.min(100, Math.round((limits.currentMonthlyCount / limits.monthlyLimit) * 100))
+    : 0;
 
   // Query Recent Posts
   const recentPosts = await prisma.post.findMany({
@@ -77,19 +81,25 @@ export default async function DashboardOverviewPage() {
               <h3 className="text-sm font-bold text-slate-900 dark:text-white">Daily Publishing Limit</h3>
             </div>
             <span className="text-xs font-mono font-bold text-orange-600 dark:text-orange-400">
-              {limits.currentDailyCount} / {limits.dailyLimit} Posts Today
+              {isUnlimited
+                ? `${limits.currentDailyCount} Posts Today (Unlimited)`
+                : `${limits.currentDailyCount} / ${limits.dailyLimit} Posts Today`}
             </span>
           </div>
 
           <div className="w-full h-3 rounded-full bg-slate-100 dark:bg-slate-900 overflow-hidden border border-slate-200 dark:border-slate-800">
             <div
-              className="h-full bg-gradient-to-r from-orange-500 to-amber-500 rounded-full transition-all duration-500"
-              style={{ width: `${dailyPercentage}%` }}
+              className={`h-full rounded-full transition-all duration-500 ${
+                isUnlimited
+                  ? 'bg-gradient-to-r from-emerald-500 to-teal-500'
+                  : 'bg-gradient-to-r from-orange-500 to-amber-500'
+              }`}
+              style={{ width: isUnlimited ? '100%' : `${dailyPercentage}%` }}
             />
           </div>
 
           <p className="text-[11px] text-slate-500">
-            Current Tier: <span className="text-slate-800 dark:text-slate-200 font-semibold">{limits.planName}</span>. Resets every 24 hours.
+            Current Tier: <span className="text-slate-800 dark:text-slate-200 font-semibold">{limits.planName}</span>. {isUnlimited ? 'Unlimited testing account mode enabled.' : 'Resets every 24 hours.'}
           </p>
         </div>
 
@@ -101,23 +111,36 @@ export default async function DashboardOverviewPage() {
               <h3 className="text-sm font-bold text-slate-900 dark:text-white">Monthly Plan Quota</h3>
             </div>
             <span className="text-xs font-mono font-bold text-amber-600 dark:text-amber-400">
-              {limits.currentMonthlyCount} / {limits.monthlyLimit} Posts
+              {isUnlimited
+                ? `${limits.currentMonthlyCount} Posts (Unlimited)`
+                : `${limits.currentMonthlyCount} / ${limits.monthlyLimit} Posts`}
             </span>
           </div>
 
           <div className="w-full h-3 rounded-full bg-slate-100 dark:bg-slate-900 overflow-hidden border border-slate-200 dark:border-slate-800">
             <div
-              className="h-full bg-gradient-to-r from-amber-500 to-orange-500 rounded-full transition-all duration-500"
-              style={{ width: `${monthlyPercentage}%` }}
+              className={`h-full rounded-full transition-all duration-500 ${
+                isUnlimited
+                  ? 'bg-gradient-to-r from-teal-500 to-emerald-500'
+                  : 'bg-gradient-to-r from-amber-500 to-orange-500'
+              }`}
+              style={{ width: isUnlimited ? '100%' : `${monthlyPercentage}%` }}
             />
           </div>
 
           <div className="flex items-center justify-between text-[11px] text-slate-500">
-            <span>Need more capacity?</span>
-            <Link href="/dashboard/subscription" className="text-orange-600 dark:text-orange-400 font-semibold hover:underline flex items-center space-x-1">
-              <span>Upgrade Plan</span>
-              <ArrowRight className="w-3 h-3" />
-            </Link>
+            <span>{isUnlimited ? 'Account Status' : 'Need more capacity?'}</span>
+            {isUnlimited ? (
+              <span className="text-emerald-600 dark:text-emerald-400 font-semibold flex items-center space-x-1">
+                <CheckCircle2 className="w-3 h-3" />
+                <span>Unlimited Testing Access</span>
+              </span>
+            ) : (
+              <Link href="/dashboard/subscription" className="text-orange-600 dark:text-orange-400 font-semibold hover:underline flex items-center space-x-1">
+                <span>Upgrade Plan</span>
+                <ArrowRight className="w-3 h-3" />
+              </Link>
+            )}
           </div>
         </div>
       </div>

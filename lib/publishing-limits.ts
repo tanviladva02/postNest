@@ -10,33 +10,22 @@ export interface LimitCheckResult {
   planName: string;
   hasBulkUpload: boolean;
   hasApiAccess: boolean;
+  isUnlimited?: boolean;
+}
+
+export function isUnlimitedTestingEmail(email?: string | null): boolean {
+  if (!email) return false;
+  return email.trim().toLowerCase() === 'tanviladva01@gmail.com';
 }
 
 export async function checkUserPublishingLimits(userId: string): Promise<LimitCheckResult> {
-  // 1. Get active user subscription and plan details
-  const activeSub = await prisma.subscription.findFirst({
-    where: { userId, status: 'ACTIVE' },
-    include: { plan: true },
-    orderBy: { startDate: 'desc' },
+  // 1. Fetch user to check for testing/exempt account
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { email: true, role: true },
   });
 
-  // Default to EARLY_BIRD or FREE plan if no subscription attached
-  let plan = activeSub?.plan;
-  if (!plan) {
-    plan = await prisma.plan.findUnique({ where: { name: 'EARLY_BIRD' } }) ||
-           await prisma.plan.findUnique({ where: { name: 'FREE' } }) || {
-             id: 'fallback',
-             name: 'FREE',
-             displayName: 'Free Starter Plan',
-             priceINR: 0,
-             monthlyPostLimit: 15,
-             dailyPostLimit: 2,
-             hasBulkUpload: false,
-             hasApiAccess: false,
-             description: 'Default free plan',
-             createdAt: new Date(),
-           };
-  }
+  const isUnlimited = isUnlimitedTestingEmail(user?.email);
 
   const todayStr = new Date().toISOString().split('T')[0];
 
@@ -66,6 +55,47 @@ export async function checkUserPublishingLimits(userId: string): Promise<LimitCh
       },
     },
   });
+
+  // Bypass limits for unlimited testing account
+  if (isUnlimited) {
+    return {
+      allowed: true,
+      reason: undefined,
+      currentDailyCount,
+      dailyLimit: 0,
+      currentMonthlyCount: monthlyCount,
+      monthlyLimit: 0,
+      planName: 'Testing Account (Unlimited)',
+      hasBulkUpload: true,
+      hasApiAccess: true,
+      isUnlimited: true,
+    };
+  }
+
+  // 4. Get active user subscription and plan details
+  const activeSub = await prisma.subscription.findFirst({
+    where: { userId, status: 'ACTIVE' },
+    include: { plan: true },
+    orderBy: { startDate: 'desc' },
+  });
+
+  // Default to EARLY_BIRD or FREE plan if no subscription attached
+  let plan = activeSub?.plan;
+  if (!plan) {
+    plan = await prisma.plan.findUnique({ where: { name: 'EARLY_BIRD' } }) ||
+           await prisma.plan.findUnique({ where: { name: 'FREE' } }) || {
+             id: 'fallback',
+             name: 'FREE',
+             displayName: 'Free Starter Plan',
+             priceINR: 0,
+             monthlyPostLimit: 15,
+             dailyPostLimit: 2,
+             hasBulkUpload: false,
+             hasApiAccess: false,
+             description: 'Default free plan',
+             createdAt: new Date(),
+           };
+  }
 
   // 4. Evaluate Limit Rules
   let allowed = true;
