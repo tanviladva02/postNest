@@ -64,7 +64,7 @@ export async function POST(req: Request) {
     }
 
     // Generate token and set HTTP cookie
-    const token = signToken({ userId: newUser.id, email: newUser.email, role: newUser.role });
+    const token = signToken({ userId: newUser.id, email: newUser.email, role: newUser.role as 'USER' | 'ADMIN' });
 
     const response = NextResponse.json({ success: true, user: { id: newUser.id, name: newUser.name, email: newUser.email } });
     response.cookies.set('pn_token', token, {

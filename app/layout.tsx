@@ -3,6 +3,7 @@ import './globals.css';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { ThemeProvider } from '@/components/ThemeProvider';
+import LayoutContent from '@/components/LayoutContent';
 
 export const metadata: Metadata = {
   title: {
@@ -64,9 +65,9 @@ export default function RootLayout({
       </head>
       <body className="min-h-screen flex flex-col bg-[#fafaf9] dark:bg-[#090a0f] text-slate-900 dark:text-slate-100 antialiased selection:bg-orange-500 selection:text-white transition-colors duration-200">
         <ThemeProvider>
-          <Navbar />
-          <main className="flex-grow">{children}</main>
-          <Footer />
+          <LayoutContent navbar={<Navbar />} footer={<Footer />}>
+            {children}
+          </LayoutContent>
         </ThemeProvider>
       </body>
     </html>
