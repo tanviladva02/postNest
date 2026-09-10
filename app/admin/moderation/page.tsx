@@ -25,7 +25,7 @@ export default async function AdminModerationPage() {
           </h1>
           <p className="text-xs text-slate-400">Inspect articles flagged for external link counts, spam patterns, or duplicate text.</p>
         </div>
-        <Link href="/admin" className="text-xs text-brand-400 hover:underline">← Back to Admin Panel</Link>
+        <Link href="/admin" className="text-xs text-orange-400 hover:underline">← Back to Admin Panel</Link>
       </div>
 
       {pendingPosts.length === 0 ? (

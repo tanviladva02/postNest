@@ -25,21 +25,21 @@ export default async function AdminDashboardPage() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
-      <div className="glass-panel p-6 rounded-2xl border border-amber-500/30 flex items-center justify-between">
+      <div className="glass-panel p-6 rounded-3xl border border-amber-500/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-white dark:bg-slate-900/60">
         <div className="flex items-center space-x-3">
-          <div className="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center">
+          <div className="w-10 h-10 rounded-2xl bg-amber-500/20 text-amber-500 flex items-center justify-center">
             <Shield className="w-6 h-6" />
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-white">PostNest Admin Control Center</h1>
-            <p className="text-xs text-slate-400">Platform overview, moderation queue, user management, and dynamic limit configs.</p>
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-white">PostNest Admin Control Center</h1>
+            <p className="text-xs text-slate-500 dark:text-slate-400">Platform overview, moderation queue, user management, and dynamic limit configs.</p>
           </div>
         </div>
 
         <div className="flex items-center space-x-3">
           <Link
             href="/admin/moderation"
-            className="px-4 py-2 rounded-xl bg-amber-500 text-slate-950 font-bold text-xs flex items-center space-x-1.5 shadow"
+            className="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs flex items-center space-x-1.5 shadow"
           >
             <AlertCircle className="w-4 h-4" />
             <span>Moderation Queue ({pendingPosts})</span>
@@ -47,7 +47,7 @@ export default async function AdminDashboardPage() {
 
           <Link
             href="/admin/settings"
-            className="px-4 py-2 rounded-xl bg-slate-800 text-slate-200 hover:text-white font-semibold text-xs flex items-center space-x-1.5 border border-slate-700"
+            className="px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:text-slate-900 dark:hover:text-white font-semibold text-xs flex items-center space-x-1.5 border border-slate-200 dark:border-slate-700 transition-colors"
           >
             <Settings className="w-4 h-4" />
             <span>Plan Limit Configs</span>
@@ -57,54 +57,54 @@ export default async function AdminDashboardPage() {
 
       {/* Metrics Grid */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="glass-card p-5 rounded-2xl space-y-1">
-          <div className="flex items-center justify-between text-slate-400">
+        <div className="glass-card p-5 rounded-2xl space-y-1 border border-slate-200 dark:border-slate-800">
+          <div className="flex items-center justify-between text-slate-500 dark:text-slate-400">
             <span className="text-xs font-semibold">Total Users</span>
-            <Users className="w-4 h-4 text-sky-400" />
+            <Users className="w-4 h-4 text-orange-500" />
           </div>
-          <p className="text-3xl font-extrabold text-white">{totalUsers}</p>
+          <p className="text-3xl font-extrabold text-slate-900 dark:text-white">{totalUsers}</p>
         </div>
 
-        <div className="glass-card p-5 rounded-2xl space-y-1">
-          <div className="flex items-center justify-between text-slate-400">
+        <div className="glass-card p-5 rounded-2xl space-y-1 border border-slate-200 dark:border-slate-800">
+          <div className="flex items-center justify-between text-slate-500 dark:text-slate-400">
             <span className="text-xs font-semibold">Published Articles</span>
-            <FileText className="w-4 h-4 text-emerald-400" />
+            <FileText className="w-4 h-4 text-emerald-500" />
           </div>
-          <p className="text-3xl font-extrabold text-white">{publishedPosts}</p>
+          <p className="text-3xl font-extrabold text-slate-900 dark:text-white">{publishedPosts}</p>
         </div>
 
-        <div className="glass-card p-5 rounded-2xl space-y-1">
-          <div className="flex items-center justify-between text-slate-400">
+        <div className="glass-card p-5 rounded-2xl space-y-1 border border-slate-200 dark:border-slate-800">
+          <div className="flex items-center justify-between text-slate-500 dark:text-slate-400">
             <span className="text-xs font-semibold">Pending Review</span>
-            <AlertCircle className="w-4 h-4 text-amber-400" />
+            <AlertCircle className="w-4 h-4 text-amber-500" />
           </div>
-          <p className="text-3xl font-extrabold text-amber-400">{pendingPosts}</p>
+          <p className="text-3xl font-extrabold text-amber-600 dark:text-amber-400">{pendingPosts}</p>
         </div>
 
-        <div className="glass-card p-5 rounded-2xl space-y-1">
-          <div className="flex items-center justify-between text-slate-400">
+        <div className="glass-card p-5 rounded-2xl space-y-1 border border-slate-200 dark:border-slate-800">
+          <div className="flex items-center justify-between text-slate-500 dark:text-slate-400">
             <span className="text-xs font-semibold">Est. Monthly Revenue</span>
-            <DollarSign className="w-4 h-4 text-purple-400" />
+            <DollarSign className="w-4 h-4 text-orange-500" />
           </div>
-          <p className="text-3xl font-extrabold text-purple-400">₹{estRevenue.toLocaleString()}</p>
+          <p className="text-3xl font-extrabold text-orange-600 dark:text-orange-400">₹{estRevenue.toLocaleString()}</p>
         </div>
       </div>
 
       {/* Subscription breakdown */}
-      <div className="glass-panel p-6 rounded-2xl border border-slate-800 space-y-4">
-        <h3 className="text-base font-bold text-white">Active Subscription Breakdown</h3>
+      <div className="glass-panel p-6 rounded-3xl border border-slate-200 dark:border-slate-800 space-y-4 bg-white dark:bg-slate-900/60">
+        <h3 className="text-base font-bold text-slate-900 dark:text-white">Active Subscription Breakdown</h3>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <div className="p-4 rounded-xl bg-slate-900 border border-slate-800">
-            <p className="text-xs text-slate-400">Early Bird / Free Users</p>
-            <p className="text-xl font-bold text-slate-200">{totalUsers - (standardSubs + premiumSubs)}</p>
+          <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+            <p className="text-xs text-slate-500 dark:text-slate-400">Early Bird / Free Users</p>
+            <p className="text-xl font-bold text-slate-900 dark:text-slate-200">{totalUsers - (standardSubs + premiumSubs)}</p>
           </div>
-          <div className="p-4 rounded-xl bg-slate-900 border border-brand-500/30">
-            <p className="text-xs text-brand-300">Standard Plan (₹299/mo)</p>
-            <p className="text-xl font-bold text-white">{standardSubs}</p>
+          <div className="p-4 rounded-xl bg-orange-50/50 dark:bg-slate-900 border border-orange-200 dark:border-orange-500/30">
+            <p className="text-xs text-orange-600 dark:text-orange-300">Standard Plan (₹299/mo)</p>
+            <p className="text-xl font-bold text-orange-600 dark:text-white">{standardSubs}</p>
           </div>
-          <div className="p-4 rounded-xl bg-slate-900 border border-purple-500/30">
-            <p className="text-xs text-purple-300">Premium Plan (₹599/mo)</p>
-            <p className="text-xl font-bold text-white">{premiumSubs}</p>
+          <div className="p-4 rounded-xl bg-amber-50/50 dark:bg-slate-900 border border-amber-200 dark:border-amber-500/30">
+            <p className="text-xs text-amber-700 dark:text-amber-300">Premium Plan (₹599/mo)</p>
+            <p className="text-xl font-bold text-amber-700 dark:text-white">{premiumSubs}</p>
           </div>
         </div>
       </div>

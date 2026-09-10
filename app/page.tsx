@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import Image from 'next/image';
 import { prisma } from '@/lib/prisma';
 import {
   Sparkles,
@@ -10,12 +9,12 @@ import {
   Calendar,
   CheckCircle2,
   Cpu,
-  Briefcase,
-  DollarSign,
-  Heart,
-  Search,
   BookOpen,
   PlusCircle,
+  Clock,
+  Zap,
+  Globe2,
+  Code2,
 } from 'lucide-react';
 
 export const revalidate = 60; // Revalidate every 60s
@@ -48,125 +47,132 @@ export default async function HomePage() {
   const regularPosts = posts.slice(1);
 
   return (
-    <div className="space-y-16 pb-12">
-      {/* 1. Hero Section with Glassmorphism & Micro-animations */}
-      <section className="relative overflow-hidden pt-12 pb-20 px-4 sm:px-6 lg:px-8 border-b border-slate-800/60">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-96 bg-gradient-to-b from-brand-600/15 via-sky-500/5 to-transparent blur-3xl -z-10 pointer-events-none" />
+    <div className="space-y-16 pb-16">
+      {/* 1. Hero Section with Hashnode-Inspired Aesthetics */}
+      <section className="relative overflow-hidden pt-12 pb-20 px-4 sm:px-6 lg:px-8 border-b border-slate-200 dark:border-slate-800/80">
+        {/* Ambient Top Glow */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-96 bg-gradient-to-b from-orange-500/10 via-amber-500/5 to-transparent blur-3xl -z-10 pointer-events-none" />
 
         <div className="max-w-5xl mx-auto text-center space-y-8">
-          {/* Early Bird Strategy Pill */}
-          <div className="inline-flex items-center space-x-2 px-4 py-1.5 rounded-full bg-slate-800/80 border border-brand-500/30 shadow-lg shadow-brand-500/10">
-            <Sparkles className="w-4 h-4 text-amber-400 animate-pulse" />
-            <span className="text-xs font-semibold text-slate-200">
-              Early Bird Offer: <span className="text-brand-300">Publish 30 Posts / Month Free</span>
+          {/* Tagline Badge */}
+          <div className="inline-flex items-center space-x-2 px-4 py-1.5 rounded-full bg-orange-50 dark:bg-slate-900 border border-orange-200 dark:border-orange-500/30 shadow-sm">
+            <Sparkles className="w-4 h-4 text-orange-500 animate-pulse" />
+            <span className="text-xs font-semibold text-slate-800 dark:text-slate-200">
+              The Modern Tech Publication Platform • <span className="text-orange-600 dark:text-orange-400 font-bold">Publish like a pro</span>
             </span>
-            <span className="text-[10px] bg-brand-500/20 text-brand-300 px-2 py-0.5 rounded-full font-mono uppercase">Limited</span>
+            <span className="text-[10px] bg-orange-500/15 text-orange-600 dark:text-orange-300 px-2 py-0.5 rounded-full font-mono uppercase font-semibold">
+              Free 30 Posts
+            </span>
           </div>
 
           {/* Hero Headline */}
-          <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight text-white leading-tight">
-            Discover, Publish & <span className="bg-gradient-to-r from-brand-400 via-sky-300 to-cyan-400 bg-clip-text text-transparent">Grow Your Audience</span>
+          <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-tight">
+            Where developers & tech teams <br className="hidden sm:block" />
+            <span className="bg-gradient-to-r from-orange-500 via-orange-600 to-amber-500 bg-clip-text text-transparent">
+              publish like a pro.
+            </span>
           </h1>
 
-          <p className="max-w-2xl mx-auto text-base sm:text-lg text-slate-300 leading-relaxed font-normal">
-            Publish your stories, showcase your products, build backlinks, and reach wider audiences on PostNest.in — the all-in-one publishing & content marketing ecosystem.
+          <p className="max-w-2xl mx-auto text-base sm:text-lg text-slate-600 dark:text-slate-300 leading-relaxed font-normal">
+            Distraction-free blogging, zero paywalls for readers, automated Google-first SEO, and verified company hubs. Share your engineering stories and product guides with thousands of readers worldwide.
           </p>
 
           {/* Action CTA Buttons */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
             <Link
-              href="#explore"
-              className="w-full sm:w-auto px-7 py-3.5 rounded-xl bg-gradient-to-r from-brand-600 to-sky-500 hover:from-brand-500 hover:to-sky-400 text-white font-semibold text-base shadow-lg shadow-brand-500/25 transition-all duration-200 flex items-center justify-center space-x-2"
+              href="/dashboard/create-post"
+              className="w-full sm:w-auto px-7 py-3.5 rounded-xl bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-semibold text-base shadow-lg shadow-orange-500/25 transition-all duration-200 flex items-center justify-center space-x-2 transform hover:-translate-y-0.5"
             >
-              <BookOpen className="w-5 h-5" />
-              <span>Explore Articles</span>
+              <PlusCircle className="w-5 h-5" />
+              <span>Write an Article</span>
             </Link>
 
             <Link
-              href="/dashboard/create-post"
-              className="w-full sm:w-auto px-7 py-3.5 rounded-xl bg-slate-800/90 hover:bg-slate-700/90 text-slate-100 border border-slate-700 font-semibold text-base transition-all duration-200 flex items-center justify-center space-x-2"
+              href="#explore"
+              className="w-full sm:w-auto px-7 py-3.5 rounded-xl bg-white dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-300 dark:border-slate-700 font-semibold text-base transition-all duration-200 flex items-center justify-center space-x-2"
             >
-              <PlusCircle className="w-5 h-5 text-sky-400" />
-              <span>Add Your Blog</span>
+              <BookOpen className="w-5 h-5 text-orange-500" />
+              <span>Explore Articles</span>
             </Link>
           </div>
 
           {/* Quick Value Metrics */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-10 border-t border-slate-800/80 max-w-4xl mx-auto">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-10 border-t border-slate-200 dark:border-slate-800 max-w-4xl mx-auto">
             <div className="text-center p-3">
-              <p className="text-2xl font-bold text-white">30 / Mo</p>
-              <p className="text-xs text-slate-400">Early Bird Free Posts</p>
+              <p className="text-2xl font-bold text-slate-900 dark:text-white">30 / Mo</p>
+              <p className="text-xs text-slate-500 dark:text-slate-400">Early Bird Free Posts</p>
             </div>
             <div className="text-center p-3">
-              <p className="text-2xl font-bold text-white">₹299</p>
-              <p className="text-xs text-slate-400">Standard Plan / Mo</p>
+              <p className="text-2xl font-bold text-slate-900 dark:text-white">Zero Paywalls</p>
+              <p className="text-xs text-slate-500 dark:text-slate-400">Open-Web Readers</p>
             </div>
             <div className="text-center p-3">
-              <p className="text-2xl font-bold text-white">Bulk CSV</p>
-              <p className="text-xs text-slate-400">Fast Upload System</p>
+              <p className="text-2xl font-bold text-slate-900 dark:text-white">Folder Upload</p>
+              <p className="text-xs text-slate-500 dark:text-slate-400">PNG, JPG, WebP, URLs</p>
             </div>
             <div className="text-center p-3">
-              <p className="text-2xl font-bold text-white">REST API</p>
-              <p className="text-xs text-slate-400">Programmatic Publishing</p>
+              <p className="text-2xl font-bold text-slate-900 dark:text-white">REST API</p>
+              <p className="text-xs text-slate-500 dark:text-slate-400">Headless Publishing</p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* 2. Featured Article Banner */}
+      {/* 2. Featured Article Spotlight */}
       {featuredPost && (
         <section id="explore" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold text-white flex items-center space-x-2">
-              <Sparkles className="w-5 h-5 text-brand-400" />
+            <h2 className="text-2xl font-bold text-slate-900 dark:text-white flex items-center space-x-2">
+              <Sparkles className="w-5 h-5 text-orange-500" />
               <span>Featured Spotlight</span>
             </h2>
+            <span className="text-xs font-medium text-slate-500">Curated by PostNest Editors</span>
           </div>
 
-          <div className="glass-card rounded-2xl overflow-hidden grid grid-cols-1 lg:grid-cols-12 gap-0 border border-slate-800">
-            <div className="lg:col-span-7 relative min-h-[300px] lg:min-h-[400px]">
+          <div className="glass-card rounded-2xl overflow-hidden grid grid-cols-1 lg:grid-cols-12 gap-0 border border-slate-200 dark:border-slate-800">
+            <div className="lg:col-span-7 relative min-h-[300px] lg:min-h-[400px] bg-slate-100 dark:bg-slate-900">
               <img
                 src={featuredPost.featuredImage || 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800'}
                 alt={featuredPost.title}
                 className="w-full h-full object-cover"
               />
               <div className="absolute top-4 left-4">
-                <span className="px-3 py-1 rounded-full bg-brand-500 text-white text-xs font-semibold uppercase tracking-wider">
+                <span className="px-3 py-1 rounded-full bg-orange-500 text-white text-xs font-semibold uppercase tracking-wider shadow-sm">
                   {featuredPost.category.name}
                 </span>
               </div>
             </div>
 
-            <div className="lg:col-span-5 p-8 flex flex-col justify-between space-y-6">
+            <div className="lg:col-span-5 p-6 sm:p-8 flex flex-col justify-between space-y-6">
               <div className="space-y-4">
                 {featuredPost.company && (
-                  <div className="flex items-center space-x-2 text-xs text-slate-400">
-                    <Building2 className="w-4 h-4 text-sky-400" />
-                    <span className="text-slate-200 font-medium">{featuredPost.company.companyName}</span>
+                  <div className="flex items-center space-x-2 text-xs text-slate-500 dark:text-slate-400">
+                    <Building2 className="w-4 h-4 text-orange-500" />
+                    <span className="text-slate-700 dark:text-slate-200 font-medium">{featuredPost.company.companyName}</span>
                     {featuredPost.company.isVerified && (
-                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
                     )}
                   </div>
                 )}
-                <h3 className="text-2xl font-bold text-white hover:text-brand-300 transition-colors">
+                <h3 className="text-2xl font-bold text-slate-900 dark:text-white hover:text-orange-600 dark:hover:text-orange-400 transition-colors">
                   <Link href={`/blog/${featuredPost.slug}`}>
                     {featuredPost.title}
                   </Link>
                 </h3>
-                <p className="text-slate-300 text-sm leading-relaxed line-clamp-3">
+                <p className="text-slate-600 dark:text-slate-300 text-sm leading-relaxed line-clamp-3">
                   {featuredPost.excerpt}
                 </p>
               </div>
 
-              <div className="flex items-center justify-between pt-4 border-t border-slate-800 text-xs text-slate-400">
+              <div className="flex items-center justify-between pt-4 border-t border-slate-200 dark:border-slate-800 text-xs text-slate-500 dark:text-slate-400">
                 <div className="flex items-center space-x-2">
-                  <span className="font-medium text-slate-200">{featuredPost.author.name}</span>
+                  <span className="font-semibold text-slate-800 dark:text-slate-200">{featuredPost.author.name}</span>
                   <span>•</span>
-                  <span>{new Date(featuredPost.publishedAt || featuredPost.createdAt).toLocaleDateString()}</span>
+                  <span>{new Date(featuredPost.publishedAt || featuredPost.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</span>
                 </div>
                 <Link
                   href={`/blog/${featuredPost.slug}`}
-                  className="text-brand-400 font-semibold flex items-center space-x-1 hover:text-brand-300"
+                  className="text-orange-600 dark:text-orange-400 font-semibold flex items-center space-x-1 hover:underline"
                 >
                   <span>Read Article</span>
                   <ArrowRight className="w-3.5 h-3.5" />
@@ -179,100 +185,133 @@ export default async function HomePage() {
 
       {/* 3. Trending Categories */}
       <section id="categories" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 className="text-xl font-bold text-white mb-6 flex items-center space-x-2">
-          <TrendingUp className="w-5 h-5 text-sky-400" />
-          <span>Browse Trending Categories</span>
-        </h2>
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-xl font-bold text-slate-900 dark:text-white flex items-center space-x-2">
+            <TrendingUp className="w-5 h-5 text-orange-500" />
+            <span>Browse Topics & Categories</span>
+          </h2>
+          <Link href="/services" className="text-xs text-orange-600 dark:text-orange-400 font-semibold hover:underline">
+            View All Services →
+          </Link>
+        </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
           {categories.map((cat) => (
             <Link
               key={cat.id}
               href={`/category/${cat.slug}`}
-              className="glass-card p-4 rounded-xl flex flex-col items-center text-center space-y-2 group hover:border-brand-500/40"
+              className="glass-card p-4 rounded-xl flex flex-col items-center text-center space-y-2 group hover:border-orange-500/40 transition-colors"
             >
-              <div className="w-10 h-10 rounded-lg bg-slate-800 flex items-center justify-center text-brand-400 group-hover:scale-110 transition-transform">
+              <div className="w-10 h-10 rounded-lg bg-orange-50 dark:bg-slate-800 flex items-center justify-center text-orange-600 dark:text-orange-400 group-hover:scale-110 transition-transform">
                 <Cpu className="w-5 h-5" />
               </div>
-              <span className="text-sm font-medium text-slate-200 group-hover:text-white">{cat.name}</span>
+              <span className="text-sm font-semibold text-slate-800 dark:text-slate-200 group-hover:text-orange-600 dark:group-hover:text-white">
+                {cat.name}
+              </span>
             </Link>
           ))}
         </div>
       </section>
 
-      {/* 4. Google AdSense Placement Slot (Non-Intrusive Banner) */}
+      {/* 4. Google AdSense Placement Slot */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="w-full py-4 px-6 rounded-xl bg-slate-900/60 border border-slate-800/80 text-center flex flex-col items-center justify-center space-y-1">
-          <span className="text-[10px] text-slate-500 uppercase tracking-widest font-mono">Advertisement</span>
-          <div className="h-12 w-full flex items-center justify-center text-xs text-slate-400 font-mono border border-dashed border-slate-700/50 rounded-lg bg-slate-950/40">
-            [ Google AdSense Responsive Leaderboard Banner Spot ]
+        <div className="w-full py-4 px-6 rounded-2xl bg-slate-100/80 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800/80 text-center flex flex-col items-center justify-center space-y-1">
+          <span className="text-[10px] text-slate-400 dark:text-slate-500 uppercase tracking-widest font-mono">Advertisement</span>
+          <div className="h-12 w-full flex items-center justify-center text-xs text-slate-500 font-mono border border-dashed border-slate-300 dark:border-slate-700/50 rounded-lg bg-white/60 dark:bg-slate-950/40">
+            [ Google AdSense Responsive Leaderboard Banner ]
           </div>
         </div>
       </section>
 
       {/* 5. Latest Articles Grid */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 className="text-2xl font-bold text-white mb-8">Latest Articles</h2>
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="text-2xl font-bold text-slate-900 dark:text-white">Latest Tech Stories</h2>
+            <p className="text-xs text-slate-500">Fresh insights published directly by engineers and domain experts</p>
+          </div>
+          <Link
+            href="/dashboard/create-post"
+            className="hidden sm:inline-flex items-center space-x-1 text-xs font-semibold text-orange-600 dark:text-orange-400 hover:underline"
+          >
+            <span>+ Write an Article</span>
+          </Link>
+        </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {regularPosts.map((post) => (
-            <article key={post.id} className="glass-card rounded-xl overflow-hidden flex flex-col justify-between">
-              <div>
-                <div className="relative h-48 w-full overflow-hidden">
-                  <img
-                    src={post.featuredImage || 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600'}
-                    alt={post.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
-                  <div className="absolute top-3 left-3">
-                    <span className="px-2.5 py-0.5 rounded-md bg-slate-900/80 backdrop-blur-md text-sky-400 text-xs font-semibold">
-                      {post.category.name}
-                    </span>
+          {regularPosts.map((post) => {
+            const wordCount = post.content.replace(/<[^>]+>/g, ' ').trim().split(/\s+/).length;
+            const readMin = Math.max(1, Math.ceil(wordCount / 200));
+
+            return (
+              <article
+                key={post.id}
+                className="glass-card rounded-2xl overflow-hidden flex flex-col justify-between group border border-slate-200 dark:border-slate-800"
+              >
+                <div>
+                  <div className="relative h-48 w-full overflow-hidden bg-slate-100 dark:bg-slate-800">
+                    <img
+                      src={post.featuredImage || 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600'}
+                      alt={post.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                    <div className="absolute top-3 left-3">
+                      <span className="px-2.5 py-0.5 rounded-md bg-white/90 dark:bg-slate-900/80 backdrop-blur-md text-orange-600 dark:text-orange-400 text-xs font-semibold shadow-xs">
+                        {post.category.name}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="p-5 space-y-3">
+                    {post.company && (
+                      <div className="flex items-center space-x-1.5 text-xs text-slate-500 dark:text-slate-400">
+                        <Building2 className="w-3.5 h-3.5 text-orange-500" />
+                        <span className="font-medium text-slate-700 dark:text-slate-300">{post.company.companyName}</span>
+                      </div>
+                    )}
+
+                    <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100 group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors line-clamp-2">
+                      <Link href={`/blog/${post.slug}`}>{post.title}</Link>
+                    </h3>
+
+                    <p className="text-slate-600 dark:text-slate-400 text-xs line-clamp-3 leading-relaxed">
+                      {post.excerpt}
+                    </p>
                   </div>
                 </div>
 
-                <div className="p-5 space-y-3">
-                  {post.company && (
-                    <div className="flex items-center space-x-1.5 text-xs text-slate-400">
-                      <Building2 className="w-3.5 h-3.5 text-brand-400" />
-                      <span className="font-medium text-slate-300">{post.company.companyName}</span>
-                    </div>
-                  )}
-
-                  <h3 className="text-lg font-bold text-slate-100 hover:text-brand-300 transition-colors line-clamp-2">
-                    <Link href={`/blog/${post.slug}`}>{post.title}</Link>
-                  </h3>
-
-                  <p className="text-slate-400 text-xs line-clamp-3 leading-relaxed">
-                    {post.excerpt}
-                  </p>
+                <div className="p-5 pt-0 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 border-t border-slate-100 dark:border-slate-800/60 mt-4">
+                  <div className="flex items-center space-x-1.5">
+                    <span>By {post.author.name}</span>
+                    <span>•</span>
+                    <span className="flex items-center space-x-1">
+                      <Clock className="w-3 h-3 text-slate-400" />
+                      <span>{readMin}m</span>
+                    </span>
+                  </div>
+                  <Link href={`/blog/${post.slug}`} className="text-orange-600 dark:text-orange-400 font-semibold hover:underline">
+                    Read →
+                  </Link>
                 </div>
-              </div>
-
-              <div className="p-5 pt-0 flex items-center justify-between text-xs text-slate-400 border-t border-slate-800/60 mt-4">
-                <span>By {post.author.name}</span>
-                <Link href={`/blog/${post.slug}`} className="text-brand-400 font-semibold hover:underline">
-                  Read More →
-                </Link>
-              </div>
-            </article>
-          ))}
+              </article>
+            );
+          })}
         </div>
       </section>
 
-      {/* 6. Featured Companies */}
+      {/* 6. Featured Companies Section */}
       <section id="companies" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="glass-panel p-8 rounded-2xl border border-slate-800 space-y-6">
-          <div className="flex items-center justify-between">
+        <div className="glass-panel p-8 rounded-3xl border border-slate-200 dark:border-slate-800 space-y-6 bg-white dark:bg-slate-900/60">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
             <div>
-              <h2 className="text-xl font-bold text-white flex items-center space-x-2">
-                <Building2 className="w-5 h-5 text-brand-400" />
+              <h2 className="text-xl font-bold text-slate-900 dark:text-white flex items-center space-x-2">
+                <Building2 className="w-5 h-5 text-orange-500" />
                 <span>Featured Companies on PostNest</span>
               </h2>
-              <p className="text-xs text-slate-400">Discover top startups and businesses publishing industry knowledge.</p>
+              <p className="text-xs text-slate-500 dark:text-slate-400">Discover startups and businesses publishing verified industry knowledge.</p>
             </div>
-            <Link href="/register" className="text-xs text-brand-400 hover:underline font-semibold">
-              Add Your Company →
+            <Link href="/register" className="text-xs text-orange-600 dark:text-orange-400 hover:underline font-semibold">
+              Register Company Hub →
             </Link>
           </div>
 
@@ -281,19 +320,21 @@ export default async function HomePage() {
               <Link
                 key={comp.id}
                 href={`/company/${comp.slug}`}
-                className="glass-card p-4 rounded-xl flex items-center space-x-3 group"
+                className="glass-card p-4 rounded-xl flex items-center space-x-3 group border border-slate-200 dark:border-slate-800"
               >
                 <img
                   src={comp.logo || 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=100'}
                   alt={comp.companyName}
-                  className="w-10 h-10 rounded-lg object-cover bg-slate-800"
+                  className="w-10 h-10 rounded-lg object-cover bg-slate-100 dark:bg-slate-800"
                 />
-                <div>
+                <div className="overflow-hidden">
                   <div className="flex items-center space-x-1">
-                    <span className="text-sm font-semibold text-slate-200 group-hover:text-brand-300">{comp.companyName}</span>
-                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                    <span className="text-sm font-semibold text-slate-800 dark:text-slate-200 group-hover:text-orange-600 dark:group-hover:text-orange-400 truncate">
+                      {comp.companyName}
+                    </span>
+                    {comp.isVerified && <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />}
                   </div>
-                  <span className="text-[11px] text-slate-400">{comp.category || 'Tech Business'}</span>
+                  <span className="text-[11px] text-slate-500 truncate block">{comp.category || 'Tech Business'}</span>
                 </div>
               </Link>
             ))}
@@ -301,24 +342,26 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* 7. Newsletter Subscription Box */}
+      {/* 7. Newsletter Digest Subscription */}
       <section className="max-w-4xl mx-auto px-4">
-        <div className="glass-panel p-8 sm:p-10 rounded-2xl border border-brand-500/20 text-center space-y-4 bg-gradient-to-b from-brand-900/20 to-slate-900/80">
-          <h3 className="text-2xl font-bold text-white">Subscribe to PostNest Digest</h3>
-          <p className="text-slate-300 text-sm max-w-lg mx-auto">
-            Get top curated articles, product reviews, and digital marketing insights delivered directly to your inbox.
+        <div className="glass-panel p-8 sm:p-12 rounded-3xl border border-orange-200 dark:border-orange-500/20 text-center space-y-4 bg-gradient-to-b from-orange-500/5 dark:from-orange-950/20 to-transparent">
+          <h3 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white">
+            Subscribe to the PostNest Digest
+          </h3>
+          <p className="text-slate-600 dark:text-slate-300 text-sm max-w-lg mx-auto">
+            Get top curated technical guides, engineering case studies, and developer insights delivered directly to your inbox. Zero spam, unsubscribe anytime.
           </p>
 
           <form className="flex flex-col sm:flex-row items-center justify-center gap-3 max-w-md mx-auto pt-2">
             <input
               type="email"
               placeholder="Enter your email address"
-              className="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-700 text-slate-200 text-sm focus:outline-none focus:border-brand-500"
+              className="w-full px-4 py-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-slate-200 text-sm focus:outline-none focus:border-orange-500 transition-colors"
               required
             />
             <button
               type="submit"
-              className="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-brand-500 hover:bg-brand-400 text-white font-semibold text-sm transition-colors whitespace-nowrap"
+              className="w-full sm:w-auto px-6 py-3 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-semibold text-sm transition-colors whitespace-nowrap shadow-md shadow-orange-500/20"
             >
               Subscribe Free
             </button>

@@ -92,6 +92,8 @@ export async function checkUserPublishingLimits(userId: string): Promise<LimitCh
   };
 }
 
+export const checkUserPlanLimits = checkUserPublishingLimits;
+
 export async function incrementUserPublishUsage(userId: string) {
   const todayStr = new Date().toISOString().split('T')[0];
 

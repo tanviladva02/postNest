@@ -49,7 +49,7 @@ export default function PlanLimitEditorForm({ initialPlans }: { initialPlans: an
           <div key={p.id} className="glass-panel p-5 rounded-2xl border border-slate-800 space-y-3">
             <div className="flex items-center justify-between border-b border-slate-800 pb-2">
               <h3 className="text-sm font-bold text-white">{p.displayName} ({p.name})</h3>
-              <span className="text-xs font-bold text-brand-400">₹{p.priceINR}/mo</span>
+              <span className="text-xs font-bold text-orange-400">₹{p.priceINR}/mo</span>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
@@ -80,7 +80,7 @@ export default function PlanLimitEditorForm({ initialPlans }: { initialPlans: an
       <button
         type="submit"
         disabled={loading}
-        className="w-full py-3 rounded-xl bg-brand-500 hover:bg-brand-400 text-white font-semibold text-xs flex items-center justify-center space-x-2 shadow-lg disabled:opacity-50"
+        className="w-full py-3 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-semibold text-xs flex items-center justify-center space-x-2 shadow-lg disabled:opacity-50"
       >
         <Save className="w-4 h-4" />
         <span>{loading ? 'Saving to Database...' : 'Save All Quota Configs'}</span>

@@ -18,12 +18,12 @@ export default async function AdminSettingsPage() {
       <div className="flex items-center justify-between border-b border-slate-800 pb-4">
         <div>
           <h1 className="text-2xl font-bold text-white flex items-center space-x-2">
-            <Settings className="w-6 h-6 text-brand-400" />
+            <Settings className="w-6 h-6 text-orange-400" />
             <span>Configurable Subscription & Quota Settings</span>
           </h1>
           <p className="text-xs text-slate-400">Dynamically update daily/monthly publishing limits per plan without code deployments.</p>
         </div>
-        <Link href="/admin" className="text-xs text-brand-400 hover:underline">← Back to Admin Panel</Link>
+        <Link href="/admin" className="text-xs text-orange-400 hover:underline">← Back to Admin Panel</Link>
       </div>
 
       <PlanLimitEditorForm initialPlans={plans} />
