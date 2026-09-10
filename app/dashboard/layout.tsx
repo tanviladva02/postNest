@@ -1,6 +1,8 @@
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { getCurrentUser } from '@/lib/auth';
+import Image from 'next/image';
+import ThemeToggle from '@/components/ThemeToggle';
 import {
   LayoutDashboard,
   FileText,
@@ -11,6 +13,7 @@ import {
   CreditCard,
   LogOut,
   Shield,
+  Home,
 } from 'lucide-react';
 
 export default async function DashboardLayout({
@@ -31,10 +34,36 @@ export default async function DashboardLayout({
     : (activeSub?.plan?.displayName || 'Early Bird Free');
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-[#090d16] text-slate-900 dark:text-slate-100 flex flex-col md:flex-row transition-colors">
-      {/* Sidebar Navigation */}
-      <aside className="w-full md:w-64 bg-white dark:bg-[#0e1422] border-r border-slate-200 dark:border-slate-800/80 p-6 flex flex-col justify-between shrink-0">
-        <div className="space-y-6">
+    <div className="h-screen w-full bg-slate-50 dark:bg-[#090d16] text-slate-900 dark:text-slate-100 flex flex-col md:flex-row overflow-hidden transition-colors">
+      {/* Fixed Height Sidebar Navigation */}
+      <aside className="w-full md:w-64 h-full md:h-screen bg-white dark:bg-[#0e1422] border-r border-slate-200 dark:border-slate-800/80 p-5 lg:p-6 flex flex-col justify-between shrink-0 overflow-hidden transition-colors">
+        <div className="space-y-5 flex-1 flex flex-col min-h-0">
+          {/* Brand Logo & Back to Home */}
+          <div className="flex items-center justify-between pb-2 border-b border-slate-100 dark:border-slate-800/60">
+            <Link href="/" className="flex flex-col items-start group">
+              <Image
+                src="/logo.png"
+                alt="PostNest"
+                width={140}
+                height={36}
+                className="h-7 w-auto object-contain dark:hidden"
+                priority
+              />
+              <Image
+                src="/logo-dark.png"
+                alt="PostNest"
+                width={140}
+                height={36}
+                className="h-7 w-auto object-contain hidden dark:block"
+                priority
+              />
+              <span className="text-[8px] font-extrabold tracking-[0.2em] uppercase bg-gradient-to-r from-orange-600 via-amber-500 to-orange-500 dark:from-orange-400 dark:via-amber-300 dark:to-orange-400 bg-clip-text text-transparent mt-0.5">
+                Publish like a pro
+              </span>
+            </Link>
+            <ThemeToggle />
+          </div>
+
           {/* User Profile Summary */}
           <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 flex items-center space-x-3">
             <img

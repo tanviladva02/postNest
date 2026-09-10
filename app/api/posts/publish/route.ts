@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { getCurrentUser } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { checkUserPublishingLimits, incrementUserPublishUsage } from '@/lib/publishing-limits';
-import { validatePostQuality } from '@/lib/moderation';
+import { validatePostQuality, PostStatus } from '@/lib/moderation';
 
 export async function POST(req: Request) {
   try {
@@ -18,7 +18,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Title, category, excerpt, and content are required.' }, { status: 400 });
     }
 
-    let targetStatus: 'DRAFT' | 'PUBLISHED' | 'PENDING_REVIEW' = 'DRAFT';
+    let targetStatus: PostStatus = 'DRAFT';
 
     if (shouldPublish) {
       // 1. Check publishing limits
