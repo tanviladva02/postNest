@@ -26,7 +26,7 @@ export async function POST(req: Request) {
     if (!user && isTester) {
       const passwordHash = await hashPassword(password);
       const premiumPlan = await prisma.plan.findUnique({ where: { name: 'PREMIUM' } }) ||
-                          await prisma.plan.findUnique({ where: { name: 'FREE' } });
+        await prisma.plan.findUnique({ where: { name: 'FREE' } });
       user = await prisma.user.create({
         data: {
           name: 'Tanvi Ladva',
