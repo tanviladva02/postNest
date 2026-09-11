@@ -68,7 +68,7 @@ export default async function HomePage() {
           {/* Hero Headline */}
           <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-tight">
             Where developers & tech teams <br className="hidden sm:block" />
-            <span className="bg-gradient-to-r from-orange-500 via-orange-600 to-amber-500 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-orange-700 via-orange-700 to-amber-600 bg-clip-text text-transparent">
               publish like a pro.
             </span>
           </h1>
@@ -214,14 +214,14 @@ export default async function HomePage() {
       </section>
 
       {/* 4. Google AdSense Placement Slot */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      {/* <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="w-full py-4 px-6 rounded-2xl bg-slate-100/80 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800/80 text-center flex flex-col items-center justify-center space-y-1">
           <span className="text-[10px] text-slate-400 dark:text-slate-500 uppercase tracking-widest font-mono">Advertisement</span>
           <div className="h-12 w-full flex items-center justify-center text-xs text-slate-500 font-mono border border-dashed border-slate-300 dark:border-slate-700/50 rounded-lg bg-white/60 dark:bg-slate-950/40">
             [ Google AdSense Responsive Leaderboard Banner ]
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* 5. Latest Articles Grid */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
@@ -296,49 +296,6 @@ export default async function HomePage() {
               </article>
             );
           })}
-        </div>
-      </section>
-
-      {/* 6. Featured Companies Section */}
-      <section id="companies" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="glass-panel p-8 rounded-3xl border border-slate-200 dark:border-slate-800 space-y-6 bg-white dark:bg-slate-900/60">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
-            <div>
-              <h2 className="text-xl font-bold text-slate-900 dark:text-white flex items-center space-x-2">
-                <Building2 className="w-5 h-5 text-orange-500" />
-                <span>Featured Companies on PostNest</span>
-              </h2>
-              <p className="text-xs text-slate-500 dark:text-slate-400">Discover startups and businesses publishing verified industry knowledge.</p>
-            </div>
-            <Link href="/register" className="text-xs text-orange-600 dark:text-orange-400 hover:underline font-semibold">
-              Register Company Hub →
-            </Link>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {companies.map((comp) => (
-              <Link
-                key={comp.id}
-                href={`/company/${comp.slug}`}
-                className="glass-card p-4 rounded-xl flex items-center space-x-3 group border border-slate-200 dark:border-slate-800"
-              >
-                <img
-                  src={comp.logo || 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=100'}
-                  alt={comp.companyName}
-                  className="w-10 h-10 rounded-lg object-cover bg-slate-100 dark:bg-slate-800"
-                />
-                <div className="overflow-hidden">
-                  <div className="flex items-center space-x-1">
-                    <span className="text-sm font-semibold text-slate-800 dark:text-slate-200 group-hover:text-orange-600 dark:group-hover:text-orange-400 truncate">
-                      {comp.companyName}
-                    </span>
-                    {comp.isVerified && <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />}
-                  </div>
-                  <span className="text-[11px] text-slate-500 truncate block">{comp.category || 'Tech Business'}</span>
-                </div>
-              </Link>
-            ))}
-          </div>
         </div>
       </section>
 

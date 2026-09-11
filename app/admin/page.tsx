@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { getCurrentUser } from '@/lib/auth';
 import { redirect } from 'next/navigation';
 import { prisma } from '@/lib/prisma';
-import { Shield, Users, FileText, DollarSign, AlertCircle, Settings, CheckCircle } from 'lucide-react';
+import { Shield, Users, FileText, DollarSign, AlertCircle, Settings, CheckCircle, MessageSquare } from 'lucide-react';
 
 export default async function AdminDashboardPage() {
   const user = await getCurrentUser();
@@ -18,6 +18,10 @@ export default async function AdminDashboardPage() {
   const pendingPosts = await prisma.post.count({ where: { status: 'PENDING_REVIEW' } });
   const totalCompanies = await prisma.company.count();
 
+  // Contact Inquiries
+  const totalMessages = await prisma.contactMessage.count();
+  const unreadMessages = await prisma.contactMessage.count({ where: { status: 'UNREAD' } });
+
   // Subscriptions
   const standardSubs = await prisma.subscription.count({ where: { plan: { name: 'STANDARD' }, status: 'ACTIVE' } });
   const premiumSubs = await prisma.subscription.count({ where: { plan: { name: 'PREMIUM' }, status: 'ACTIVE' } });
@@ -32,11 +36,19 @@ export default async function AdminDashboardPage() {
           </div>
           <div>
             <h1 className="text-2xl font-bold text-slate-900 dark:text-white">PostNest Admin Control Center</h1>
-            <p className="text-xs text-slate-500 dark:text-slate-400">Platform overview, moderation queue, user management, and dynamic limit configs.</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400">Platform overview, moderation queue, user inquiries, and dynamic limit configs.</p>
           </div>
         </div>
 
-        <div className="flex items-center space-x-3">
+        <div className="flex flex-wrap items-center gap-2.5">
+          <Link
+            href="/admin/messages"
+            className="px-4 py-2 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-bold text-xs flex items-center space-x-1.5 shadow"
+          >
+            <MessageSquare className="w-4 h-4" />
+            <span>Inquiries ({unreadMessages})</span>
+          </Link>
+
           <Link
             href="/admin/moderation"
             className="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs flex items-center space-x-1.5 shadow"
@@ -56,13 +68,26 @@ export default async function AdminDashboardPage() {
       </div>
 
       {/* Metrics Grid */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
         <div className="glass-card p-5 rounded-2xl space-y-1 border border-slate-200 dark:border-slate-800">
           <div className="flex items-center justify-between text-slate-500 dark:text-slate-400">
             <span className="text-xs font-semibold">Total Users</span>
             <Users className="w-4 h-4 text-orange-500" />
           </div>
           <p className="text-3xl font-extrabold text-slate-900 dark:text-white">{totalUsers}</p>
+        </div>
+
+        <div className="glass-card p-5 rounded-2xl space-y-1 border border-slate-200 dark:border-slate-800">
+          <div className="flex items-center justify-between text-slate-500 dark:text-slate-400">
+            <span className="text-xs font-semibold">Contact Inquiries</span>
+            <MessageSquare className="w-4 h-4 text-blue-500" />
+          </div>
+          <div className="flex items-baseline space-x-2">
+            <p className="text-3xl font-extrabold text-slate-900 dark:text-white">{totalMessages}</p>
+            {unreadMessages > 0 && (
+              <span className="text-xs font-bold text-amber-500">({unreadMessages} new)</span>
+            )}
+          </div>
         </div>
 
         <div className="glass-card p-5 rounded-2xl space-y-1 border border-slate-200 dark:border-slate-800">
