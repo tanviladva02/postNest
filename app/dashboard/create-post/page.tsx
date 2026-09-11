@@ -3,27 +3,19 @@
 import { useState, useEffect, useRef } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { formatBlogContent } from '@/lib/formatContent';
+import TipTapEditor from '@/components/editor/TipTapEditor';
 import {
   FileText,
   Sparkles,
   Save,
   Send,
-  Bold,
-  Italic,
-  Heading2,
-  Heading3,
-  Link as LinkIcon,
-  List,
-  Code,
-  Quote,
-  Image as ImageIcon,
-  UploadCloud,
   CheckCircle2,
   AlertTriangle,
   Eye,
   Edit3,
   X,
   Link2,
+  UploadCloud,
 } from 'lucide-react';
 
 export default function CreatePostPage() {
@@ -31,7 +23,6 @@ export default function CreatePostPage() {
   const searchParams = useSearchParams();
   const postId = searchParams.get('id');
 
-  const bodyFileInputRef = useRef<HTMLInputElement>(null);
   const featuredFileInputRef = useRef<HTMLInputElement>(null);
 
   const [categories, setCategories] = useState<{ id: string; name: string }[]>([]);
@@ -49,7 +40,6 @@ export default function CreatePostPage() {
 
   const [editorMode, setEditorMode] = useState<'write' | 'preview'>('write');
   const [uploadingFeatured, setUploadingFeatured] = useState(false);
-  const [uploadingBodyImage, setUploadingBodyImage] = useState(false);
 
   const [loading, setLoading] = useState(false);
   const [statusMsg, setStatusMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
@@ -106,11 +96,6 @@ export default function CreatePostPage() {
     initData();
   }, [postId]);
 
-  // Helper formatting shortcuts for Rich Editor
-  const insertTag = (openTag: string, closeTag: string) => {
-    setContent((prev) => `${prev}${openTag}Text content here${closeTag}`);
-  };
-
   // Upload file to /api/upload
   const uploadFile = async (file: File): Promise<string> => {
     const formData = new FormData();
@@ -146,36 +131,6 @@ export default function CreatePostPage() {
       setUploadingFeatured(false);
       if (featuredFileInputRef.current) featuredFileInputRef.current.value = '';
     }
-  };
-
-  // Handle Body Image File Upload (from local computer folder)
-  const handleBodyImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    try {
-      setUploadingBodyImage(true);
-      setStatusMsg(null);
-      const url = await uploadFile(file);
-      const imageSnippet = `\n<figure class="my-6">\n  <img src="${url}" alt="Article illustration" />\n  <figcaption class="text-center text-xs text-slate-500 mt-2 italic">${file.name}</figcaption>\n</figure>\n`;
-      setContent((prev) => `${prev}${imageSnippet}`);
-      setStatusMsg({ type: 'success', text: 'Image uploaded and inserted into article body!' });
-    } catch (err: any) {
-      setStatusMsg({ type: 'error', text: err.message });
-    } finally {
-      setUploadingBodyImage(false);
-      if (bodyFileInputRef.current) bodyFileInputRef.current.value = '';
-    }
-  };
-
-  // Insert Image via URL prompt
-  const handleInsertImageUrl = () => {
-    const url = window.prompt('Enter Image URL (e.g. https://images.unsplash.com/... or any web link):');
-    if (!url || !url.trim()) return;
-
-    const alt = window.prompt('Optional caption / image description:') || 'Article visual';
-    const snippet = `\n<figure class="my-6">\n  <img src="${url.trim()}" alt="${alt}" />\n  <figcaption class="text-center text-xs text-slate-500 mt-2 italic">${alt}</figcaption>\n</figure>\n`;
-    setContent((prev) => `${prev}${snippet}`);
   };
 
   const handleSave = async (publish: boolean) => {
@@ -229,18 +184,11 @@ export default function CreatePostPage() {
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
-      {/* Hidden file inputs for local uploads */}
+      {/* Hidden file input for featured image upload */}
       <input
         type="file"
         ref={featuredFileInputRef}
         onChange={handleFeaturedImageUpload}
-        accept="image/png,image/jpeg,image/webp,image/gif,image/svg+xml"
-        className="hidden"
-      />
-      <input
-        type="file"
-        ref={bodyFileInputRef}
-        onChange={handleBodyImageUpload}
         accept="image/png,image/jpeg,image/webp,image/gif,image/svg+xml"
         className="hidden"
       />
@@ -442,16 +390,22 @@ export default function CreatePostPage() {
         </div>
 
         {/* Rich Text Editor Section with Write / Live Preview */}
-        <div className="space-y-2 pt-2">
+        <div className="space-y-3 pt-2">
           <div className="flex items-center justify-between">
-            <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">
-              Blog Body Content (HTML & Markdown Supported)
-            </label>
-            <div className="flex items-center space-x-1 p-0.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-xs">
+            <div className="flex items-center space-x-2">
+              <label className="text-sm font-semibold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
+                <FileText className="w-4 h-4 text-orange-500" />
+                <span>Article Body</span>
+              </label>
+              <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-orange-500/10 text-orange-600 dark:text-orange-400 border border-orange-500/20">
+                WYSIWYG
+              </span>
+            </div>
+            <div className="flex items-center space-x-1 p-1 rounded-xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200/60 dark:border-slate-700/60 text-xs shadow-2xs">
               <button
                 type="button"
                 onClick={() => setEditorMode('write')}
-                className={`flex items-center space-x-1 px-2.5 py-1 rounded-md font-medium transition-colors ${
+                className={`flex items-center space-x-1.5 px-3 py-1 rounded-lg font-semibold transition-all ${
                   editorMode === 'write'
                     ? 'bg-white dark:bg-slate-900 text-orange-600 dark:text-orange-400 shadow-xs'
                     : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
@@ -463,7 +417,7 @@ export default function CreatePostPage() {
               <button
                 type="button"
                 onClick={() => setEditorMode('preview')}
-                className={`flex items-center space-x-1 px-2.5 py-1 rounded-md font-medium transition-colors ${
+                className={`flex items-center space-x-1.5 px-3 py-1 rounded-lg font-semibold transition-all ${
                   editorMode === 'preview'
                     ? 'bg-white dark:bg-slate-900 text-orange-600 dark:text-orange-400 shadow-xs'
                     : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
@@ -475,118 +429,25 @@ export default function CreatePostPage() {
             </div>
           </div>
 
-          {/* Formatting Toolbar */}
+          {/* Editor Body */}
           {editorMode === 'write' ? (
-            <>
-              <div className="flex flex-wrap items-center gap-1.5 p-2 rounded-t-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 border-b-0">
-                <button
-                  type="button"
-                  onClick={() => insertTag('<h2>', '</h2>')}
-                  className="p-1.5 rounded hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300"
-                  title="Heading 2"
-                >
-                  <Heading2 className="w-4 h-4" />
-                </button>
-                <button
-                  type="button"
-                  onClick={() => insertTag('<h3>', '</h3>')}
-                  className="p-1.5 rounded hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300"
-                  title="Heading 3"
-                >
-                  <Heading3 className="w-4 h-4" />
-                </button>
-                <button
-                  type="button"
-                  onClick={() => insertTag('<strong>', '</strong>')}
-                  className="p-1.5 rounded hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300"
-                  title="Bold"
-                >
-                  <Bold className="w-4 h-4" />
-                </button>
-                <button
-                  type="button"
-                  onClick={() => insertTag('<em>', '</em>')}
-                  className="p-1.5 rounded hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300"
-                  title="Italic"
-                >
-                  <Italic className="w-4 h-4" />
-                </button>
-                <button
-                  type="button"
-                  onClick={() => insertTag('<a href="https://targetwebsite.com" target="_blank">', '</a>')}
-                  className="p-1.5 rounded hover:bg-slate-200 dark:hover:bg-slate-800 text-orange-600 dark:text-orange-400"
-                  title="Add Link"
-                >
-                  <LinkIcon className="w-4 h-4" />
-                </button>
-                <button
-                  type="button"
-                  onClick={() => insertTag('<ul>\n  <li>', '</li>\n</ul>')}
-                  className="p-1.5 rounded hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300"
-                  title="Unordered List"
-                >
-                  <List className="w-4 h-4" />
-                </button>
-                <button
-                  type="button"
-                  onClick={() => insertTag('<pre><code>', '</code></pre>')}
-                  className="p-1.5 rounded hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300"
-                  title="Code Block"
-                >
-                  <Code className="w-4 h-4" />
-                </button>
-                <button
-                  type="button"
-                  onClick={() => insertTag('<blockquote>', '</blockquote>')}
-                  className="p-1.5 rounded hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300"
-                  title="Quote"
-                >
-                  <Quote className="w-4 h-4" />
-                </button>
-
-                <div className="h-5 w-px bg-slate-300 dark:bg-slate-700 mx-1" />
-
-                {/* Local Folder Image Upload into Body */}
-                <button
-                  type="button"
-                  onClick={() => bodyFileInputRef.current?.click()}
-                  disabled={uploadingBodyImage}
-                  className="flex items-center space-x-1 px-2.5 py-1 rounded bg-orange-500/10 hover:bg-orange-500/20 text-orange-600 dark:text-orange-400 text-xs font-medium transition-colors"
-                  title="Upload image from computer folder"
-                >
-                  <UploadCloud className="w-3.5 h-3.5" />
-                  <span>{uploadingBodyImage ? 'Uploading...' : 'Upload Image to Body'}</span>
-                </button>
-
-                {/* Paste Image URL into Body */}
-                <button
-                  type="button"
-                  onClick={handleInsertImageUrl}
-                  className="flex items-center space-x-1 px-2.5 py-1 rounded hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-medium transition-colors"
-                  title="Insert image by URL"
-                >
-                  <ImageIcon className="w-3.5 h-3.5 text-orange-500" />
-                  <span>Insert Image URL</span>
-                </button>
-              </div>
-
-              <textarea
-                value={content}
-                onChange={(e) => setContent(e.target.value)}
-                rows={16}
-                placeholder="Write your article here. You can paste image URLs directly, click 'Upload Image to Body' to pick files from your computer, or write HTML and Markdown..."
-                className="w-full px-4 py-3 rounded-b-xl bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 text-sm font-mono focus:outline-none focus:border-orange-500 leading-relaxed"
-              />
-            </>
+            <TipTapEditor
+              content={content}
+              onChange={setContent}
+              placeholder="Start writing your article... Use the toolbar above for H1-H6 headings, formatting, links, and direct ImageKit CDN upload."
+            />
           ) : (
-            <div className="p-6 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 min-h-[350px]">
-              <div className="flex items-center space-x-2 pb-4 mb-4 border-b border-slate-200 dark:border-slate-800 text-xs text-slate-500">
-                <Sparkles className="w-4 h-4 text-orange-500" />
-                <span>Live Rendered Preview (as seen by your readers)</span>
+            <div className="p-6 md:p-8 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 min-h-[380px] shadow-sm">
+              <div className="flex items-center justify-between pb-4 mb-6 border-b border-slate-200 dark:border-slate-800 text-xs text-slate-500">
+                <div className="flex items-center space-x-2">
+                  <Sparkles className="w-4 h-4 text-orange-500" />
+                  <span className="font-semibold text-slate-700 dark:text-slate-300">Live Reader Preview</span>
+                </div>
+                <span className="text-[11px] bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-md">WYSIWYG Mode</span>
               </div>
               <div
                 className="blog-prose"
-                dangerouslySetInnerHTML={{ __html: formatBlogContent(content || '<p class="text-slate-400 italic">Start writing to see live preview...</p>') }}
+                dangerouslySetInnerHTML={{ __html: formatBlogContent(content || '<p class="text-slate-400 italic">Start writing in Write mode to see live rendered preview...</p>') }}
               />
             </div>
           )}

@@ -224,21 +224,11 @@ export default async function BlogDetailPage({ params }: Props) {
         </div>
       )}
 
-      {/* Google AdSense Placement Slot (Top of Content) */}
-      <div className="w-full py-3 bg-slate-100/70 dark:bg-slate-950/60 border border-dashed border-slate-300 dark:border-slate-800 rounded-lg text-center text-[10px] text-slate-500 font-mono">
-        [ Google AdSense In-Article Responsive Banner ]
-      </div>
-
       {/* Main Article Content with Rich Image & Markdown Parsing */}
       <div
         className="blog-prose pt-4"
         dangerouslySetInnerHTML={{ __html: formattedHtml }}
       />
-
-      {/* Google AdSense Placement Slot (Bottom of Content) */}
-      <div className="w-full py-3 bg-slate-100/70 dark:bg-slate-950/60 border border-dashed border-slate-300 dark:border-slate-800 rounded-lg text-center text-[10px] text-slate-500 font-mono my-8">
-        [ Google AdSense Matched Content Unit ]
-      </div>
 
       {/* Company Profile Footer Card */}
       {post.company && (
