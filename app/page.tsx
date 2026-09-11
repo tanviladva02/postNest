@@ -213,16 +213,6 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* 4. Google AdSense Placement Slot */}
-      {/* <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="w-full py-4 px-6 rounded-2xl bg-slate-100/80 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800/80 text-center flex flex-col items-center justify-center space-y-1">
-          <span className="text-[10px] text-slate-400 dark:text-slate-500 uppercase tracking-widest font-mono">Advertisement</span>
-          <div className="h-12 w-full flex items-center justify-center text-xs text-slate-500 font-mono border border-dashed border-slate-300 dark:border-slate-700/50 rounded-lg bg-white/60 dark:bg-slate-950/40">
-            [ Google AdSense Responsive Leaderboard Banner ]
-          </div>
-        </div>
-      </section> */}
-
       {/* 5. Latest Articles Grid */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
         <div className="flex items-center justify-between">
