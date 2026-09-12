@@ -98,14 +98,14 @@ export default function NavbarClient({ user }: NavbarClientProps) {
             {/* Theme Toggle */}
             <ThemeToggle />
 
-            {/* Prominent Write / Add Blog Post CTA (Desktop & Tablet) */}
+            {/* Prominent Write / Add Blog Post CTA (Always Visible) */}
             <Link
               href={user ? '/dashboard/create-post' : '/login?redirect=/dashboard/create-post'}
-              className="hidden xs:flex items-center space-x-1 sm:space-x-1.5 px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-xl bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-semibold text-[11px] sm:text-xs shadow-sm shadow-orange-500/25 transition-all whitespace-nowrap"
+              className="flex items-center space-x-1.5 px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-xl bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-semibold text-xs shadow-sm shadow-orange-500/25 transition-all whitespace-nowrap active:scale-95 hover:shadow-orange-500/40"
             >
-              <PlusCircle className="w-3.5 h-3.5" />
+              <PlusCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
               <span className="hidden sm:inline">Submit Guest Post</span>
-              <span className="sm:hidden">Write</span>
+              <span className="sm:hidden">Submit Post</span>
             </Link>
 
             {/* User Account / Login Buttons */}
