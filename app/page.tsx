@@ -1,26 +1,21 @@
 import Link from 'next/link';
 import { prisma } from '@/lib/prisma';
+import LatestStoriesSection from '@/components/LatestStoriesSection';
 import {
   Sparkles,
   ArrowRight,
   TrendingUp,
   Building2,
-  Eye,
-  Calendar,
   CheckCircle2,
   Cpu,
   BookOpen,
   PlusCircle,
-  Clock,
-  Zap,
-  Globe2,
-  Code2,
 } from 'lucide-react';
 
 export const revalidate = 60; // Revalidate every 60s
 
 export default async function HomePage() {
-  // Query Published Posts
+  // Query Published Posts (Fetch recent published articles for rich search catalog)
   const posts = await prisma.post.findMany({
     where: { status: 'PUBLISHED' },
     include: {
@@ -29,12 +24,12 @@ export default async function HomePage() {
       company: true,
     },
     orderBy: { publishedAt: 'desc' },
-    take: 9,
+    take: 30,
   });
 
   // Query Categories
   const categories = await prisma.category.findMany({
-    take: 6,
+    orderBy: { name: 'asc' },
   });
 
   // Query Companies
@@ -213,81 +208,8 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* 5. Latest Articles Grid */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
-        <div className="flex items-center justify-between">
-          <div>
-            <h2 className="text-2xl font-bold text-slate-900 dark:text-white">Latest Tech Stories</h2>
-            <p className="text-xs text-slate-500">Fresh insights published directly by engineers and domain experts</p>
-          </div>
-          <Link
-            href="/dashboard/create-post"
-            className="hidden sm:inline-flex items-center space-x-1 text-xs font-semibold text-orange-600 dark:text-orange-400 hover:underline"
-          >
-            <span>+ Write an Article</span>
-          </Link>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {regularPosts.map((post) => {
-            const wordCount = post.content.replace(/<[^>]+>/g, ' ').trim().split(/\s+/).length;
-            const readMin = Math.max(1, Math.ceil(wordCount / 200));
-
-            return (
-              <article
-                key={post.id}
-                className="glass-card rounded-2xl overflow-hidden flex flex-col justify-between group border border-slate-200 dark:border-slate-800"
-              >
-                <div>
-                  <div className="relative h-48 w-full overflow-hidden bg-slate-100 dark:bg-slate-800">
-                    <img
-                      src={post.featuredImage || 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600'}
-                      alt={post.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                    />
-                    <div className="absolute top-3 left-3">
-                      <span className="px-2.5 py-0.5 rounded-md bg-white/90 dark:bg-slate-900/80 backdrop-blur-md text-orange-600 dark:text-orange-400 text-xs font-semibold shadow-xs">
-                        {post.category.name}
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="p-5 space-y-3">
-                    {post.company && (
-                      <div className="flex items-center space-x-1.5 text-xs text-slate-500 dark:text-slate-400">
-                        <Building2 className="w-3.5 h-3.5 text-orange-500" />
-                        <span className="font-medium text-slate-700 dark:text-slate-300">{post.company.companyName}</span>
-                      </div>
-                    )}
-
-                    <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100 group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors line-clamp-2">
-                      <Link href={`/blog/${post.slug}`}>{post.title}</Link>
-                    </h3>
-
-                    <p className="text-slate-600 dark:text-slate-400 text-xs line-clamp-3 leading-relaxed">
-                      {post.excerpt}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="p-5 pt-0 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 border-t border-slate-100 dark:border-slate-800/60 mt-4">
-                  <div className="flex items-center space-x-1.5">
-                    <span>By {post.author.name}</span>
-                    <span>•</span>
-                    <span className="flex items-center space-x-1">
-                      <Clock className="w-3 h-3 text-slate-400" />
-                      <span>{readMin}m</span>
-                    </span>
-                  </div>
-                  <Link href={`/blog/${post.slug}`} className="text-orange-600 dark:text-orange-400 font-semibold hover:underline">
-                    Read →
-                  </Link>
-                </div>
-              </article>
-            );
-          })}
-        </div>
-      </section>
+      {/* 5. Interactive Latest Articles Grid with Real-Time Search & Filters */}
+      <LatestStoriesSection posts={posts} categories={categories} />
 
       {/* 7. Newsletter Digest Subscription */}
       <section className="max-w-4xl mx-auto px-4">
