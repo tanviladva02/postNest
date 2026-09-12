@@ -17,8 +17,21 @@ export async function POST(req: Request) {
     }
 
     const { posts } = await req.json();
-    if (!posts || !Array.isArray(posts)) {
+    if (!posts || !Array.isArray(posts) || posts.length === 0) {
       return NextResponse.json({ error: 'Invalid post array provided.' }, { status: 400 });
+    }
+
+    // Check draft quota headroom
+    if (!limits.isUnlimited && limits.draftLimit > 0) {
+      const remainingDraftCapacity = Math.max(0, limits.draftLimit - limits.currentDraftCount);
+      if (posts.length > remainingDraftCapacity) {
+        return NextResponse.json(
+          {
+            error: `Bulk upload exceeds draft capacity. You have ${limits.currentDraftCount}/${limits.draftLimit} drafts used and can only import ${remainingDraftCapacity} more drafts. Upgrade your plan or delete existing drafts.`,
+          },
+          { status: 429 }
+        );
+      }
     }
 
     const defaultCategory = await prisma.category.findFirst() || { id: 'fallback' };

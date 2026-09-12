@@ -52,7 +52,7 @@ export default function PlanLimitEditorForm({ initialPlans }: { initialPlans: an
               <span className="text-xs font-bold text-orange-400">₹{p.priceINR}/mo</span>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
               <div className="space-y-1">
                 <label className="text-slate-300 font-semibold">Monthly Post Quota</label>
                 <input
@@ -64,13 +64,35 @@ export default function PlanLimitEditorForm({ initialPlans }: { initialPlans: an
               </div>
 
               <div className="space-y-1">
-                <label className="text-slate-300 font-semibold">Daily Post Limit (0 = Unlimited up to monthly)</label>
+                <label className="text-slate-300 font-semibold">Daily Post Limit</label>
                 <input
                   type="number"
                   value={p.dailyPostLimit}
                   onChange={(e) => handleChange(p.id, 'dailyPostLimit', parseInt(e.target.value) || 0)}
                   className="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-white font-mono"
                 />
+              </div>
+
+              <div className="space-y-1">
+                <label className="text-slate-300 font-semibold">Draft Limit (0 = Unlimited)</label>
+                <input
+                  type="number"
+                  value={p.draftLimit || 0}
+                  onChange={(e) => handleChange(p.id, 'draftLimit', parseInt(e.target.value) || 0)}
+                  className="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-white font-mono"
+                />
+              </div>
+
+              <div className="space-y-1 flex flex-col justify-center pt-3">
+                <label className="flex items-center space-x-2 text-slate-300 font-semibold cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={p.hasScheduling || false}
+                    onChange={(e) => handleChange(p.id, 'hasScheduling', e.target.checked)}
+                    className="rounded border-slate-700 text-orange-500 focus:ring-orange-500"
+                  />
+                  <span>Allow Scheduled Posts</span>
+                </label>
               </div>
             </div>
           </div>

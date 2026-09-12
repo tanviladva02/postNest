@@ -7,9 +7,12 @@ export interface LimitCheckResult {
   dailyLimit: number;
   currentMonthlyCount: number;
   monthlyLimit: number;
-  planName: string;
+  currentDraftCount: number;
+  draftLimit: number;
+  hasScheduling: boolean;
   hasBulkUpload: boolean;
   hasApiAccess: boolean;
+  planName: string;
   isUnlimited?: boolean;
 }
 
@@ -56,6 +59,14 @@ export async function checkUserPublishingLimits(userId: string): Promise<LimitCh
     },
   });
 
+  // 4. Query current user drafts count
+  const currentDraftCount = await prisma.post.count({
+    where: {
+      authorId: userId,
+      status: 'DRAFT',
+    },
+  });
+
   // Bypass limits for unlimited testing account
   if (isUnlimited) {
     return {
@@ -65,39 +76,44 @@ export async function checkUserPublishingLimits(userId: string): Promise<LimitCh
       dailyLimit: 0,
       currentMonthlyCount: monthlyCount,
       monthlyLimit: 0,
-      planName: 'Testing Account (Unlimited)',
+      currentDraftCount,
+      draftLimit: 0,
+      hasScheduling: true,
       hasBulkUpload: true,
       hasApiAccess: true,
+      planName: 'Testing Account (Unlimited)',
       isUnlimited: true,
     };
   }
 
-  // 4. Get active user subscription and plan details
+  // 5. Get active user subscription and plan details
   const activeSub = await prisma.subscription.findFirst({
     where: { userId, status: 'ACTIVE' },
     include: { plan: true },
     orderBy: { startDate: 'desc' },
   });
 
-  // Default to EARLY_BIRD or FREE plan if no subscription attached
+  // Default to user's assigned plan, or query EARLY_BIRD / FREE
   let plan = activeSub?.plan;
   if (!plan) {
-    plan = await prisma.plan.findUnique({ where: { name: 'EARLY_BIRD' } }) ||
-           await prisma.plan.findUnique({ where: { name: 'FREE' } }) || {
-             id: 'fallback',
-             name: 'FREE',
-             displayName: 'Free Starter Plan',
-             priceINR: 0,
-             monthlyPostLimit: 15,
-             dailyPostLimit: 2,
-             hasBulkUpload: false,
-             hasApiAccess: false,
-             description: 'Default free plan',
-             createdAt: new Date(),
-           };
+    plan = (await prisma.plan.findUnique({ where: { name: 'EARLY_BIRD' } })) ||
+      (await prisma.plan.findUnique({ where: { name: 'FREE' } })) || {
+        id: 'fallback',
+        name: 'FREE',
+        displayName: 'Free Starter Plan',
+        priceINR: 0,
+        monthlyPostLimit: 15,
+        dailyPostLimit: 1,
+        draftLimit: 5,
+        hasScheduling: false,
+        hasBulkUpload: false,
+        hasApiAccess: false,
+        description: 'Free: Up to 1 post per day, with a maximum of 15 posts per month.',
+        createdAt: new Date(),
+      };
   }
 
-  // 4. Evaluate Limit Rules
+  // 6. Evaluate Limit Rules
   let allowed = true;
   let reason: string | undefined = undefined;
 
@@ -116,9 +132,43 @@ export async function checkUserPublishingLimits(userId: string): Promise<LimitCh
     dailyLimit: plan.dailyPostLimit,
     currentMonthlyCount: monthlyCount,
     monthlyLimit: plan.monthlyPostLimit,
-    planName: plan.displayName,
+    currentDraftCount,
+    draftLimit: plan.draftLimit,
+    hasScheduling: plan.hasScheduling,
     hasBulkUpload: plan.hasBulkUpload,
     hasApiAccess: plan.hasApiAccess,
+    planName: plan.displayName,
+  };
+}
+
+export async function checkUserDraftLimit(userId: string, isExistingDraft = false): Promise<{ allowed: boolean; reason?: string }> {
+  const limits = await checkUserPublishingLimits(userId);
+
+  if (limits.isUnlimited) return { allowed: true };
+
+  // If user is editing an existing draft, it does not count as a new draft
+  if (isExistingDraft) return { allowed: true };
+
+  if (limits.draftLimit > 0 && limits.currentDraftCount >= limits.draftLimit) {
+    return {
+      allowed: false,
+      reason: `Draft limit reached! Your ${limits.planName} allows maximum ${limits.draftLimit} drafts. (Current: ${limits.currentDraftCount}/${limits.draftLimit}). Please publish or delete existing drafts to create new ones, or upgrade your plan.`,
+    };
+  }
+
+  return { allowed: true };
+}
+
+export async function checkUserSchedulingPermission(userId: string): Promise<{ allowed: boolean; reason?: string }> {
+  const limits = await checkUserPublishingLimits(userId);
+
+  if (limits.isUnlimited || limits.hasScheduling) {
+    return { allowed: true };
+  }
+
+  return {
+    allowed: false,
+    reason: `Post scheduling is exclusive to Standard and Premium plans. Upgrade your plan to schedule articles for automatic publishing.`,
   };
 }
 

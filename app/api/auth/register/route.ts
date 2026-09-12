@@ -24,9 +24,16 @@ export async function POST(req: Request) {
 
     const passwordHash = await hashPassword(password);
 
-    // Create user and default subscription
-    const freePlan = await prisma.plan.findUnique({ where: { name: 'EARLY_BIRD' } }) ||
-                     await prisma.plan.findUnique({ where: { name: 'FREE' } });
+    // Check user count to determine Early Bird benefit (First 100 users get 30 posts/month Early Bird Plan)
+    const totalUsersCount = await prisma.user.count();
+    const isEarlyBirdQualified = totalUsersCount < 100;
+
+    let targetPlanName = isEarlyBirdQualified ? 'EARLY_BIRD' : 'FREE';
+    let assignedPlan = await prisma.plan.findUnique({ where: { name: targetPlanName } });
+
+    if (!assignedPlan) {
+      assignedPlan = await prisma.plan.findFirst({ where: { priceINR: 0 } });
+    }
 
     const isTester = email.toLowerCase() === 'tanviladva01@gmail.com';
 
@@ -37,9 +44,9 @@ export async function POST(req: Request) {
         username,
         passwordHash,
         role: isTester ? 'ADMIN' : 'USER',
-        subscriptions: freePlan ? {
+        subscriptions: assignedPlan ? {
           create: {
-            planId: freePlan.id,
+            planId: assignedPlan.id,
             status: 'ACTIVE',
           }
         } : undefined,

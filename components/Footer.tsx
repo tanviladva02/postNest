@@ -24,35 +24,48 @@ export default function Footer() {
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-24 bg-gradient-to-b from-orange-500/10 to-transparent blur-3xl pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 space-y-12">
-        {/* Top Section: SaaS Newsletter / Callout */}
-        <div className="glass-panel p-6 sm:p-8 rounded-3xl border border-slate-800 bg-slate-800/40 dark:bg-slate-900/60 backdrop-blur-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-6 shadow-2xl">
-          <div className="space-y-1.5 max-w-xl">
-            <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-400 text-[11px] font-bold uppercase tracking-wider">
-              <Sparkles className="w-3.5 h-3.5 text-orange-400" />
-              <span>Developer-First Publishing Platform</span>
-            </div>
-            <h3 className="text-xl sm:text-2xl font-extrabold text-white tracking-tight">
-              Scale your brand voice with <span className="text-orange-500">PostNest</span>.
-            </h3>
-            <p className="text-xs sm:text-sm text-slate-400 leading-relaxed">
-              Publish technical stories, showcase engineering milestones, and reach thousands of builders with instant SEO indexing.
-            </p>
-          </div>
+        {/* Top Section: Modern SaaS Callout Banner */}
+        <div className="relative overflow-hidden rounded-3xl border border-orange-500/20 bg-gradient-to-br from-slate-900/90 via-slate-900/95 to-orange-950/30 dark:from-[#0d121f] dark:via-[#090d16] dark:to-[#170e08] p-6 sm:p-9 shadow-2xl backdrop-blur-xl transition-all">
+          {/* Ambient Glow in Card Corner */}
+          <div className="absolute top-0 right-0 w-80 h-80 bg-orange-500/10 rounded-full blur-3xl pointer-events-none -mr-20 -mt-20" />
+          <div className="absolute bottom-0 left-0 w-48 h-48 bg-amber-500/5 rounded-full blur-2xl pointer-events-none -ml-12 -mb-12" />
 
-          <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto">
-            <Link
-              href="/dashboard/create-post"
-              className="px-5 py-3 rounded-xl bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-bold text-xs flex items-center justify-center space-x-2 shadow-lg shadow-orange-500/25 transition-all hover:scale-[1.02] active:scale-[0.98]"
-            >
-              <span>Start Writing Free</span>
-              <ArrowRight className="w-3.5 h-3.5" />
-            </Link>
-            <Link
-              href="/dashboard/subscription"
-              className="px-5 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 font-semibold text-xs flex items-center justify-center space-x-2 transition-colors"
-            >
-              <span>View Pricing</span>
-            </Link>
+          <div className="relative z-10 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 lg:gap-8">
+            <div className="space-y-2.5 max-w-2xl min-w-0">
+              <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-gradient-to-r from-orange-500/15 via-orange-500/10 to-amber-500/10 border border-orange-500/30 text-orange-400 text-[11px] font-bold uppercase tracking-wider shadow-xs">
+                <Sparkles className="w-3.5 h-3.5 text-orange-400 animate-pulse" />
+                <span className="truncate">Developer-First Tech Publishing</span>
+              </div>
+              
+              <h3 className="text-xl sm:text-3xl font-extrabold text-white tracking-tight leading-tight">
+                Scale your brand voice with{' '}
+                <span className="bg-gradient-to-r from-orange-400 via-amber-300 to-orange-500 bg-clip-text text-transparent">
+                  PostNest
+                </span>
+                .
+              </h3>
+              
+              <p className="text-xs sm:text-sm text-slate-300 dark:text-slate-400 leading-relaxed font-normal">
+                Publish technical stories, showcase engineering milestones, and reach thousands of builders with instant SEO indexing and verified company hubs.
+              </p>
+            </div>
+
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full lg:w-auto shrink-0 pt-1 lg:pt-0">
+              <Link
+                href="/dashboard/create-post"
+                className="px-6 py-3.5 rounded-xl bg-gradient-to-r from-orange-500 via-orange-600 to-amber-600 hover:from-orange-600 hover:to-orange-700 text-white font-bold text-xs flex items-center justify-center space-x-2 shadow-lg shadow-orange-500/25 transition-all hover:scale-[1.02] active:scale-[0.98] whitespace-nowrap"
+              >
+                <span>Start Writing Free</span>
+                <ArrowRight className="w-4 h-4" />
+              </Link>
+              
+              <Link
+                href="/pricing"
+                className="px-5 py-3.5 rounded-xl bg-white/5 hover:bg-white/10 dark:bg-slate-800/80 dark:hover:bg-slate-800 border border-slate-700/80 hover:border-slate-600 text-slate-200 font-semibold text-xs flex items-center justify-center space-x-2 transition-all hover:scale-[1.01] active:scale-[0.98] whitespace-nowrap"
+              >
+                <span>View Pricing & Limits</span>
+              </Link>
+            </div>
           </div>
         </div>
 
@@ -111,7 +124,7 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/dashboard/subscription" className="hover:text-white transition-colors">
+                <Link href="/pricing" className="hover:text-white transition-colors">
                   Plans & Pricing
                 </Link>
               </li>

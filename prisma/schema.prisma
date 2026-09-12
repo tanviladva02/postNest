@@ -47,11 +47,13 @@ model Company {
 
 model Plan {
   id               String   @id @default(uuid())
-  name             String   @unique // EARLY_BIRD, FREE, STANDARD, PREMIUM
+  name             String   @unique // FREE, STANDARD, PREMIUM, CUSTOM, EARLY_BIRD
   displayName      String
-  priceINR         Int      // 0, 299, 599
-  monthlyPostLimit Int      // e.g. 30 for Early Bird, 15 for Free, 60 for Standard, 90 for Premium
-  dailyPostLimit   Int      // e.g. 0 (unlimited daily up to monthly for Free), 2 for Standard, 3 for Premium
+  priceINR         Int      // 0, 299, 599, 0
+  monthlyPostLimit Int      // 30 for Free, 60 for Standard, 100 for Premium, 0 for Custom
+  dailyPostLimit   Int      // 2 for Free, 5 for Standard, 10 for Premium, 0 for Custom
+  draftLimit       Int      @default(10) // 10 for Free, 50 for Standard, 0 for Unlimited
+  hasScheduling    Boolean  @default(false) // false for Free, true for Standard/Premium/Custom
   hasBulkUpload    Boolean  @default(false)
   hasApiAccess     Boolean  @default(false)
   description      String?
@@ -108,13 +110,14 @@ model Post {
   excerpt            String
   content            String
   featuredImage      String?
-  status             String    @default("DRAFT") // DRAFT, PENDING_REVIEW, PUBLISHED, REJECTED, ARCHIVED
+  status             String    @default("DRAFT") // DRAFT, SCHEDULED, PENDING_REVIEW, PUBLISHED, REJECTED, ARCHIVED
   rejectionReason    String?
   externalLinksCount Int       @default(0)
   views              Int       @default(0)
   authorId           String
   companyId          String?
   categoryId         String
+  scheduledAt        DateTime?
   publishedAt        DateTime?
   createdAt          DateTime  @default(now())
   updatedAt          DateTime  @updatedAt

@@ -1,7 +1,8 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import Link from 'next/link';
 import { formatBlogContent } from '@/lib/formatContent';
 import TipTapEditor from '@/components/editor/TipTapEditor';
 import {
@@ -14,8 +15,14 @@ import {
   Eye,
   Edit3,
   X,
-  Link2,
+  Clock,
+  ShieldCheck,
   UploadCloud,
+  ChevronDown,
+  ChevronUp,
+  Lock,
+  ArrowRight,
+  Info,
 } from 'lucide-react';
 
 export default function CreatePostPage() {
@@ -27,6 +34,7 @@ export default function CreatePostPage() {
 
   const [categories, setCategories] = useState<{ id: string; name: string }[]>([]);
   const [userCompanies, setUserCompanies] = useState<{ id: string; companyName: string }[]>([]);
+  const [userLimits, setUserLimits] = useState<any>(null);
 
   const [title, setTitle] = useState('');
   const [slug, setSlug] = useState('');
@@ -37,6 +45,15 @@ export default function CreatePostPage() {
   const [excerpt, setExcerpt] = useState('');
   const [content, setContent] = useState('');
   const [tags, setTags] = useState('');
+
+  // Scheduling State
+  const [publishMode, setPublishMode] = useState<'immediate' | 'schedule'>('immediate');
+  const [scheduledAt, setScheduledAt] = useState('');
+
+  // Quality Inspector Drawer State
+  const [showQualityDetails, setShowQualityDetails] = useState(false);
+  const [qualityModalOpen, setQualityModalOpen] = useState(false);
+  const [qualityErrors, setQualityErrors] = useState<string[]>([]);
 
   const [editorMode, setEditorMode] = useState<'write' | 'preview'>('write');
   const [uploadingFeatured, setUploadingFeatured] = useState(false);
@@ -56,7 +73,7 @@ export default function CreatePostPage() {
     }
   }, [title, postId]);
 
-  // Load Categories & Companies & Existing Post if editing
+  // Load Categories, Companies, Limits, and Existing Post
   useEffect(() => {
     async function initData() {
       try {
@@ -73,6 +90,14 @@ export default function CreatePostPage() {
           setUserCompanies(compData.companies);
         }
 
+        const userRes = await fetch('/api/user/me');
+        if (userRes.ok) {
+          const userData = await userRes.json();
+          if (userData.limits) {
+            setUserLimits(userData.limits);
+          }
+        }
+
         if (postId) {
           const postRes = await fetch(`/api/posts/detail?id=${postId}`);
           const postData = await postRes.json();
@@ -87,6 +112,11 @@ export default function CreatePostPage() {
             }
             setExcerpt(postData.post.excerpt);
             setContent(postData.post.content);
+            if (postData.post.status === 'SCHEDULED' && postData.post.scheduledAt) {
+              setPublishMode('schedule');
+              const d = new Date(postData.post.scheduledAt);
+              setScheduledAt(d.toISOString().slice(0, 16));
+            }
           }
         }
       } catch (err) {
@@ -95,6 +125,61 @@ export default function CreatePostPage() {
     }
     initData();
   }, [postId]);
+
+  // Real-time Client-Side Quality Analysis
+  const qualityStats = useMemo(() => {
+    const cleanTitle = title.trim();
+    const cleanExcerpt = excerpt.trim();
+    const plainText = content.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+    const words = plainText ? plainText.split(/\s+/).filter(Boolean) : [];
+    const wordCount = words.length;
+
+    const hasSubheading = /<h[2-4][^>]*>|^(#{2,4}\s+.+)/gim.test(content);
+    const urlRegex = /href=["'](https?:\/\/[^"']+)["']/gi;
+    const linkMatches = content.match(urlRegex) || [];
+    const externalLinksCount = linkMatches.length;
+
+    const titleValid = cleanTitle.length >= 10 && cleanTitle.length <= 150;
+    const wordCountValid = wordCount >= 150;
+    const excerptValid = cleanExcerpt.length >= 25;
+    const linksValid = externalLinksCount <= 5;
+    const hasImage = Boolean(featuredImage);
+
+    let score = 0;
+    if (titleValid) score += 20;
+    else if (cleanTitle.length >= 5) score += 10;
+
+    if (wordCount >= 300) score += 30;
+    else if (wordCount >= 150) score += 25;
+    else score += Math.round((wordCount / 150) * 15);
+
+    if (hasSubheading) score += 20;
+    if (excerptValid) score += 15;
+    if (linksValid) score += 15;
+
+    score = Math.min(100, Math.max(0, score));
+
+    const errors: string[] = [];
+    if (!titleValid) errors.push('Title must be between 10 and 150 characters.');
+    if (!wordCountValid) errors.push(`Article content is too short (${wordCount} words). Minimum 150 words required.`);
+    if (!hasSubheading) errors.push('Add at least one section subheading (H2 or H3) for readable structure.');
+    if (!excerptValid) errors.push('Short summary / meta excerpt must be at least 25 characters.');
+    if (!linksValid) errors.push(`Too many external links (${externalLinksCount} found). Maximum allowed is 5.`);
+
+    return {
+      score,
+      wordCount,
+      hasSubheading,
+      externalLinksCount,
+      titleValid,
+      wordCountValid,
+      excerptValid,
+      linksValid,
+      hasImage,
+      errors,
+      canPublish: errors.length === 0 && score >= 70,
+    };
+  }, [title, excerpt, content, featuredImage]);
 
   // Upload file to /api/upload
   const uploadFile = async (file: File): Promise<string> => {
@@ -135,41 +220,64 @@ export default function CreatePostPage() {
 
   const handleSave = async (publish: boolean) => {
     setStatusMsg(null);
+    setQualityErrors([]);
+
     if (!title.trim() || !excerpt.trim() || !content.trim()) {
       setStatusMsg({ type: 'error', text: 'Please fill in Title, Excerpt, and Blog Content.' });
       return;
     }
 
+    // If publishing or scheduling, run quality check enforcement
+    if (publish || publishMode === 'schedule') {
+      if (!qualityStats.canPublish) {
+        setQualityErrors(qualityStats.errors);
+        setQualityModalOpen(true);
+        return;
+      }
+    }
+
     setLoading(true);
 
     try {
+      const payload: any = {
+        id: postId || undefined,
+        title,
+        slug,
+        categoryId,
+        companyId: companyId || null,
+        featuredImage,
+        excerpt,
+        content,
+        tags,
+        shouldPublish: publishMode === 'immediate' && publish,
+      };
+
+      if (publish && publishMode === 'schedule') {
+        if (!scheduledAt) {
+          throw new Error('Please pick a date and time for scheduled publishing.');
+        }
+        payload.scheduledAt = new Date(scheduledAt).toISOString();
+      }
+
       const res = await fetch('/api/posts/publish', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          id: postId || undefined,
-          title,
-          slug,
-          categoryId,
-          companyId: companyId || null,
-          featuredImage,
-          excerpt,
-          content,
-          tags,
-          shouldPublish: publish,
-        }),
+        body: JSON.stringify(payload),
       });
 
       const data = await res.json();
+
       if (!res.ok) {
-        throw new Error(data.error || 'Failed to save article.');
+        if (data.qualityReport && data.qualityReport.errors) {
+          setQualityErrors(data.qualityReport.errors);
+          setQualityModalOpen(true);
+        }
+        throw new Error(data.error || 'Failed to process article.');
       }
 
       setStatusMsg({
         type: 'success',
-        text: publish
-          ? (data.status === 'PUBLISHED' ? 'Article published successfully!' : 'Article submitted for quality review!')
-          : 'Draft saved successfully!',
+        text: data.message || 'Action completed successfully!',
       });
 
       setTimeout(() => {
@@ -201,7 +309,7 @@ export default function CreatePostPage() {
             <span>{postId ? 'Edit Blog Article' : 'Create Blog Article'}</span>
           </h1>
           <p className="text-xs text-slate-500 dark:text-slate-400">
-            Publish like a pro: write engaging stories, product guides, engineering blogs, or announcements.
+            Publish high-ranking technical articles, product announcements, and company case studies.
           </p>
         </div>
 
@@ -223,7 +331,7 @@ export default function CreatePostPage() {
             className="px-5 py-2 rounded-xl bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-semibold text-xs flex items-center space-x-1.5 shadow-md shadow-orange-500/20 transition-all disabled:opacity-50"
           >
             <Send className="w-3.5 h-3.5" />
-            <span>Publish Article</span>
+            <span>{publishMode === 'schedule' ? 'Schedule Article' : 'Publish Article'}</span>
           </button>
         </div>
       </div>
@@ -240,6 +348,117 @@ export default function CreatePostPage() {
           <span>{statusMsg.text}</span>
         </div>
       )}
+
+      {/* Real-Time Quality Inspector Bar */}
+      <div className="glass-panel p-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 shadow-xs space-y-3">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="flex items-center space-x-3">
+            <div
+              className={`w-9 h-9 rounded-xl flex items-center justify-center font-bold text-xs ${
+                qualityStats.score >= 75
+                  ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30'
+                  : qualityStats.score >= 50
+                  ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/30'
+                  : 'bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/30'
+              }`}
+            >
+              {qualityStats.score}%
+            </div>
+            <div>
+              <div className="flex items-center space-x-2">
+                <span className="text-xs font-bold text-slate-900 dark:text-white">Blog Quality Inspector</span>
+                <span
+                  className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${
+                    qualityStats.score >= 75
+                      ? 'bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300'
+                      : qualityStats.score >= 50
+                      ? 'bg-amber-100 dark:bg-amber-950 text-amber-700 dark:text-amber-300'
+                      : 'bg-rose-100 dark:bg-rose-950 text-rose-700 dark:text-rose-300'
+                  }`}
+                >
+                  {qualityStats.score >= 75 ? 'Ready to Publish' : qualityStats.score >= 50 ? 'Needs Refinement' : 'Draft / Incomplete'}
+                </span>
+              </div>
+              <p className="text-[11px] text-slate-500">
+                Word Count: <span className="font-semibold">{qualityStats.wordCount} / 150 min</span> • Links: <span className="font-semibold">{qualityStats.externalLinksCount}/5 max</span> • Subheadings: <span className="font-semibold">{qualityStats.hasSubheading ? 'Yes' : 'Missing'}</span>
+              </p>
+            </div>
+          </div>
+
+          
+        </div>
+
+        {/* Expandable Checklist Details */}
+        {showQualityDetails && (
+          <div className="pt-3 border-t border-slate-100 dark:border-slate-800/80 grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+            <div className="flex items-center space-x-2">
+              {qualityStats.titleValid ? (
+                <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
+              ) : (
+                <AlertTriangle className="w-4 h-4 text-amber-500 shrink-0" />
+              )}
+              <span className={qualityStats.titleValid ? 'text-slate-700 dark:text-slate-300' : 'text-slate-500'}>
+                Title Length (10-150 chars): {title.trim().length} chars
+              </span>
+            </div>
+
+            <div className="flex items-center space-x-2">
+              {qualityStats.wordCountValid ? (
+                <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
+              ) : (
+                <AlertTriangle className="w-4 h-4 text-rose-500 shrink-0" />
+              )}
+              <span className={qualityStats.wordCountValid ? 'text-slate-700 dark:text-slate-300' : 'text-slate-500'}>
+                Word Count (Min 150 words): {qualityStats.wordCount} words
+              </span>
+            </div>
+
+            <div className="flex items-center space-x-2">
+              {qualityStats.hasSubheading ? (
+                <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
+              ) : (
+                <AlertTriangle className="w-4 h-4 text-amber-500 shrink-0" />
+              )}
+              <span className={qualityStats.hasSubheading ? 'text-slate-700 dark:text-slate-300' : 'text-slate-500'}>
+                Section Headings (H2 / H3 tags)
+              </span>
+            </div>
+
+            <div className="flex items-center space-x-2">
+              {qualityStats.excerptValid ? (
+                <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
+              ) : (
+                <AlertTriangle className="w-4 h-4 text-amber-500 shrink-0" />
+              )}
+              <span className={qualityStats.excerptValid ? 'text-slate-700 dark:text-slate-300' : 'text-slate-500'}>
+                Meta Excerpt (Min 25 chars): {excerpt.trim().length} chars
+              </span>
+            </div>
+
+            <div className="flex items-center space-x-2">
+              {qualityStats.linksValid ? (
+                <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
+              ) : (
+                <AlertTriangle className="w-4 h-4 text-rose-500 shrink-0" />
+              )}
+              <span className={qualityStats.linksValid ? 'text-slate-700 dark:text-slate-300' : 'text-slate-500'}>
+                External Links Spam Guard (Max 5): {qualityStats.externalLinksCount}
+              </span>
+            </div>
+
+            <div className="flex items-center space-x-2">
+              {qualityStats.hasImage ? (
+                <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
+              ) : (
+                <Info className="w-4 h-4 text-slate-400 shrink-0" />
+              )}
+              <span className={qualityStats.hasImage ? 'text-slate-700 dark:text-slate-300' : 'text-slate-500'}>
+                Featured Cover Image {qualityStats.hasImage ? 'Set' : '(Recommended)'}
+              </span>
+            </div>
+          </div>
+        )}
+      </div>
 
       {/* Main Settings Card */}
       <div className="glass-panel p-6 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-5 bg-white dark:bg-slate-900/60">
@@ -285,22 +504,86 @@ export default function CreatePostPage() {
           </div>
         </div>
 
-        {/* Company Selector */}
-        <div className="space-y-1.5">
-          <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">Publish as Company (Optional)</label>
-          <select
-            value={companyId}
-            onChange={(e) => setCompanyId(e.target.value)}
-            className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-200 text-xs focus:outline-none focus:border-orange-500 transition-colors"
-          >
-            <option value="">-- Personal / Independent Author --</option>
-            {userCompanies.map((c) => (
-              <option key={c.id} value={c.id}>
-                {c.companyName}
-              </option>
-            ))}
-          </select>
+        {/* Company Selector & Publishing Mode */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="space-y-1.5">
+            <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">Publish as Company (Optional)</label>
+            <select
+              value={companyId}
+              onChange={(e) => setCompanyId(e.target.value)}
+              className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-200 text-xs focus:outline-none focus:border-orange-500 transition-colors"
+            >
+              <option value="">-- Personal / Independent Author --</option>
+              {userCompanies.map((c) => (
+                <option key={c.id} value={c.id}>
+                  {c.companyName}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Publishing Mode: Immediate or Scheduled */}
+          <div className="space-y-1.5">
+            <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 flex items-center justify-between">
+              <span>Publishing Schedule</span>
+              {userLimits && !userLimits.hasScheduling && (
+                <span className="text-[10px] text-orange-600 dark:text-orange-400 font-semibold flex items-center gap-1">
+                  <Lock className="w-3 h-3" /> Standard/Premium
+                </span>
+              )}
+            </label>
+            <div className="flex items-center space-x-2">
+              <button
+                type="button"
+                onClick={() => setPublishMode('immediate')}
+                className={`flex-1 py-2 rounded-xl text-xs font-semibold border transition-all ${
+                  publishMode === 'immediate'
+                    ? 'bg-orange-50 dark:bg-orange-500/10 border-orange-500 text-orange-600 dark:text-orange-400'
+                    : 'bg-slate-50 dark:bg-slate-950 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400'
+                }`}
+              >
+                Publish Immediately
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  if (userLimits && !userLimits.hasScheduling && !userLimits.isUnlimited) {
+                    alert('Post scheduling is available on Standard and Premium plans. Please upgrade to schedule posts.');
+                    return;
+                  }
+                  setPublishMode('schedule');
+                }}
+                className={`flex-1 py-2 rounded-xl text-xs font-semibold border transition-all flex items-center justify-center space-x-1.5 ${
+                  publishMode === 'schedule'
+                    ? 'bg-orange-50 dark:bg-orange-500/10 border-orange-500 text-orange-600 dark:text-orange-400'
+                    : 'bg-slate-50 dark:bg-slate-950 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400'
+                }`}
+              >
+                <Clock className="w-3.5 h-3.5" />
+                <span>Schedule for Later</span>
+              </button>
+            </div>
+          </div>
         </div>
+
+        {/* Scheduled Date Picker if mode is schedule */}
+        {publishMode === 'schedule' && (
+          <div className="p-4 rounded-xl bg-orange-50/50 dark:bg-orange-950/20 border border-orange-200 dark:border-orange-500/30 space-y-2">
+            <div className="flex items-center justify-between">
+              <label className="text-xs font-bold text-slate-900 dark:text-white flex items-center space-x-1.5">
+                <Clock className="w-4 h-4 text-orange-500" />
+                <span>Select Target Publish Date & Time</span>
+              </label>
+              <span className="text-[11px] text-slate-500">Auto-publishes automatically</span>
+            </div>
+            <input
+              type="datetime-local"
+              value={scheduledAt}
+              onChange={(e) => setScheduledAt(e.target.value)}
+              className="w-full px-3.5 py-2.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white text-xs focus:outline-none focus:border-orange-500"
+            />
+          </div>
+        )}
 
         {/* Featured Cover Image Section (Local Upload OR Paste URL) */}
         <div className="space-y-2.5 pt-1">
@@ -377,8 +660,11 @@ export default function CreatePostPage() {
 
         {/* Short Summary / Meta Excerpt */}
         <div className="space-y-1.5">
-          <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">
-            Short Summary / Meta Excerpt
+          <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 flex items-center justify-between">
+            <span>Short Summary / Meta Excerpt</span>
+            <span className={`text-[11px] ${excerpt.trim().length >= 25 ? 'text-emerald-500' : 'text-slate-400'}`}>
+              {excerpt.trim().length} / 25 min chars
+            </span>
           </label>
           <textarea
             value={excerpt}
@@ -453,6 +739,58 @@ export default function CreatePostPage() {
           )}
         </div>
       </div>
+
+      {/* Pre-Publish Quality Review Modal */}
+      {qualityModalOpen && (
+        <div className="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="glass-panel max-w-lg w-full p-6 rounded-3xl border border-rose-500/30 bg-white dark:bg-slate-900 shadow-2xl space-y-5 animate-in fade-in zoom-in-95">
+            <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+              <div className="flex items-center space-x-2">
+                <div className="p-2 rounded-xl bg-rose-500/10 text-rose-500 border border-rose-500/20">
+                  <ShieldCheck className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="text-base font-bold text-slate-900 dark:text-white">Quality Inspection Required</h3>
+                  <p className="text-xs text-slate-500">PostNest Quality Standards Score: {qualityStats.score}/100</p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setQualityModalOpen(false)}
+                className="p-1 rounded-full text-slate-400 hover:text-slate-700 dark:hover:text-slate-200"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <p className="text-xs text-slate-600 dark:text-slate-300">
+              To guarantee maximum Google indexing and high reader engagement, please resolve the following quality items before publishing:
+            </p>
+
+            <ul className="space-y-2">
+              {qualityErrors.map((err, idx) => (
+                <li
+                  key={idx}
+                  className="p-3 rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-500/30 text-xs text-rose-700 dark:text-rose-300 flex items-start space-x-2"
+                >
+                  <AlertTriangle className="w-4 h-4 text-rose-500 shrink-0 mt-0.5" />
+                  <span className="leading-relaxed">{err}</span>
+                </li>
+              ))}
+            </ul>
+
+            <div className="flex items-center justify-end space-x-3 pt-2">
+              <button
+                type="button"
+                onClick={() => setQualityModalOpen(false)}
+                className="px-5 py-2.5 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-semibold text-xs transition-colors shadow-md shadow-orange-500/20"
+              >
+                Return to Editor & Fix
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
