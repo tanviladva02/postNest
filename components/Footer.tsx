@@ -114,11 +114,6 @@ export default function Footer() {
             </h4>
             <ul className="space-y-2 text-xs">
               <li>
-                <Link href="/" className="hover:text-white transition-colors">
-                  Explore Tech Stories
-                </Link>
-              </li>
-              <li>
                 <Link href="/services" className="hover:text-white transition-colors">
                   Publishing Services
                 </Link>
@@ -175,20 +170,24 @@ export default function Footer() {
           <div className="space-y-3">
             <h4 className="text-xs font-bold text-slate-200 tracking-wider uppercase flex items-center space-x-1.5">
               <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
-              <span>Trust & Standards</span>
+              <span>Trust & Legal</span>
             </h4>
             <div className="space-y-2 text-xs text-slate-400">
-              <div className="flex items-start space-x-2">
-                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0 mt-0.5" />
-                <span>Google AdSense & SEO Compliant</span>
+              <div>
+                <Link href="/privacy-policy" className="hover:text-white transition-colors flex items-center space-x-1.5">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                  <span>Privacy Policy</span>
+                </Link>
               </div>
-              <div className="flex items-start space-x-2">
-                <HeartHandshake className="w-3.5 h-3.5 text-orange-400 shrink-0 mt-0.5" />
-                <span>Human Quality Moderation</span>
+              <div>
+                <Link href="/terms" className="hover:text-white transition-colors flex items-center space-x-1.5">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-orange-400 shrink-0" />
+                  <span>Terms & Conditions (Refunds)</span>
+                </Link>
               </div>
-              <div className="flex items-start space-x-2">
+              <div className="flex items-start space-x-1.5">
                 <Globe2 className="w-3.5 h-3.5 text-blue-400 shrink-0 mt-0.5" />
-                <span>Global CDN via ImageKit</span>
+                <span>Global CDN & SSR Speed</span>
               </div>
               <div className="pt-1">
                 <Link
@@ -211,15 +210,21 @@ export default function Footer() {
             <span>• Publish like a pro. All rights reserved.</span>
           </div>
 
-          <div className="flex items-center space-x-6 text-xs text-slate-400">
+          <div className="flex flex-wrap items-center justify-center sm:justify-end gap-x-6 gap-y-2 text-xs text-slate-400">
             <Link href="/about" className="hover:text-white transition-colors">
-              Editorial Policy
+              About PostNest
             </Link>
-            <Link href="/contact" className="hover:text-white transition-colors">
-              Help & Support
+            <Link href="/privacy-policy" className="hover:text-white transition-colors">
+              Privacy Policy
+            </Link>
+            <Link href="/terms" className="hover:text-white transition-colors">
+              Terms & Conditions
             </Link>
             <Link href="/services" className="hover:text-white transition-colors">
               Publisher Services
+            </Link>
+            <Link href="/contact" className="hover:text-white transition-colors">
+              Help & Support
             </Link>
           </div>
         </div>
