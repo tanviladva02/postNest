@@ -9,14 +9,23 @@ export default function ApiAccessPage() {
   const [keyName, setKeyName] = useState('');
   const [loading, setLoading] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [hasAccess, setHasAccess] = useState<boolean | null>(null);
+  const [planName, setPlanName] = useState<string>('Free Starter');
 
   const fetchKeys = async () => {
     try {
       const res = await fetch('/api/user/keys');
       const data = await res.json();
-      if (data.keys) setKeys(data.keys);
+      if (res.ok) {
+        setHasAccess(true);
+        if (data.keys) setKeys(data.keys);
+      } else if (res.status === 403) {
+        setHasAccess(false);
+        if (data.planName) setPlanName(data.planName);
+      }
     } catch (e) {
       console.error(e);
+      setHasAccess(false);
     }
   };
 
@@ -37,6 +46,10 @@ export default function ApiAccessPage() {
       });
 
       const data = await res.json();
+      if (!res.ok) {
+        alert(data.error || 'Failed generating API key');
+        return;
+      }
       if (data.apiKey) {
         setNewKeyRaw(data.apiKey);
         setKeyName('');
@@ -54,6 +67,51 @@ export default function ApiAccessPage() {
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
+
+  if (hasAccess === false) {
+    return (
+      <div className="max-w-3xl mx-auto space-y-8 py-6">
+        <div className="glass-panel p-8 sm:p-10 rounded-3xl border border-orange-500/30 text-center space-y-6 bg-gradient-to-b from-orange-500/5 to-transparent">
+          <div className="w-16 h-16 rounded-3xl bg-orange-500/10 text-orange-500 flex items-center justify-center mx-auto border border-orange-500/20 shadow-sm">
+            <Lock className="w-8 h-8" />
+          </div>
+
+          <div className="space-y-2 max-w-lg mx-auto">
+            <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white">
+              REST API Access is a Premium Feature
+            </h1>
+            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">
+              Your current subscription (<span className="font-semibold text-orange-600 dark:text-orange-400">{planName}</span>) does not include headless REST API keys.
+            </p>
+          </div>
+
+          <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs text-left max-w-md mx-auto space-y-2 text-slate-700 dark:text-slate-300">
+            <p className="font-bold text-slate-900 dark:text-white">With Premium REST API Keys, you can:</p>
+            <ul className="space-y-1.5 list-disc pl-4 text-[11px] text-slate-600 dark:text-slate-400">
+              <li>Publish articles programmatically from CI/CD, Git, or Webhooks</li>
+              <li>Integrate with WordPress, Ghost, Webflow, and custom backends</li>
+              <li>Benefit from up to 10 posts/day programmatic publishing allowance</li>
+            </ul>
+          </div>
+
+          <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
+            <a
+              href="/dashboard/subscription"
+              className="w-full sm:w-auto px-6 py-3 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-semibold text-xs transition-colors shadow-md shadow-orange-500/20"
+            >
+              Upgrade to Premium Plan (₹599/mo)
+            </a>
+            <a
+              href="/contact?subject=Custom+Enterprise+Plan+Inquiry"
+              className="w-full sm:w-auto px-6 py-3 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-900 dark:text-white font-semibold text-xs transition-colors"
+            >
+              Contact Us for Custom Plan
+            </a>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">

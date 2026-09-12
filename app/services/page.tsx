@@ -211,121 +211,171 @@ export default function ServicesPage() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {/* Plan 1: Early Bird Free */}
-          <div className="glass-card p-8 rounded-3xl space-y-6 flex flex-col justify-between border-2 border-orange-500/40 relative">
-            <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 bg-orange-500 text-white text-[10px] font-bold uppercase rounded-full tracking-wider">
-              Most Popular
-            </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 items-stretch">
+          {/* Plan 1: Free Starter */}
+          <div className="glass-card p-6 rounded-3xl space-y-6 flex flex-col justify-between border border-slate-200 dark:border-slate-800 relative">
             <div className="space-y-4">
               <div>
-                <h3 className="text-xl font-bold text-slate-900 dark:text-white">Early Bird Free</h3>
-                <p className="text-xs text-slate-500">Perfect for indie hackers & developers</p>
+                <h3 className="text-lg font-bold text-slate-900 dark:text-white">Free Starter</h3>
+                <p className="text-xs text-slate-500">For indie hackers & individual bloggers</p>
               </div>
               <div className="flex items-baseline space-x-1">
-                <span className="text-4xl font-extrabold text-slate-900 dark:text-white">₹0</span>
+                <span className="text-3xl font-extrabold text-slate-900 dark:text-white">₹0</span>
                 <span className="text-xs text-slate-500">/ forever</span>
               </div>
-              <ul className="space-y-2.5 text-xs text-slate-700 dark:text-slate-300 pt-2">
-                <li className="flex items-center space-x-2">
-                  <CheckCircle2 className="w-4 h-4 text-orange-500" />
-                  <span>30 Posts per Month Free</span>
+              <div className="p-3 rounded-xl bg-orange-50/50 dark:bg-orange-950/20 border border-orange-200/60 dark:border-orange-500/20 text-xs text-slate-800 dark:text-slate-200 font-medium">
+                Free: Up to 2 posts per day, with a maximum of 30 posts per month.
+              </div>
+              <ul className="space-y-2 text-xs text-slate-700 dark:text-slate-300">
+                <li className="flex items-start space-x-2">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
+                  <span>Draft limit: Up to 10 drafts</span>
                 </li>
-                <li className="flex items-center space-x-2">
-                  <CheckCircle2 className="w-4 h-4 text-orange-500" />
-                  <span>Local folder image & URL uploads</span>
+                <li className="flex items-start space-x-2">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
+                  <span>Real-time Quality Inspector</span>
                 </li>
-                <li className="flex items-center space-x-2">
-                  <CheckCircle2 className="w-4 h-4 text-orange-500" />
+                <li className="flex items-start space-x-2">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
                   <span>Google Schema SEO tags</span>
                 </li>
-                <li className="flex items-center space-x-2">
-                  <CheckCircle2 className="w-4 h-4 text-orange-500" />
-                  <span>Community profile & reader feedback</span>
+                <li className="flex items-start space-x-2">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
+                  <span>Company profile listing</span>
                 </li>
               </ul>
             </div>
             <Link
               href="/register"
-              className="w-full py-3 rounded-xl bg-orange-500 hover:bg-orange-600 text-white text-xs font-semibold text-center shadow-md transition-colors"
+              className="w-full py-3 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-900 dark:text-white text-xs font-semibold text-center transition-colors"
             >
               Get Started Free
             </Link>
           </div>
 
           {/* Plan 2: Standard Plan */}
-          <div className="glass-card p-8 rounded-3xl space-y-6 flex flex-col justify-between border border-slate-200 dark:border-slate-800">
+          <div className="glass-card p-6 rounded-3xl space-y-6 flex flex-col justify-between border border-slate-200 dark:border-slate-800">
             <div className="space-y-4">
               <div>
-                <h3 className="text-xl font-bold text-slate-900 dark:text-white">Standard Pro</h3>
-                <p className="text-xs text-slate-500">For agencies & active content creators</p>
+                <h3 className="text-lg font-bold text-slate-900 dark:text-white">Standard Creator</h3>
+                <p className="text-xs text-slate-500">For agencies & active content writers</p>
               </div>
               <div className="flex items-baseline space-x-1">
-                <span className="text-4xl font-extrabold text-slate-900 dark:text-white">₹299</span>
+                <span className="text-3xl font-extrabold text-slate-900 dark:text-white">₹299</span>
                 <span className="text-xs text-slate-500">/ month</span>
               </div>
-              <ul className="space-y-2.5 text-xs text-slate-700 dark:text-slate-300 pt-2">
-                <li className="flex items-center space-x-2">
-                  <CheckCircle2 className="w-4 h-4 text-orange-500" />
-                  <span>60 Posts per Month (2/day)</span>
+              <div className="p-3 rounded-xl bg-orange-50/50 dark:bg-orange-950/20 border border-orange-200/60 dark:border-orange-500/20 text-xs text-slate-800 dark:text-slate-200 font-medium">
+                Standard: Up to 5 posts per day, with a maximum of 60 posts per month.
+              </div>
+              <ul className="space-y-2 text-xs text-slate-700 dark:text-slate-300">
+                <li className="flex items-start space-x-2">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
+                  <span>Draft limit: Up to 50 drafts</span>
                 </li>
-                <li className="flex items-center space-x-2">
-                  <CheckCircle2 className="w-4 h-4 text-orange-500" />
-                  <span>Bulk CSV Article Upload Engine</span>
+                <li className="flex items-start space-x-2">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
+                  <span>Scheduled posts auto-publisher</span>
                 </li>
-                <li className="flex items-center space-x-2">
-                  <CheckCircle2 className="w-4 h-4 text-orange-500" />
-                  <span>Company profile verification</span>
+                <li className="flex items-start space-x-2">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
+                  <span>Bulk CSV & JSON upload engine</span>
                 </li>
-                <li className="flex items-center space-x-2">
-                  <CheckCircle2 className="w-4 h-4 text-orange-500" />
-                  <span>Priority human quality moderation</span>
+                <li className="flex items-start space-x-2">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
+                  <span>Company profile & verified logo</span>
                 </li>
               </ul>
             </div>
             <Link
               href="/dashboard/subscription"
-              className="w-full py-3 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-900 dark:text-white text-xs font-semibold text-center transition-colors"
+              className="w-full py-3 rounded-xl bg-orange-500 hover:bg-orange-600 text-white text-xs font-semibold text-center transition-colors shadow-md shadow-orange-500/20"
             >
               Upgrade to Standard
             </Link>
           </div>
 
           {/* Plan 3: Premium Business */}
-          <div className="glass-card p-8 rounded-3xl space-y-6 flex flex-col justify-between border border-slate-200 dark:border-slate-800">
+          <div className="glass-card p-6 rounded-3xl space-y-6 flex flex-col justify-between border-2 border-orange-500/60 relative">
+            <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 bg-orange-500 text-white text-[10px] font-bold uppercase rounded-full tracking-wider">
+              Best Value
+            </div>
             <div className="space-y-4">
               <div>
-                <h3 className="text-xl font-bold text-slate-900 dark:text-white">Premium Enterprise</h3>
-                <p className="text-xs text-slate-500">For startups & engineering teams</p>
+                <h3 className="text-lg font-bold text-slate-900 dark:text-white">Premium Growth</h3>
+                <p className="text-xs text-slate-500">For startups & power engineering teams</p>
               </div>
               <div className="flex items-baseline space-x-1">
-                <span className="text-4xl font-extrabold text-slate-900 dark:text-white">₹599</span>
+                <span className="text-3xl font-extrabold text-slate-900 dark:text-white">₹599</span>
                 <span className="text-xs text-slate-500">/ month</span>
               </div>
-              <ul className="space-y-2.5 text-xs text-slate-700 dark:text-slate-300 pt-2">
-                <li className="flex items-center space-x-2">
-                  <CheckCircle2 className="w-4 h-4 text-orange-500" />
-                  <span>90 Posts per Month (3/day)</span>
+              <div className="p-3 rounded-xl bg-orange-50/50 dark:bg-orange-950/20 border border-orange-200/60 dark:border-orange-500/20 text-xs text-slate-800 dark:text-slate-200 font-medium">
+                Premium: Up to 10 posts per day, with a maximum of 100 posts per month.
+              </div>
+              <ul className="space-y-2 text-xs text-slate-700 dark:text-slate-300">
+                <li className="flex items-start space-x-2">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
+                  <span>Unlimited drafts storage</span>
                 </li>
-                <li className="flex items-center space-x-2">
-                  <CheckCircle2 className="w-4 h-4 text-orange-500" />
-                  <span>Full REST API Access with live tokens</span>
+                <li className="flex items-start space-x-2">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
+                  <span>Full REST API Keys Access</span>
                 </li>
-                <li className="flex items-center space-x-2">
-                  <CheckCircle2 className="w-4 h-4 text-orange-500" />
-                  <span>Bulk CSV & automated ingestion</span>
+                <li className="flex items-start space-x-2">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
+                  <span>Scheduled posts auto-publisher</span>
                 </li>
-                <li className="flex items-center space-x-2">
-                  <CheckCircle2 className="w-4 h-4 text-orange-500" />
-                  <span>Dedicated editorial review SLA</span>
+                <li className="flex items-start space-x-2">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
+                  <span>Bulk CSV upload + priority review</span>
                 </li>
               </ul>
             </div>
             <Link
               href="/dashboard/subscription"
-              className="w-full py-3 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-900 dark:text-white text-xs font-semibold text-center transition-colors"
+              className="w-full py-3 rounded-xl bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 text-white text-xs font-semibold text-center transition-colors shadow-md shadow-orange-500/20"
             >
               Get Premium Access
+            </Link>
+          </div>
+
+          {/* Plan 4: Custom Enterprise */}
+          <div className="glass-card p-6 rounded-3xl space-y-6 flex flex-col justify-between border border-slate-200 dark:border-slate-800">
+            <div className="space-y-4">
+              <div>
+                <h3 className="text-lg font-bold text-slate-900 dark:text-white">Custom Enterprise</h3>
+                <p className="text-xs text-slate-500">For high-volume brands & enterprises</p>
+              </div>
+              <div className="flex items-baseline space-x-1">
+                <span className="text-3xl font-extrabold text-slate-900 dark:text-white">Custom</span>
+                <span className="text-xs text-slate-500">/ tailored</span>
+              </div>
+              <div className="p-3 rounded-xl bg-orange-50/50 dark:bg-orange-950/20 border border-orange-200/60 dark:border-orange-500/20 text-xs text-slate-800 dark:text-slate-200 font-medium">
+                Custom: Tailored high-volume daily & monthly posts for teams & agencies.
+              </div>
+              <ul className="space-y-2 text-xs text-slate-700 dark:text-slate-300">
+                <li className="flex items-start space-x-2">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
+                  <span>Custom daily & monthly limits</span>
+                </li>
+                <li className="flex items-start space-x-2">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
+                  <span>Dedicated High-Rate REST API</span>
+                </li>
+                <li className="flex items-start space-x-2">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
+                  <span>Dedicated editorial review SLA</span>
+                </li>
+                <li className="flex items-start space-x-2">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
+                  <span>Multi-author publications</span>
+                </li>
+              </ul>
+            </div>
+            <Link
+              href="/contact?subject=Custom+Enterprise+Plan+Inquiry"
+              className="w-full py-3 rounded-xl bg-slate-900 hover:bg-slate-800 dark:bg-white dark:hover:bg-slate-100 text-white dark:text-slate-900 text-xs font-semibold text-center transition-colors shadow-md"
+            >
+              Contact Us for Custom Plan
             </Link>
           </div>
         </div>

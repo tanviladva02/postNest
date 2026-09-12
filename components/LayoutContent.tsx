@@ -11,13 +11,14 @@ interface LayoutContentProps {
 
 export default function LayoutContent({ navbar, footer, children }: LayoutContentProps) {
   const pathname = usePathname();
-  const isDashboard = pathname?.startsWith('/dashboard');
+  const isDashboardOrAdmin = pathname?.startsWith('/dashboard') || pathname?.startsWith('/admin');
 
   return (
     <>
-      {!isDashboard && navbar}
-      <main className="flex-grow">{children}</main>
-      {!isDashboard && footer}
+      {!isDashboardOrAdmin && navbar}
+      <main className="flex-grow w-full min-w-0">{children}</main>
+      {!isDashboardOrAdmin && footer}
     </>
   );
 }
+

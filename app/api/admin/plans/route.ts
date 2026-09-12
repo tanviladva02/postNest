@@ -17,6 +17,10 @@ export async function POST(req: Request) {
         data: {
           monthlyPostLimit: p.monthlyPostLimit,
           dailyPostLimit: p.dailyPostLimit,
+          draftLimit: p.draftLimit !== undefined ? p.draftLimit : undefined,
+          hasScheduling: p.hasScheduling !== undefined ? p.hasScheduling : undefined,
+          hasBulkUpload: p.hasBulkUpload !== undefined ? p.hasBulkUpload : undefined,
+          hasApiAccess: p.hasApiAccess !== undefined ? p.hasApiAccess : undefined,
         },
       });
     }

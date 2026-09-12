@@ -32,7 +32,18 @@
     color: var(--text-primary);
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
     overflow-x: hidden;
+    width: 100%;
+    min-width: 0;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
     transition: background-color 0.25s ease, color 0.25s ease;
+  }
+
+  /* Ultra narrow screens protection (< 320px down to 250px) */
+  @media (max-width: 320px) {
+    html {
+      font-size: 14px;
+    }
   }
 }
 

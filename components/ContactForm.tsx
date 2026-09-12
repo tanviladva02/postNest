@@ -1,14 +1,34 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { Send, CheckCircle2, AlertTriangle, Phone, Mail, User, FileText, MessageSquare } from 'lucide-react';
 
 export default function ContactForm() {
+  const searchParams = useSearchParams();
+  const initialSubject = searchParams.get('subject') || '';
+
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
-  const [subject, setSubject] = useState('');
-  const [message, setMessage] = useState('');
+  const [subject, setSubject] = useState(initialSubject);
+  const [message, setMessage] = useState(
+    initialSubject.toLowerCase().includes('custom')
+      ? 'Hi PostNest Team, I would like to inquire about a Custom Enterprise Plan for our organization. Here are our anticipated requirements:\n- Target daily posts volume: \n- Target monthly posts volume: \n- Team seats / API access requirements: '
+      : ''
+  );
+
+  useEffect(() => {
+    const qSubject = searchParams.get('subject');
+    if (qSubject) {
+      setSubject(qSubject);
+      if (qSubject.toLowerCase().includes('custom') && !message) {
+        setMessage(
+          'Hi PostNest Team, I would like to inquire about a Custom Enterprise Plan for our organization. Here are our anticipated requirements:\n- Target daily posts volume: \n- Target monthly posts volume: \n- Team seats / API access requirements: '
+        );
+      }
+    }
+  }, [searchParams]);
 
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
