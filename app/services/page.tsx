@@ -14,6 +14,7 @@ import {
   Zap,
   HelpCircle,
 } from 'lucide-react';
+import FaqAccordion from '@/components/FaqAccordion';
 
 export const metadata: Metadata = {
   title: 'Publishing Services & Solutions | PostNest.in',
@@ -202,185 +203,6 @@ export default function ServicesPage() {
         </div>
       </section>
 
-      {/* Pricing Plans Summary */}
-      <section className="space-y-10">
-        <div className="text-center max-w-2xl mx-auto space-y-3">
-          <h2 className="text-3xl font-bold text-slate-900 dark:text-white">Transparent Publisher Plans</h2>
-          <p className="text-sm text-slate-600 dark:text-slate-400">
-            Start completely free with our Early Bird offer or scale your publishing velocity with pro capabilities.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 items-stretch">
-          {/* Plan 1: Free Starter */}
-          <div className="glass-card p-6 rounded-3xl space-y-6 flex flex-col justify-between border border-slate-200 dark:border-slate-800 relative">
-            <div className="space-y-4">
-              <div>
-                <h3 className="text-lg font-bold text-slate-900 dark:text-white">Free Starter</h3>
-                <p className="text-xs text-slate-500">For indie hackers & individual bloggers</p>
-              </div>
-              <div className="flex items-baseline space-x-1">
-                <span className="text-3xl font-extrabold text-slate-900 dark:text-white">₹0</span>
-                <span className="text-xs text-slate-500">/ forever</span>
-              </div>
-              <div className="p-3 rounded-xl bg-orange-50/50 dark:bg-orange-950/20 border border-orange-200/60 dark:border-orange-500/20 text-xs text-slate-800 dark:text-slate-200 font-medium">
-                Free: Up to 2 posts per day, with a maximum of 30 posts per month.
-              </div>
-              <ul className="space-y-2 text-xs text-slate-700 dark:text-slate-300">
-                <li className="flex items-start space-x-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
-                  <span>Draft limit: Up to 10 drafts</span>
-                </li>
-                <li className="flex items-start space-x-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
-                  <span>Real-time Quality Inspector</span>
-                </li>
-                <li className="flex items-start space-x-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
-                  <span>Google Schema SEO tags</span>
-                </li>
-                <li className="flex items-start space-x-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
-                  <span>Company profile listing</span>
-                </li>
-              </ul>
-            </div>
-            <Link
-              href="/register"
-              className="w-full py-3 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-900 dark:text-white text-xs font-semibold text-center transition-colors"
-            >
-              Get Started Free
-            </Link>
-          </div>
-
-          {/* Plan 2: Standard Plan */}
-          <div className="glass-card p-6 rounded-3xl space-y-6 flex flex-col justify-between border border-slate-200 dark:border-slate-800">
-            <div className="space-y-4">
-              <div>
-                <h3 className="text-lg font-bold text-slate-900 dark:text-white">Standard Creator</h3>
-                <p className="text-xs text-slate-500">For agencies & active content writers</p>
-              </div>
-              <div className="flex items-baseline space-x-1">
-                <span className="text-3xl font-extrabold text-slate-900 dark:text-white">₹299</span>
-                <span className="text-xs text-slate-500">/ month</span>
-              </div>
-              <div className="p-3 rounded-xl bg-orange-50/50 dark:bg-orange-950/20 border border-orange-200/60 dark:border-orange-500/20 text-xs text-slate-800 dark:text-slate-200 font-medium">
-                Standard: Up to 5 posts per day, with a maximum of 60 posts per month.
-              </div>
-              <ul className="space-y-2 text-xs text-slate-700 dark:text-slate-300">
-                <li className="flex items-start space-x-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
-                  <span>Draft limit: Up to 50 drafts</span>
-                </li>
-                <li className="flex items-start space-x-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
-                  <span>Scheduled posts auto-publisher</span>
-                </li>
-                <li className="flex items-start space-x-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
-                  <span>Bulk CSV & JSON upload engine</span>
-                </li>
-                <li className="flex items-start space-x-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
-                  <span>Company profile & verified logo</span>
-                </li>
-              </ul>
-            </div>
-            <Link
-              href="/dashboard/subscription"
-              className="w-full py-3 rounded-xl bg-orange-500 hover:bg-orange-600 text-white text-xs font-semibold text-center transition-colors shadow-md shadow-orange-500/20"
-            >
-              Upgrade to Standard
-            </Link>
-          </div>
-
-          {/* Plan 3: Premium Business */}
-          <div className="glass-card p-6 rounded-3xl space-y-6 flex flex-col justify-between border-2 border-orange-500/60 relative">
-            <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 bg-orange-500 text-white text-[10px] font-bold uppercase rounded-full tracking-wider">
-              Best Value
-            </div>
-            <div className="space-y-4">
-              <div>
-                <h3 className="text-lg font-bold text-slate-900 dark:text-white">Premium Growth</h3>
-                <p className="text-xs text-slate-500">For startups & power engineering teams</p>
-              </div>
-              <div className="flex items-baseline space-x-1">
-                <span className="text-3xl font-extrabold text-slate-900 dark:text-white">₹599</span>
-                <span className="text-xs text-slate-500">/ month</span>
-              </div>
-              <div className="p-3 rounded-xl bg-orange-50/50 dark:bg-orange-950/20 border border-orange-200/60 dark:border-orange-500/20 text-xs text-slate-800 dark:text-slate-200 font-medium">
-                Premium: Up to 10 posts per day, with a maximum of 100 posts per month.
-              </div>
-              <ul className="space-y-2 text-xs text-slate-700 dark:text-slate-300">
-                <li className="flex items-start space-x-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
-                  <span>Unlimited drafts storage</span>
-                </li>
-                <li className="flex items-start space-x-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
-                  <span>Full REST API Keys Access</span>
-                </li>
-                <li className="flex items-start space-x-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
-                  <span>Scheduled posts auto-publisher</span>
-                </li>
-                <li className="flex items-start space-x-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
-                  <span>Bulk CSV upload + priority review</span>
-                </li>
-              </ul>
-            </div>
-            <Link
-              href="/dashboard/subscription"
-              className="w-full py-3 rounded-xl bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 text-white text-xs font-semibold text-center transition-colors shadow-md shadow-orange-500/20"
-            >
-              Get Premium Access
-            </Link>
-          </div>
-
-          {/* Plan 4: Custom Enterprise */}
-          <div className="glass-card p-6 rounded-3xl space-y-6 flex flex-col justify-between border border-slate-200 dark:border-slate-800">
-            <div className="space-y-4">
-              <div>
-                <h3 className="text-lg font-bold text-slate-900 dark:text-white">Custom Enterprise</h3>
-                <p className="text-xs text-slate-500">For high-volume brands & enterprises</p>
-              </div>
-              <div className="flex items-baseline space-x-1">
-                <span className="text-3xl font-extrabold text-slate-900 dark:text-white">Custom</span>
-                <span className="text-xs text-slate-500">/ tailored</span>
-              </div>
-              <div className="p-3 rounded-xl bg-orange-50/50 dark:bg-orange-950/20 border border-orange-200/60 dark:border-orange-500/20 text-xs text-slate-800 dark:text-slate-200 font-medium">
-                Custom: Tailored high-volume daily & monthly posts for teams & agencies.
-              </div>
-              <ul className="space-y-2 text-xs text-slate-700 dark:text-slate-300">
-                <li className="flex items-start space-x-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
-                  <span>Custom daily & monthly limits</span>
-                </li>
-                <li className="flex items-start space-x-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
-                  <span>Dedicated High-Rate REST API</span>
-                </li>
-                <li className="flex items-start space-x-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
-                  <span>Dedicated editorial review SLA</span>
-                </li>
-                <li className="flex items-start space-x-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
-                  <span>Multi-author publications</span>
-                </li>
-              </ul>
-            </div>
-            <Link
-              href="/contact?subject=Custom+Enterprise+Plan+Inquiry"
-              className="w-full py-3 rounded-xl bg-slate-900 hover:bg-slate-800 dark:bg-white dark:hover:bg-slate-100 text-white dark:text-slate-900 text-xs font-semibold text-center transition-colors shadow-md"
-            >
-              Contact Us for Custom Plan
-            </Link>
-          </div>
-        </div>
-      </section>
-
       {/* Services FAQ */}
       <section className="max-w-4xl mx-auto space-y-8">
         <div className="text-center space-y-3">
@@ -388,34 +210,27 @@ export default function ServicesPage() {
           <p className="text-sm text-slate-600 dark:text-slate-400">Everything you need to know about publishing on PostNest.</p>
         </div>
 
-        <div className="space-y-4">
-          <div className="glass-card p-6 rounded-2xl space-y-2">
-            <h3 className="text-base font-bold text-slate-900 dark:text-white">
-              Can I syndicate articles that I already published on my personal blog?
-            </h3>
-            <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-              Yes! You can syndicate your articles on PostNest. We encourage you to include a note referencing the original piece, and our platform automatically protects your author authority.
-            </p>
-          </div>
-
-          <div className="glass-card p-6 rounded-2xl space-y-2">
-            <h3 className="text-base font-bold text-slate-900 dark:text-white">
-              How does local image upload work?
-            </h3>
-            <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-              When creating an article, you can click &ldquo;Choose Image File from Folder&rdquo; or &ldquo;Upload Image to Body&rdquo; to pick any image from your computer. PostNest safely stores it and generates a fast, CDN-ready URL inserted right into your post.
-            </p>
-          </div>
-
-          <div className="glass-card p-6 rounded-2xl space-y-2">
-            <h3 className="text-base font-bold text-slate-900 dark:text-white">
-              What are the guidelines for corporate and affiliate links?
-            </h3>
-            <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-              We require transparency. When publishing commercial recommendations or product showcases, our automated system prompts for affiliate disclosure boxes to maintain strict compliance with Google search policies.
-            </p>
-          </div>
-        </div>
+        <FaqAccordion
+          items={[
+            {
+              q: 'Can I syndicate articles that I already published on my personal blog?',
+              a: 'Yes! You can syndicate your articles on PostNest. We encourage you to include a note referencing the original piece, and our platform automatically protects your author authority with canonical link attribution.',
+            },
+            {
+              q: 'How does local image upload work?',
+              a: 'When creating an article, you can click "Choose Image File from Folder" or "Upload Image to Body" to pick any image from your computer. PostNest safely stores it and generates a fast, CDN-ready URL inserted right into your post.',
+            },
+            {
+              q: 'What are the guidelines for corporate and affiliate links?',
+              a: 'We require transparency. When publishing commercial recommendations or product showcases, our automated system prompts for affiliate disclosure boxes to maintain strict compliance with Google search policies.',
+            },
+            {
+              q: 'How fast do submitted articles get indexed on Google?',
+              a: 'Because PostNest utilizes Server-Side Rendering (SSR) with pre-configured BlogPosting schema and automated XML sitemaps, search engines typically crawl and discover new posts rapidly.',
+            },
+          ]}
+          defaultOpenIndex={0}
+        />
       </section>
 
       {/* Bottom CTA */}
