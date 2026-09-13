@@ -23,21 +23,38 @@ export interface GoogleTokenResponse {
 }
 
 /**
- * Returns the base application URL
+ * Returns the base application URL dynamically from request or environment variables
  */
-export function getAppUrl(): string {
+export function getAppUrl(requestUrl?: string): string {
+  if (requestUrl) {
+    try {
+      const u = new URL(requestUrl);
+      // Use request protocol and host (handles custom domains and Vercel deployments automatically)
+      if (u.protocol && u.host) {
+        return `${u.protocol}//${u.host}`.replace(/\/$/, '');
+      }
+    } catch (e) {}
+  }
+
+  // Check Vercel deployment URL
+  if (process.env.VERCEL_URL) {
+    return `https://${process.env.VERCEL_URL.replace(/\/$/, '')}`;
+  }
+
+  // Check custom environment URL
   const envUrl = process.env.NEXT_PUBLIC_APP_URL;
   if (envUrl && envUrl.trim() !== '') {
     return envUrl.replace(/\/$/, '');
   }
+
   return 'http://localhost:3000';
 }
 
 /**
- * Returns the configured Google OAuth callback URL
+ * Returns the configured Google OAuth callback URL dynamically matching current domain
  */
-export function getGoogleCallbackUrl(): string {
-  return `${getAppUrl()}/api/auth/google/callback`;
+export function getGoogleCallbackUrl(requestUrl?: string): string {
+  return `${getAppUrl(requestUrl)}/api/auth/google/callback`;
 }
 
 /**
@@ -56,7 +73,10 @@ export function isGoogleAuthConfigured(): boolean {
 /**
  * Creates the Google authorization redirect URL and a secure state token
  */
-export function buildGoogleAuthUrl(redirectUrl: string = '/dashboard'): { authUrl: string; stateToken: string } {
+export function buildGoogleAuthUrl(
+  redirectUrl: string = '/dashboard',
+  requestUrl?: string
+): { authUrl: string; stateToken: string } {
   const clientId = process.env.GOOGLE_CLIENT_ID;
   if (!clientId) {
     throw new Error('GOOGLE_CLIENT_ID is not configured');
@@ -68,7 +88,7 @@ export function buildGoogleAuthUrl(redirectUrl: string = '/dashboard'): { authUr
   const statePayload = JSON.stringify({ nonce, redirect: safeRedirect });
   const stateToken = Buffer.from(statePayload).toString('base64url');
 
-  const redirectUri = getGoogleCallbackUrl();
+  const redirectUri = getGoogleCallbackUrl(requestUrl);
 
   const params = new URLSearchParams({
     client_id: clientId,
@@ -109,10 +129,10 @@ export function parseOAuthState(stateToken: string | null): { nonce: string; red
 /**
  * Exchanges the Google authorization code for access and ID tokens
  */
-export async function exchangeCodeForTokens(code: string): Promise<GoogleTokenResponse> {
+export async function exchangeCodeForTokens(code: string, requestUrl?: string): Promise<GoogleTokenResponse> {
   const clientId = process.env.GOOGLE_CLIENT_ID;
   const clientSecret = process.env.GOOGLE_CLIENT_SECRET;
-  const redirectUri = getGoogleCallbackUrl();
+  const redirectUri = getGoogleCallbackUrl(requestUrl);
 
   if (!clientId || !clientSecret) {
     throw new Error('Google OAuth credentials are not properly configured.');

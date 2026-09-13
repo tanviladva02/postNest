@@ -16,6 +16,7 @@ import {
   Code2,
   CheckCircle2,
 } from 'lucide-react';
+import RazorpayCheckoutButton from '@/components/RazorpayCheckoutButton';
 
 export default function SubscriptionPage() {
   const [activePlanName, setActivePlanName] = useState<string>('FREE');
@@ -190,14 +191,21 @@ export default function SubscriptionPage() {
                 <span>{p.cta}</span>
                 <ArrowRight className="w-3.5 h-3.5" />
               </Link>
-            ) : (
+            ) : p.isCurrent ? (
               <button
-                onClick={() => !p.isCurrent && handleUpgrade(p.id)}
-                disabled={p.isCurrent}
-                className={`w-full py-3 rounded-xl font-semibold text-xs transition-all ${p.buttonStyle}`}
+                disabled
+                className="w-full py-3 rounded-xl font-semibold text-xs bg-slate-100 dark:bg-slate-800 text-slate-400 cursor-default border border-slate-200 dark:border-slate-700"
               >
-                {p.cta}
+                Current Plan
               </button>
+            ) : (
+              <RazorpayCheckoutButton
+                planName={p.id as 'STANDARD' | 'PREMIUM'}
+                displayName={p.name}
+                priceINR={p.id === 'STANDARD' ? 299 : 599}
+                buttonText={`Upgrade to ${p.name}`}
+                className={`w-full py-3 rounded-xl font-semibold text-xs flex items-center justify-center space-x-2 transition-all ${p.buttonStyle}`}
+              />
             )}
           </div>
         ))}

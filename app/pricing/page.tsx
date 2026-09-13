@@ -21,6 +21,7 @@ import {
   Send,
 } from 'lucide-react';
 import FaqAccordion from '@/components/FaqAccordion';
+import PricingPlanCardAction from '@/components/PricingPlanCardAction';
 
 export const metadata: Metadata = {
   title: 'Pricing Plans & Publishing Quotas | PostNest',
@@ -284,13 +285,14 @@ export default function PricingPage() {
             </div>
 
             <div className="pt-4 border-t border-slate-100 dark:border-slate-800/80">
-              <Link
-                href={plan.ctaLink}
-                className={`w-full py-3.5 rounded-xl font-bold text-xs text-center flex items-center justify-center space-x-2 transition-all hover:scale-[1.01] active:scale-[0.99] ${plan.ctaStyle}`}
-              >
-                <span>{plan.cta}</span>
-                <ArrowRight className="w-3.5 h-3.5" />
-              </Link>
+              <PricingPlanCardAction
+                planId={plan.id}
+                planName={plan.name}
+                priceINR={plan.id === 'STANDARD' ? 299 : plan.id === 'PREMIUM' ? 599 : 0}
+                ctaText={plan.cta}
+                ctaLink={plan.ctaLink}
+                ctaStyle={plan.ctaStyle}
+              />
             </div>
           </div>
         ))}
