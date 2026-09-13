@@ -46,6 +46,7 @@ export const metadata: Metadata = {
   },
 };
 
+
 export default function PricingPage() {
   const primaryPlans = [
     {

@@ -56,6 +56,7 @@ export default function ServicesPage() {
     description: 'Modern blog publishing and content syndication platform for tech writers and companies.',
   };
 
+
   return (
     <div className="space-y-20 py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
       <script

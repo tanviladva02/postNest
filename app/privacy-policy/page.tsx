@@ -33,6 +33,7 @@ export const metadata: Metadata = {
   },
 };
 
+
 export default function PrivacyPolicyPage() {
   const lastUpdated = 'September 12, 2026';
 

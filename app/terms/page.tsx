@@ -34,6 +34,7 @@ export const metadata: Metadata = {
   },
 };
 
+
 export default function TermsPage() {
   const lastUpdated = 'September 12, 2026';
 

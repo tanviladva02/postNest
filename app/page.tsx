@@ -87,6 +87,7 @@ export default async function HomePage() {
             PostNest is the distraction-free tech blogging platform with zero paywalls for readers, automated Google-first SEO, and verified company hubs. Share your engineering stories and product guides with thousands of readers worldwide.
           </p>
 
+
           {/* Action CTA Buttons */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
             <Link
