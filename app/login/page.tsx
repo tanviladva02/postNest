@@ -79,6 +79,7 @@ export default function LoginPage() {
                 alt="PostNest"
                 width={160}
                 height={40}
+                style={{ width: 'auto', height: 'auto' }}
                 className="h-7 sm:h-8 w-auto object-contain dark:hidden"
                 priority
                 quality={100}
@@ -88,6 +89,7 @@ export default function LoginPage() {
                 alt="PostNest"
                 width={160}
                 height={40}
+                style={{ width: 'auto', height: 'auto' }}
                 className="h-7 sm:h-8 w-auto object-contain hidden dark:block"
                 priority
                 quality={100}

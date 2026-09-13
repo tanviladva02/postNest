@@ -15,7 +15,7 @@ export async function GET(req: Request) {
       );
     }
 
-    const { authUrl, stateToken } = buildGoogleAuthUrl(redirectParam);
+    const { authUrl, stateToken } = buildGoogleAuthUrl(redirectParam, req.url);
 
     const response = NextResponse.redirect(authUrl);
 

@@ -41,7 +41,7 @@ export async function GET(req: Request) {
 
   try {
     // 1. Exchange code for Google access token
-    const tokenData = await exchangeCodeForTokens(code);
+    const tokenData = await exchangeCodeForTokens(code, req.url);
     if (!tokenData.access_token) {
       throw new Error('Did not receive access token from Google.');
     }
