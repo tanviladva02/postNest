@@ -5,6 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import ThemeToggle from './ThemeToggle';
+import FloatingFeedbackWidget from './FloatingFeedbackWidget';
 import {
   LayoutDashboard,
   FileText,
@@ -18,6 +19,7 @@ import {
   Menu,
   X,
   Home,
+  MessageSquare,
 } from 'lucide-react';
 
 interface DashboardLayoutClientProps {
@@ -37,7 +39,7 @@ export default function DashboardLayoutClient({ user, planName, children }: Dash
     { href: '/dashboard/bulk-upload', label: 'Bulk Upload', icon: UploadCloud },
     { href: '/dashboard/company', label: 'Company Profile', icon: Building2 },
     { href: '/dashboard/api-access', label: 'API Access', icon: Key },
-    { href: '/dashboard/subscription', label: 'Subscription', icon: CreditCard },
+    { href: '/dashboard/subscription', label: 'Subscription', icon: CreditCard }
   ];
 
   const closeMenu = () => setMobileMenuOpen(false);
@@ -108,11 +110,10 @@ export default function DashboardLayoutClient({ user, planName, children }: Dash
                     key={item.href}
                     href={item.href}
                     onClick={closeMenu}
-                    className={`flex items-center space-x-2.5 px-3 py-2.5 rounded-xl text-xs font-medium transition-colors ${
-                      isActive
+                    className={`flex items-center space-x-2.5 px-3 py-2.5 rounded-xl text-xs font-medium transition-colors ${isActive
                         ? 'bg-orange-500/10 text-orange-600 dark:text-orange-400 font-bold border border-orange-500/30'
                         : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
-                    }`}
+                      }`}
                   >
                     <Icon className="w-4 h-4 text-orange-500 shrink-0" />
                     <span>{item.label}</span>
@@ -208,11 +209,10 @@ export default function DashboardLayoutClient({ user, planName, children }: Dash
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`flex items-center space-x-3 px-3.5 py-2.5 rounded-xl transition-all ${
-                    isActive
+                  className={`flex items-center space-x-3 px-3.5 py-2.5 rounded-xl transition-all ${isActive
                       ? 'bg-orange-500/10 text-orange-600 dark:text-orange-400 font-bold border border-orange-500/30 shadow-xs'
                       : 'text-slate-700 dark:text-slate-300 hover:text-orange-600 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/60'
-                  }`}
+                    }`}
                 >
                   <Icon className="w-4 h-4 text-orange-500 shrink-0" />
                   <span>{item.label}</span>
@@ -260,6 +260,9 @@ export default function DashboardLayoutClient({ user, planName, children }: Dash
           {children}
         </main>
       </div>
+
+      {/* Smooth Draggable Floating Feedback Widget */}
+      <FloatingFeedbackWidget user={user} />
     </div>
   );
 }

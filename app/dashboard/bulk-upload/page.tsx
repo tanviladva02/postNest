@@ -95,12 +95,20 @@ export default function BulkUploadPage() {
       </div>
 
       {/* Rules Banner */}
-      <div className="p-4 rounded-xl bg-orange-50 dark:bg-orange-500/10 border border-orange-200 dark:border-orange-500/20 text-xs text-slate-700 dark:text-slate-300 flex items-start space-x-3">
-        <ShieldCheck className="w-5 h-5 text-orange-500 shrink-0 mt-0.5" />
-        <div className="space-y-1">
-          <p className="font-semibold text-slate-900 dark:text-white">Import Safety Rule:</p>
-          <p>
-            Articles imported via Bulk Upload are saved as <span className="text-orange-600 dark:text-orange-400 font-semibold font-mono">DRAFTS</span>. Bulk upload does not bypass daily publishing limits — you can publish up to your plan&apos;s daily limit each day.
+      <div className="p-4 sm:p-5 rounded-2xl bg-amber-500/5 dark:bg-amber-500/10 border border-amber-500/30 dark:border-amber-500/20 text-xs flex items-start space-x-3.5 shadow-xs transition-all">
+        <div className="p-2 rounded-xl bg-orange-500/10 dark:bg-orange-500/20 text-orange-600 dark:text-orange-400 border border-orange-500/30 shrink-0">
+          <ShieldCheck className="w-5 h-5" />
+        </div>
+        <div className="space-y-1 min-w-0">
+          <p className="font-bold text-slate-900 dark:text-white text-xs sm:text-sm tracking-tight">
+            Import Safety Rule
+          </p>
+          <p className="text-slate-600 dark:text-slate-300 leading-relaxed text-xs">
+            Articles imported via Bulk Upload are saved as{' '}
+            <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-extrabold font-mono bg-orange-500/10 dark:bg-orange-500/20 text-orange-700 dark:text-orange-300 border border-orange-500/30">
+              DRAFTS
+            </span>
+            . Bulk upload does not bypass daily publishing limits — you can publish up to your plan&apos;s daily limit each day.
           </p>
         </div>
       </div>

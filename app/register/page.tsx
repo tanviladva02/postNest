@@ -71,7 +71,7 @@ export default function RegisterPage() {
         {/* Brand Logo & Header */}
         <div className="text-center space-y-3">
           <Link href="/" className="inline-flex flex-col items-center justify-center group focus:outline-none">
-            <div className="relative p-2 rounded-2xl bg-slate-50 dark:bg-slate-950/60 border border-slate-200/60 dark:border-slate-800/80 shadow-sm group-hover:scale-105 transition-transform duration-300">
+            <div className="relative p-2 rounded-2xl  group-hover:scale-105 transition-transform duration-300">
               <Image
                 src="/logo.png"
                 alt="PostNest"
@@ -103,12 +103,6 @@ export default function RegisterPage() {
               <Sparkles className="w-3.5 h-3.5" />
               <span>Early Bird Access: 30 Free Published Posts / Month</span>
             </div>
-            <h1 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white tracking-tight pt-1">
-              Create your PostNest Account
-            </h1>
-            <p className="text-xs text-slate-500 dark:text-slate-400">
-              Join developers, founders, and tech writers publishing SEO-optimized guest articles.
-            </p>
           </div>
         </div>
 

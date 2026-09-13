@@ -115,7 +115,9 @@ export default function CreatePostPage() {
             if (postData.post.status === 'SCHEDULED' && postData.post.scheduledAt) {
               setPublishMode('schedule');
               const d = new Date(postData.post.scheduledAt);
-              setScheduledAt(d.toISOString().slice(0, 16));
+              const pad = (n: number) => n.toString().padStart(2, '0');
+              const localIso = `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+              setScheduledAt(localIso);
             }
           }
         }

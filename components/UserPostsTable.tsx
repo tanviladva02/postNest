@@ -124,7 +124,7 @@ export default function UserPostsTable({ initialPosts }: { initialPosts: PostIte
                     }`}
                   >
                     {post.status === 'SCHEDULED' && post.scheduledAt
-                      ? `SCHEDULED (${new Date(post.scheduledAt).toLocaleDateString()})`
+                      ? `SCHEDULED (${new Date(post.scheduledAt).toLocaleString([], { dateStyle: 'short', timeStyle: 'short' })})`
                       : post.status}
                   </span>
                 </td>
