@@ -27,6 +27,7 @@ model User {
   apiKeys       ApiKey[]
   usages        Usage[]
   notifications Notification[]
+  feedbacks     Feedback[]
 }
 
 model Company {
@@ -192,5 +193,22 @@ model PasswordResetOtp {
   createdAt DateTime @default(now())
 
   @@index([email, createdAt])
+}
+
+model Feedback {
+  id        String   @id @default(uuid())
+  userId    String
+  type      String   // FEEDBACK, REVIEW, SUGGESTION, ISSUE, BUG
+  rating    Int?     // 1 to 5 stars (optional)
+  subject   String?
+  message   String
+  status    String   @default("PENDING") // PENDING, IN_PROGRESS, RESOLVED, CLOSED
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
+  @@index([type, status])
 }
 

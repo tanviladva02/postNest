@@ -130,14 +130,22 @@ export default function ApiAccessPage() {
       </div>
 
       {/* Security Architecture Box */}
-      <div className="p-4 rounded-xl bg-orange-50 dark:bg-slate-900 border border-orange-200 dark:border-slate-800 space-y-2 text-xs text-slate-700 dark:text-slate-300">
-        <div className="flex items-center space-x-2 text-orange-600 dark:text-orange-400 font-bold">
-          <ShieldCheck className="w-4 h-4" />
-          <span>Server-Side Hashing & Security Model</span>
+      <div className="p-4 sm:p-5 rounded-2xl bg-amber-500/5 dark:bg-amber-500/10 border border-amber-500/30 dark:border-amber-500/20 text-xs flex items-start space-x-3.5 shadow-xs transition-all">
+        <div className="p-2 rounded-xl bg-orange-500/10 dark:bg-orange-500/20 text-orange-600 dark:text-orange-400 border border-orange-500/30 shrink-0">
+          <ShieldCheck className="w-5 h-5" />
         </div>
-        <p>
-          API key secrets are generated as <code className="text-orange-600 dark:text-orange-400 bg-white dark:bg-slate-950 px-1 py-0.5 rounded border border-orange-200 dark:border-slate-800">pn_live_...</code> tokens and hashed using Secure SHA-256 before database storage. Private server environment credentials are never exposed to public browser JavaScript.
-        </p>
+        <div className="space-y-1 min-w-0">
+          <p className="font-bold text-slate-900 dark:text-white text-xs sm:text-sm tracking-tight">
+            Server-Side Hashing & Security Model
+          </p>
+          <p className="text-slate-600 dark:text-slate-300 leading-relaxed text-xs">
+            API key secrets are generated as{' '}
+            <code className="inline-flex items-center px-1.5 py-0.5 rounded-md text-[11px] font-extrabold font-mono bg-orange-500/10 dark:bg-orange-500/20 text-orange-700 dark:text-orange-300 border border-orange-500/30">
+              pn_live_...
+            </code>{' '}
+            tokens and hashed using Secure SHA-256 before database storage. Private server environment credentials are never exposed to public browser JavaScript.
+          </p>
+        </div>
       </div>
 
       {/* Raw Key Modal Box if created */}

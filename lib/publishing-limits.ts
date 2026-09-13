@@ -14,6 +14,8 @@ export interface LimitCheckResult {
   hasApiAccess: boolean;
   planName: string;
   isUnlimited?: boolean;
+  cycleStartDate?: Date;
+  nextResetDate?: Date;
 }
 
 export function isUnlimitedTestingEmail(email?: string | null): boolean {
@@ -22,14 +24,13 @@ export function isUnlimitedTestingEmail(email?: string | null): boolean {
 }
 
 export async function checkUserPublishingLimits(userId: string): Promise<LimitCheckResult> {
-  // 1. Fetch user to check for testing/exempt account
+  // 1. Fetch user profile
   const user = await prisma.user.findUnique({
     where: { id: userId },
-    select: { email: true, role: true },
+    select: { email: true, role: true, createdAt: true },
   });
 
   const isUnlimited = isUnlimitedTestingEmail(user?.email);
-
   const todayStr = new Date().toISOString().split('T')[0];
 
   // 2. Query today's usage
@@ -44,22 +45,7 @@ export async function checkUserPublishingLimits(userId: string): Promise<LimitCh
 
   const currentDailyCount = todayUsage?.postsPublishedCount || 0;
 
-  // 3. Query monthly published posts count (posts created/published within current month)
-  const firstDayOfMonth = new Date();
-  firstDayOfMonth.setDate(1);
-  firstDayOfMonth.setHours(0, 0, 0, 0);
-
-  const monthlyCount = await prisma.post.count({
-    where: {
-      authorId: userId,
-      status: 'PUBLISHED',
-      publishedAt: {
-        gte: firstDayOfMonth,
-      },
-    },
-  });
-
-  // 4. Query current user drafts count
+  // 3. Query current user drafts count
   const currentDraftCount = await prisma.post.count({
     where: {
       authorId: userId,
@@ -67,33 +53,13 @@ export async function checkUserPublishingLimits(userId: string): Promise<LimitCh
     },
   });
 
-  // Bypass limits for unlimited testing account
-  if (isUnlimited) {
-    return {
-      allowed: true,
-      reason: undefined,
-      currentDailyCount,
-      dailyLimit: 0,
-      currentMonthlyCount: monthlyCount,
-      monthlyLimit: 0,
-      currentDraftCount,
-      draftLimit: 0,
-      hasScheduling: true,
-      hasBulkUpload: true,
-      hasApiAccess: true,
-      planName: 'Testing Account (Unlimited)',
-      isUnlimited: true,
-    };
-  }
-
-  // 5. Get active user subscription and plan details
+  // 4. Fetch active subscription & plan details
   const activeSub = await prisma.subscription.findFirst({
     where: { userId, status: 'ACTIVE' },
     include: { plan: true },
     orderBy: { startDate: 'desc' },
   });
 
-  // Default to user's assigned plan, or query EARLY_BIRD / FREE
   let plan = activeSub?.plan;
   if (!plan) {
     plan = (await prisma.plan.findUnique({ where: { name: 'EARLY_BIRD' } })) ||
@@ -113,16 +79,76 @@ export async function checkUserPublishingLimits(userId: string): Promise<LimitCh
       };
   }
 
-  // 6. Evaluate Limit Rules
+  // 5. Calculate Rolling 30-Day Billing Cycle Start & Reset Dates
+  const now = new Date();
+  let cycleStartDate: Date;
+  let nextResetDate: Date;
+
+  if (activeSub && activeSub.startDate) {
+    // Paid plan: Cycle starts on the date the user purchased/upgraded
+    cycleStartDate = new Date(activeSub.startDate);
+    if (activeSub.endDate) {
+      nextResetDate = new Date(activeSub.endDate);
+    } else {
+      nextResetDate = new Date(cycleStartDate.getTime() + 30 * 24 * 60 * 60 * 1000);
+    }
+  } else {
+    // Free / Early Bird plan: 30-day rolling cycle calculated from user's signup date
+    const signupDate = user?.createdAt ? new Date(user.createdAt) : new Date();
+    const thirtyDaysMs = 30 * 24 * 60 * 60 * 1000;
+    const elapsedPeriods = Math.floor(Math.max(0, now.getTime() - signupDate.getTime()) / thirtyDaysMs);
+    
+    cycleStartDate = new Date(signupDate.getTime() + elapsedPeriods * thirtyDaysMs);
+    nextResetDate = new Date(cycleStartDate.getTime() + thirtyDaysMs);
+  }
+
+  // 6. Query published posts count within CURRENT ROLLING BILLING CYCLE
+  const monthlyCount = await prisma.post.count({
+    where: {
+      authorId: userId,
+      status: 'PUBLISHED',
+      publishedAt: {
+        gte: cycleStartDate,
+      },
+    },
+  });
+
+  // Bypass limits for unlimited testing account
+  if (isUnlimited) {
+    return {
+      allowed: true,
+      reason: undefined,
+      currentDailyCount,
+      dailyLimit: 0,
+      currentMonthlyCount: monthlyCount,
+      monthlyLimit: 0,
+      currentDraftCount,
+      draftLimit: 0,
+      hasScheduling: true,
+      hasBulkUpload: true,
+      hasApiAccess: true,
+      planName: 'Testing Account (Unlimited)',
+      isUnlimited: true,
+      cycleStartDate,
+      nextResetDate,
+    };
+  }
+
+  // 7. Evaluate Limit Rules
   let allowed = true;
   let reason: string | undefined = undefined;
 
+  const resetFormatted = nextResetDate.toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+  });
+
   if (plan.monthlyPostLimit > 0 && monthlyCount >= plan.monthlyPostLimit) {
     allowed = false;
-    reason = `You have reached your monthly publishing quota of ${plan.monthlyPostLimit} posts for the ${plan.displayName}. Upgrade your subscription to continue publishing.`;
+    reason = `You have reached your limit of ${plan.monthlyPostLimit} published posts for your current 30-day billing cycle (used: ${monthlyCount}/${plan.monthlyPostLimit}). Your quota resets on ${resetFormatted}, or you can upgrade your plan to publish immediately.`;
   } else if (plan.dailyPostLimit > 0 && currentDailyCount >= plan.dailyPostLimit) {
     allowed = false;
-    reason = `Daily limit reached! Your ${plan.displayName} allows maximum ${plan.dailyPostLimit} published posts per day. (Published today: ${currentDailyCount}/${plan.dailyPostLimit}).`;
+    reason = `Daily limit reached! Your ${plan.displayName} allows maximum ${plan.dailyPostLimit} published posts per day (used today: ${currentDailyCount}/${plan.dailyPostLimit}).`;
   }
 
   return {
@@ -138,6 +164,8 @@ export async function checkUserPublishingLimits(userId: string): Promise<LimitCh
     hasBulkUpload: plan.hasBulkUpload,
     hasApiAccess: plan.hasApiAccess,
     planName: plan.displayName,
+    cycleStartDate,
+    nextResetDate,
   };
 }
 

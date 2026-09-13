@@ -73,7 +73,7 @@ export default function LoginPage() {
         {/* Brand Logo & Header */}
         <div className="text-center space-y-3">
           <Link href="/" className="inline-flex flex-col items-center justify-center group focus:outline-none">
-            <div className="relative p-2 rounded-2xl bg-slate-50 dark:bg-slate-950/60 border border-slate-200/60 dark:border-slate-800/80 shadow-sm group-hover:scale-105 transition-transform duration-300">
+            <div className="relative p-2 rounded-2xl group-hover:scale-105 transition-transform duration-300">
               <Image
                 src="/logo.png"
                 alt="PostNest"
