@@ -9,6 +9,8 @@ interface Props {
   };
 }
 
+export const revalidate = 60; // 60s cache revalidation
+
 export default async function CategoryPage({ params }: Props) {
   const category = await prisma.category.findUnique({
     where: { slug: params.slug },

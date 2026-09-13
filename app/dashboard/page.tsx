@@ -20,7 +20,30 @@ export default async function DashboardOverviewPage() {
   const user = await getCurrentUser();
   if (!user) return null;
 
-  const limits = await checkUserPublishingLimits(user.id);
+  // Concurrently execute limits, recent posts, and count metrics
+  const [limits, recentPosts, totalPostsCount, publishedCount, draftCount, pendingCount] =
+    await Promise.all([
+      checkUserPublishingLimits(user.id),
+      prisma.post.findMany({
+        where: { authorId: user.id },
+        take: 5,
+        orderBy: { updatedAt: 'desc' },
+        select: {
+          id: true,
+          title: true,
+          slug: true,
+          status: true,
+          views: true,
+          updatedAt: true,
+          category: { select: { name: true } },
+        },
+      }),
+      prisma.post.count({ where: { authorId: user.id } }),
+      prisma.post.count({ where: { authorId: user.id, status: 'PUBLISHED' } }),
+      prisma.post.count({ where: { authorId: user.id, status: 'DRAFT' } }),
+      prisma.post.count({ where: { authorId: user.id, status: 'PENDING_REVIEW' } }),
+    ]);
+
   const isUnlimited = Boolean(limits.isUnlimited || user.email?.toLowerCase() === 'tanviladva01@gmail.com');
 
   // Calculate percentages
@@ -35,19 +58,6 @@ export default async function DashboardOverviewPage() {
     : limits.monthlyLimit > 0
     ? Math.min(100, Math.round((limits.currentMonthlyCount / limits.monthlyLimit) * 100))
     : 0;
-
-  // Query Recent Posts
-  const recentPosts = await prisma.post.findMany({
-    where: { authorId: user.id },
-    take: 5,
-    orderBy: { updatedAt: 'desc' },
-    include: { category: true },
-  });
-
-  const totalPostsCount = await prisma.post.count({ where: { authorId: user.id } });
-  const publishedCount = await prisma.post.count({ where: { authorId: user.id, status: 'PUBLISHED' } });
-  const draftCount = await prisma.post.count({ where: { authorId: user.id, status: 'DRAFT' } });
-  const pendingCount = await prisma.post.count({ where: { authorId: user.id, status: 'PENDING_REVIEW' } });
 
   return (
     <div className="space-y-8">

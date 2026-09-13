@@ -80,6 +80,7 @@ export default function NavbarClient({ user }: NavbarClientProps) {
                   <Link
                     key={link.href}
                     href={link.href}
+                    prefetch={true}
                     className={`transition-colors py-1 ${
                       isActive
                         ? 'text-orange-600 dark:text-orange-400 font-bold'
@@ -101,6 +102,7 @@ export default function NavbarClient({ user }: NavbarClientProps) {
             {/* Prominent Write / Add Blog Post CTA (Always Visible) */}
             <Link
               href={user ? '/dashboard/create-post' : '/login?redirect=/dashboard/create-post'}
+              prefetch={true}
               className="flex items-center space-x-1.5 px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-xl bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-semibold text-xs shadow-sm shadow-orange-500/25 transition-all whitespace-nowrap active:scale-95 hover:shadow-orange-500/40"
             >
               <PlusCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
@@ -113,6 +115,7 @@ export default function NavbarClient({ user }: NavbarClientProps) {
               <div className="hidden sm:flex items-center space-x-1.5">
                 <Link
                   href="/dashboard"
+                  prefetch={true}
                   className="flex items-center space-x-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 text-xs font-medium transition-colors"
                 >
                   <LayoutDashboard className="w-3.5 h-3.5 text-orange-500" />
@@ -121,6 +124,7 @@ export default function NavbarClient({ user }: NavbarClientProps) {
                 {user.role === 'ADMIN' && (
                   <Link
                     href="/admin"
+                    prefetch={true}
                     className="p-1.5 sm:p-2 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-500 hover:bg-amber-500/20 text-xs font-medium transition-colors"
                     title="Admin Panel"
                   >
@@ -131,6 +135,7 @@ export default function NavbarClient({ user }: NavbarClientProps) {
             ) : (
               <Link
                 href="/login"
+                prefetch={true}
                 className="hidden sm:inline-block px-3 py-1.5 text-xs font-medium text-slate-600 dark:text-slate-300 hover:text-orange-600 dark:hover:text-white transition-colors"
               >
                 Login
@@ -160,6 +165,7 @@ export default function NavbarClient({ user }: NavbarClientProps) {
                   <Link
                     key={link.href}
                     href={link.href}
+                    prefetch={true}
                     onClick={closeMenu}
                     className={`flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs font-medium transition-colors ${
                       isActive
@@ -177,6 +183,7 @@ export default function NavbarClient({ user }: NavbarClientProps) {
             <div className="pt-2 border-t border-slate-100 dark:border-slate-800 space-y-1.5">
               <Link
                 href={user ? '/dashboard/create-post' : '/login?redirect=/dashboard/create-post'}
+                prefetch={true}
                 onClick={closeMenu}
                 className="w-full flex items-center justify-center space-x-1.5 py-2.5 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-semibold text-xs shadow-sm transition-colors"
               >
@@ -188,6 +195,7 @@ export default function NavbarClient({ user }: NavbarClientProps) {
                 <div className="grid grid-cols-2 gap-2 pt-1">
                   <Link
                     href="/dashboard"
+                    prefetch={true}
                     onClick={closeMenu}
                     className="flex items-center justify-center space-x-1 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 font-semibold text-xs border border-slate-200 dark:border-slate-700"
                   >
@@ -197,6 +205,7 @@ export default function NavbarClient({ user }: NavbarClientProps) {
                   {user.role === 'ADMIN' && (
                     <Link
                       href="/admin"
+                      prefetch={true}
                       onClick={closeMenu}
                       className="flex items-center justify-center space-x-1 py-2 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 font-semibold text-xs border border-amber-500/30"
                     >
@@ -209,6 +218,7 @@ export default function NavbarClient({ user }: NavbarClientProps) {
                 <div className="grid grid-cols-2 gap-2 pt-1">
                   <Link
                     href="/login"
+                    prefetch={true}
                     onClick={closeMenu}
                     className="flex items-center justify-center space-x-1 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 font-semibold text-xs border border-slate-200 dark:border-slate-700"
                   >
@@ -217,6 +227,7 @@ export default function NavbarClient({ user }: NavbarClientProps) {
                   </Link>
                   <Link
                     href="/register"
+                    prefetch={true}
                     onClick={closeMenu}
                     className="flex items-center justify-center py-2 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-semibold text-xs"
                   >

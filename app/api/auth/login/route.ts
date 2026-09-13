@@ -48,6 +48,12 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Invalid credentials.' }, { status: 401 });
     }
 
+    if (!user.passwordHash) {
+      return NextResponse.json({
+        error: 'This account was created with Google. Please click "Continue with Google" to sign in.',
+      }, { status: 400 });
+    }
+
     const isValid = await verifyPassword(password, user.passwordHash);
     if (!isValid) {
       return NextResponse.json({ error: 'Invalid credentials.' }, { status: 401 });

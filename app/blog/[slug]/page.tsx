@@ -55,6 +55,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
+export const revalidate = 60; // 60s cache revalidation
+
 export default async function BlogDetailPage({ params }: Props) {
   const post = await prisma.post.findUnique({
     where: { slug: params.slug },
@@ -69,18 +71,31 @@ export default async function BlogDetailPage({ params }: Props) {
     notFound();
   }
 
-  // Increment view count asynchronously
-  await prisma.post.update({
-    where: { id: post.id },
-    data: { views: { increment: 1 } },
-  });
+  // Non-blocking asynchronous view increment (does not delay render)
+  prisma.post
+    .update({
+      where: { id: post.id },
+      data: { views: { increment: 1 } },
+    })
+    .catch(() => {});
 
-  // Query Related Articles
+  // Query Related Articles with selective projections
   const relatedPosts = await prisma.post.findMany({
     where: {
       categoryId: post.categoryId,
       id: { not: post.id },
       status: 'PUBLISHED',
+    },
+    select: {
+      id: true,
+      title: true,
+      slug: true,
+      excerpt: true,
+      featuredImage: true,
+      publishedAt: true,
+      createdAt: true,
+      category: { select: { name: true } },
+      author: { select: { name: true } },
     },
     take: 3,
   });

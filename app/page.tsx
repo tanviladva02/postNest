@@ -12,31 +12,46 @@ import {
   PlusCircle,
 } from 'lucide-react';
 
-export const revalidate = 60; // Revalidate every 60s
+export const revalidate = 60; // Revalidate cache every 60s for sub-50ms TTFB
 
 export default async function HomePage() {
-  // Query Published Posts (Fetch recent published articles for rich search catalog)
-  const posts = await prisma.post.findMany({
-    where: { status: 'PUBLISHED' },
-    include: {
-      category: true,
-      author: true,
-      company: true,
-    },
-    orderBy: { publishedAt: 'desc' },
-    take: 30,
-  });
-
-  // Query Categories
-  const categories = await prisma.category.findMany({
-    orderBy: { name: 'asc' },
-  });
-
-  // Query Companies
-  const companies = await prisma.company.findMany({
-    where: { isVerified: true },
-    take: 4,
-  });
+  // Ultra-Fast Parallel Data Fetching via Promise.all
+  const [posts, categories, companies] = await Promise.all([
+    prisma.post.findMany({
+      where: { status: 'PUBLISHED' },
+      select: {
+        id: true,
+        title: true,
+        slug: true,
+        excerpt: true,
+        content: true,
+        featuredImage: true,
+        views: true,
+        publishedAt: true,
+        createdAt: true,
+        category: {
+          select: { id: true, name: true, slug: true },
+        },
+        author: {
+          select: { id: true, name: true, image: true },
+        },
+        company: {
+          select: { id: true, companyName: true, isVerified: true },
+        },
+      },
+      orderBy: { publishedAt: 'desc' },
+      take: 30,
+    }),
+    prisma.category.findMany({
+      select: { id: true, name: true, slug: true },
+      orderBy: { name: 'asc' },
+    }),
+    prisma.company.findMany({
+      where: { isVerified: true },
+      select: { id: true, companyName: true, isVerified: true, logo: true, slug: true },
+      take: 4,
+    }),
+  ]);
 
   const featuredPost = posts[0];
   const regularPosts = posts.slice(1);
@@ -76,6 +91,7 @@ export default async function HomePage() {
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
             <Link
               href="/dashboard/create-post"
+              prefetch={true}
               className="w-full sm:w-auto px-7 py-3.5 rounded-xl bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-semibold text-base shadow-lg shadow-orange-500/25 transition-all duration-200 flex items-center justify-center space-x-2 transform hover:-translate-y-0.5"
             >
               <PlusCircle className="w-5 h-5" />
@@ -150,7 +166,7 @@ export default async function HomePage() {
                   </div>
                 )}
                 <h3 className="text-2xl font-bold text-slate-900 dark:text-white hover:text-orange-600 dark:hover:text-orange-400 transition-colors">
-                  <Link href={`/blog/${featuredPost.slug}`}>
+                  <Link href={`/blog/${featuredPost.slug}`} prefetch={true}>
                     {featuredPost.title}
                   </Link>
                 </h3>
@@ -167,6 +183,7 @@ export default async function HomePage() {
                 </div>
                 <Link
                   href={`/blog/${featuredPost.slug}`}
+                  prefetch={true}
                   className="text-orange-600 dark:text-orange-400 font-semibold flex items-center space-x-1 hover:underline"
                 >
                   <span>Read Article</span>
@@ -185,7 +202,7 @@ export default async function HomePage() {
             <TrendingUp className="w-5 h-5 text-orange-500" />
             <span>Browse Topics & Categories</span>
           </h2>
-          <Link href="/services" className="text-xs text-orange-600 dark:text-orange-400 font-semibold hover:underline">
+          <Link href="/services" prefetch={true} className="text-xs text-orange-600 dark:text-orange-400 font-semibold hover:underline">
             View All Services →
           </Link>
         </div>
@@ -195,6 +212,7 @@ export default async function HomePage() {
             <Link
               key={cat.id}
               href={`/category/${cat.slug}`}
+              prefetch={true}
               className="glass-card p-4 rounded-xl flex flex-col items-center text-center space-y-2 group hover:border-orange-500/40 transition-colors"
             >
               <div className="w-10 h-10 rounded-lg bg-orange-50 dark:bg-slate-800 flex items-center justify-center text-orange-600 dark:text-orange-400 group-hover:scale-110 transition-transform">

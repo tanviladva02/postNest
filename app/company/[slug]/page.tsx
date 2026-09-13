@@ -9,6 +9,8 @@ interface Props {
   };
 }
 
+export const revalidate = 60; // 60s cache revalidation
+
 export default async function CompanyProfilePage({ params }: Props) {
   const company = await prisma.company.findUnique({
     where: { slug: params.slug },

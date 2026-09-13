@@ -13,7 +13,8 @@ model User {
   name         String
   email        String   @unique
   username     String   @unique
-  passwordHash String
+  passwordHash String?
+  googleId     String?  @unique
   role         String   @default("USER") // USER, ADMIN
   image        String?
   bio          String?

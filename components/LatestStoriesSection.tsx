@@ -254,7 +254,11 @@ export default function LatestStoriesSection({
               >
                 <div>
                   {/* Article Thumbnail */}
-                  <Link href={`/blog/${post.slug}`} className="block relative h-48 w-full overflow-hidden bg-slate-100 dark:bg-slate-800">
+                  <Link
+                    href={`/blog/${post.slug}`}
+                    prefetch={true}
+                    className="block relative h-48 w-full overflow-hidden bg-slate-100 dark:bg-slate-800"
+                  >
                     <img
                       src={
                         post.featuredImage ||
@@ -285,7 +289,9 @@ export default function LatestStoriesSection({
                     )}
 
                     <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-slate-100 group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors line-clamp-2 leading-snug">
-                      <Link href={`/blog/${post.slug}`}>{post.title}</Link>
+                      <Link href={`/blog/${post.slug}`} prefetch={true}>
+                        {post.title}
+                      </Link>
                     </h3>
 
                     <p className="text-slate-600 dark:text-slate-400 text-xs line-clamp-3 leading-relaxed">
@@ -309,6 +315,7 @@ export default function LatestStoriesSection({
 
                   <Link
                     href={`/blog/${post.slug}`}
+                    prefetch={true}
                     className="inline-flex items-center space-x-1 text-orange-600 dark:text-orange-400 font-bold hover:underline shrink-0"
                   >
                     <span>Read</span>
