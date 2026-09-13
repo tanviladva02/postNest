@@ -53,6 +53,7 @@ export default function NavbarClient({ user }: NavbarClientProps) {
                   alt="PostNest"
                   width={150}
                   height={38}
+                  style={{ width: 'auto', height: 'auto' }}
                   className="h-6 sm:h-8 w-auto max-w-[110px] sm:max-w-[150px] object-contain dark:hidden transition-transform duration-200 group-hover:scale-105"
                   priority
                   quality={100}
@@ -62,6 +63,7 @@ export default function NavbarClient({ user }: NavbarClientProps) {
                   alt="PostNest"
                   width={150}
                   height={38}
+                  style={{ width: 'auto', height: 'auto' }}
                   className="h-6 sm:h-8 w-auto max-w-[110px] sm:max-w-[150px] object-contain hidden dark:block transition-transform duration-200 group-hover:scale-105"
                   priority
                   quality={100}
