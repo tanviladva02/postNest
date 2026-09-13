@@ -1,9 +1,12 @@
 import type { Metadata } from 'next';
+import Script from 'next/script';
 import './globals.css';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { ThemeProvider } from '@/components/ThemeProvider';
 import LayoutContent from '@/components/LayoutContent';
+
+const gaId = process.env.NEXT_PUBLIC_GA_ID || '';
 
 export const metadata: Metadata = {
   title: {
@@ -45,7 +48,28 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth" suppressHydrationWarning>
       <head>
-        {/* Anti-flash inline theme loader (defaults to Orange & White / light) */}
+
+        {/* Google Analytics (GA4) Tracking Script */}
+        {gaId && (
+          <>
+            <Script
+              src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}
+              strategy="afterInteractive"
+            />
+            <Script id="google-analytics" strategy="afterInteractive">
+              {`
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+                gtag('config', '${gaId}', {
+                  page_path: window.location.pathname,
+                });
+              `}
+            </Script>
+          </>
+        )}
+
+        {/* Anti-flash inline theme loader */}
         <script
           dangerouslySetInnerHTML={{
             __html: `
@@ -73,3 +97,4 @@ export default function RootLayout({
     </html>
   );
 }
+

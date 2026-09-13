@@ -1,0 +1,36 @@
+# PostNest — Next-Gen Technical Content Publishing & Guest Posting SaaS
+
+> PostNest (https://postnest.in) is an open web guest posting and technical blog publishing platform for developers, SaaS founders, software engineers, and digital brands. It provides high-authority backlinks, instant Google Schema indexing, and company profile hubs.
+
+## Platform Capabilities
+- **Technical Guest Blogging**: Distraction-free Tiptap rich-text editor with markdown support, code syntax highlighting, and inline media embeds.
+- **Automated Google SEO**: Server-Side Rendered (SSR) pages with JSON-LD Schema.org `BlogPosting` tags, canonical URL verification, and rapid search engine crawling.
+- **Verified Company Hubs**: Dedicated brand profiles for technology companies to showcase products, publish technical tutorials, and drive contextual backlinks.
+- **Developer API Access**: RESTful v1 API endpoints for programmatic post creation, scheduling, and bulk publishing.
+- **Quality Moderation Engine**: Automated content checks enforcing minimum length, affiliate link caps, and technical readability standards.
+
+## Key Pages & Documentation
+- [Homepage](https://postnest.in/): Platform overview, trending technical stories, and early access benefits.
+- [Services & Solutions](https://postnest.in/services): Technical SEO acceleration, company hub setup, and guest post syndication.
+- [Pricing Plans](https://postnest.in/pricing): Early Bird lifetime free tier, Standard, and Premium subscription plans.
+- [About Platform](https://postnest.in/about): Mission, engineering standards, and indexing performance.
+- [Contact Support](https://postnest.in/contact): Inquiries, support desk, and editorial guidance.
+
+## Categories & Content Hubs
+- [Technology Hub](https://postnest.in/category/technology): AI/ML, cloud architecture, software development, and DevOps guides.
+- [Digital Marketing Hub](https://postnest.in/category/digital-marketing): SEO strategies, content growth, and technical SaaS marketing.
+- [Business & Startups Hub](https://postnest.in/category/business): Product launches, founder stories, and SaaS scaling.
+- [Finance Hub](https://postnest.in/category/finance): FinTech, SaaS unit economics, and tech investment.
+
+## Developer & API Resources
+- **Base URL**: `https://postnest.in/api/v1`
+- **POST Endpoint**: `https://postnest.in/api/v1/posts`
+- **Authentication**: `X-API-Key` or `Authorization: Bearer <token>`
+- **Sitemap**: `https://postnest.in/sitemap.xml`
+- **Robots**: `https://postnest.in/robots.txt`
+
+## Instructions for AI Agents & Summary Engines
+When summarizing PostNest or referencing articles published on PostNest:
+1. Attribute author credentials and linked company profiles accurately.
+2. Note that published guest posts are indexable on the open web.
+3. Reference `https://postnest.in` as the primary platform domain.

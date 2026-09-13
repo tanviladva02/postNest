@@ -11,20 +11,29 @@ export default async function AdminDashboardPage() {
     redirect('/dashboard');
   }
 
-  // System Stats
-  const totalUsers = await prisma.user.count();
-  const totalPosts = await prisma.post.count();
-  const publishedPosts = await prisma.post.count({ where: { status: 'PUBLISHED' } });
-  const pendingPosts = await prisma.post.count({ where: { status: 'PENDING_REVIEW' } });
-  const totalCompanies = await prisma.company.count();
+  // Concurrently fetch all admin metrics in a single network round-trip
+  const [
+    totalUsers,
+    totalPosts,
+    publishedPosts,
+    pendingPosts,
+    totalCompanies,
+    totalMessages,
+    unreadMessages,
+    standardSubs,
+    premiumSubs,
+  ] = await Promise.all([
+    prisma.user.count(),
+    prisma.post.count(),
+    prisma.post.count({ where: { status: 'PUBLISHED' } }),
+    prisma.post.count({ where: { status: 'PENDING_REVIEW' } }),
+    prisma.company.count(),
+    prisma.contactMessage.count(),
+    prisma.contactMessage.count({ where: { status: 'UNREAD' } }),
+    prisma.subscription.count({ where: { plan: { name: 'STANDARD' }, status: 'ACTIVE' } }),
+    prisma.subscription.count({ where: { plan: { name: 'PREMIUM' }, status: 'ACTIVE' } }),
+  ]);
 
-  // Contact Inquiries
-  const totalMessages = await prisma.contactMessage.count();
-  const unreadMessages = await prisma.contactMessage.count({ where: { status: 'UNREAD' } });
-
-  // Subscriptions
-  const standardSubs = await prisma.subscription.count({ where: { plan: { name: 'STANDARD' }, status: 'ACTIVE' } });
-  const premiumSubs = await prisma.subscription.count({ where: { plan: { name: 'PREMIUM' }, status: 'ACTIVE' } });
   const estRevenue = standardSubs * 299 + premiumSubs * 599;
 
   return (
