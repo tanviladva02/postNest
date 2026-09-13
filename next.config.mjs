@@ -1,4 +1,4 @@
-/** @type {import('next').NextStyle} */
+/** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
     remotePatterns: [
@@ -8,6 +8,16 @@ const nextConfig = {
       },
     ],
   },
+  async redirects() {
+    return [
+      {
+        source: '/terms-and-conditions',
+        destination: '/terms',
+        permanent: true,
+      },
+    ];
+  },
 };
 
 export default nextConfig;
+

@@ -1,3 +1,4 @@
+import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { prisma } from '@/lib/prisma';
@@ -9,7 +10,41 @@ interface Props {
   };
 }
 
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const company = await prisma.company.findUnique({
+    where: { slug: params.slug },
+    select: { companyName: true, slug: true, description: true, logo: true },
+  });
+
+  if (!company) {
+    return {
+      title: 'Company Not Found | PostNest',
+    };
+  }
+
+  const baseUrl = (process.env.NEXT_PUBLIC_APP_URL || 'https://www.postnest.in').replace(/\/$/, '');
+
+  return {
+    title: `${company.companyName} Tech Blog & Hub | PostNest`,
+    description:
+      company.description ||
+      `Read verified engineering articles, product guides, and case studies from ${company.companyName} on PostNest.`,
+    alternates: {
+      canonical: `${baseUrl}/company/${company.slug}`,
+    },
+    openGraph: {
+      title: `${company.companyName} — Engineering Stories | PostNest`,
+      description:
+        company.description ||
+        `Read verified engineering articles from ${company.companyName} on PostNest.`,
+      url: `${baseUrl}/company/${company.slug}`,
+      images: company.logo ? [{ url: company.logo }] : [`${baseUrl}/logo.png`],
+    },
+  };
+}
+
 export const revalidate = 60; // 60s cache revalidation
+
 
 export default async function CompanyProfilePage({ params }: Props) {
   const company = await prisma.company.findUnique({

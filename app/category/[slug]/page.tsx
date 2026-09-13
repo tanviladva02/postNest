@@ -1,3 +1,4 @@
+import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { prisma } from '@/lib/prisma';
@@ -9,7 +10,40 @@ interface Props {
   };
 }
 
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const category = await prisma.category.findUnique({
+    where: { slug: params.slug },
+    select: { name: true, slug: true, description: true },
+  });
+
+  if (!category) {
+    return {
+      title: 'Category Not Found | PostNest',
+    };
+  }
+
+  const baseUrl = (process.env.NEXT_PUBLIC_APP_URL || 'https://www.postnest.in').replace(/\/$/, '');
+
+  return {
+    title: `${category.name} Articles & Guides | PostNest`,
+    description:
+      category.description ||
+      `Explore curated technical articles, guides, and engineering stories in ${category.name} on PostNest.`,
+    alternates: {
+      canonical: `${baseUrl}/category/${category.slug}`,
+    },
+    openGraph: {
+      title: `${category.name} — Technical Articles | PostNest`,
+      description:
+        category.description ||
+        `Explore technical articles and engineering guides in ${category.name} on PostNest.`,
+      url: `${baseUrl}/category/${category.slug}`,
+    },
+  };
+}
+
 export const revalidate = 60; // 60s cache revalidation
+
 
 export default async function CategoryPage({ params }: Props) {
   const category = await prisma.category.findUnique({
