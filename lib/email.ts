@@ -31,7 +31,7 @@ export async function sendPasswordResetOtpEmail({
   userName?: string;
   otpCode: string;
 }) {
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://postnest.in';
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://www.postnest.in';
   const greeting = userName ? `Hi ${userName},` : 'Hello,';
 
   const htmlContent = `

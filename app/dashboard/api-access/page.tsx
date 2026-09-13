@@ -221,7 +221,7 @@ export default function ApiAccessPage() {
         </h3>
 
         <pre className="p-4 rounded-2xl bg-slate-950 border border-slate-800 text-orange-400 font-mono text-xs overflow-x-auto">
-{`curl -X POST https://postnest.in/api/v1/posts \\
+{`curl -X POST https://www.postnest.in/api/v1/posts \\
   -H "X-PostNest-Api-Key: pn_live_xxxxxxxxxxxxx" \\
   -H "Content-Type: application/json" \\
   -d '{

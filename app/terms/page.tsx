@@ -19,17 +19,21 @@ import {
 } from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: 'Terms & Conditions | PostNest.in - Transparent SaaS Terms',
+  title: 'Terms & Conditions | PostNest',
   description:
-    'Review the official Terms & Conditions and Refund Policy for PostNest.in. Clear policies on guest post uploads, backlink standards, account subscriptions, and digital services.',
+    'Review the official Terms & Conditions and Refund Policy for PostNest. Clear policies on guest post uploads, backlink standards, account subscriptions, and digital services.',
+  alternates: {
+    canonical: 'https://www.postnest.in/terms',
+  },
   openGraph: {
-    title: 'Terms & Conditions | PostNest.in',
+    title: 'Terms & Conditions | PostNest',
     description:
       'Official terms of service, guest blogging rules, and refund policy for creators, brands, and subscribers on PostNest.',
-    url: 'https://postnest.in/terms',
+    url: 'https://www.postnest.in/terms',
     type: 'website',
   },
 };
+
 
 export default function TermsPage() {
   const lastUpdated = 'September 12, 2026';

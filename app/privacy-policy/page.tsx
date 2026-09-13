@@ -18,17 +18,21 @@ import {
 } from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: 'Privacy Policy | PostNest.in - Transparent SaaS Publishing',
+  title: 'Privacy Policy | PostNest',
   description:
     'Read the PostNest Privacy Policy. Learn how we handle your personal data, ensure content privacy, secure your credentials, and maintain search engine compliance.',
+  alternates: {
+    canonical: 'https://www.postnest.in/privacy-policy',
+  },
   openGraph: {
-    title: 'Privacy Policy | PostNest.in',
+    title: 'Privacy Policy | PostNest',
     description:
       'Learn how PostNest protects your privacy, manages user data, and safeguards guest posts and backlink distributions.',
-    url: 'https://postnest.in/privacy-policy',
+    url: 'https://www.postnest.in/privacy-policy',
     type: 'website',
   },
 };
+
 
 export default function PrivacyPolicyPage() {
   const lastUpdated = 'September 12, 2026';
@@ -230,7 +234,7 @@ export default function PrivacyPolicyPage() {
             <p className="text-xs text-slate-600 dark:text-slate-400">
               Phone / WhatsApp: <a href="tel:+917041167089" className="text-orange-600 dark:text-orange-400 hover:underline font-semibold">+91 70411 67089</a>
             </p>
-            <p className="text-xs text-slate-500">Website: https://postnest.in</p>
+            <p className="text-xs text-slate-500">Website: https://www.postnest.in</p>
             <div className="pt-2">
               <Link
                 href="/contact"

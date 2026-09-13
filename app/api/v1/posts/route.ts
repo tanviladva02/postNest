@@ -103,7 +103,7 @@ export async function POST(req: Request) {
         title: newPost.title,
         slug: newPost.slug,
         status: newPost.status,
-        url: `https://postnest.in/blog/${newPost.slug}`,
+        url: `${(process.env.NEXT_PUBLIC_APP_URL || 'https://www.postnest.in').replace(/\/$/, '')}/blog/${newPost.slug}`,
       },
     });
   } catch (error: any) {

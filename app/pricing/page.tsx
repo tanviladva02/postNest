@@ -24,17 +24,28 @@ import FaqAccordion from '@/components/FaqAccordion';
 import PricingPlanCardAction from '@/components/PricingPlanCardAction';
 
 export const metadata: Metadata = {
-  title: 'Pricing Plans & Publishing Quotas | PostNest.in',
+  title: 'Pricing Plans & Publishing Quotas | PostNest',
   description:
     'Transparent, developer-first pricing for technical writers, startups, SEO agencies, and enterprise brands. Start free with Early Bird 30 posts/mo, or scale with Standard and Premium automation.',
+  keywords: [
+    'PostNest pricing',
+    'guest post pricing',
+    'tech blogging plans',
+    'developer blog subscription',
+    'content syndication pricing',
+  ],
+  alternates: {
+    canonical: 'https://www.postnest.in/pricing',
+  },
   openGraph: {
-    title: 'PostNest.in Pricing Plans | Modern SaaS Publishing',
+    title: 'PostNest Pricing Plans | Modern SaaS Publishing',
     description:
       'Explore PostNest publishing tiers: Early Bird Free 30 posts/mo, Standard ₹299/mo, Premium ₹599/mo with REST API access, and Custom Enterprise solutions.',
-    url: 'https://postnest.in/pricing',
+    url: 'https://www.postnest.in/pricing',
     type: 'website',
   },
 };
+
 
 export default function PricingPage() {
   const primaryPlans = [
