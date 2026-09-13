@@ -17,10 +17,11 @@ import {
 import FaqAccordion from '@/components/FaqAccordion';
 
 export const metadata: Metadata = {
-  title: 'Publishing Services & Solutions | PostNest.in',
+  title: 'Publishing Services & Solutions | PostNest',
   description:
     'Explore PostNest publishing services: Developer Blogging, Verified Company Publications, REST API Headless Syndication, Bulk CSV publishing, and SEO Acceleration.',
   keywords: [
+    'PostNest services',
     'publishing services',
     'developer blogging platform',
     'company blog showcase',
@@ -29,11 +30,14 @@ export const metadata: Metadata = {
     'SEO content marketing',
     'PostNest',
   ],
+  alternates: {
+    canonical: 'https://www.postnest.in/services',
+  },
   openGraph: {
     title: 'PostNest Publishing Services & Solutions - Publish Like a Pro',
     description:
       'Everything you need to write, publish, syndicate, and rank technical content on Google.',
-    url: 'https://postnest.in/services',
+    url: 'https://www.postnest.in/services',
   },
 };
 
@@ -42,10 +46,12 @@ export default function ServicesPage() {
     '@context': 'https://schema.org',
     '@type': 'Service',
     name: 'PostNest Publishing Platform',
+    url: 'https://www.postnest.in/services',
     provider: {
       '@type': 'Organization',
-      name: 'PostNest.in',
-      url: 'https://postnest.in',
+      name: 'PostNest',
+      url: 'https://www.postnest.in',
+      logo: 'https://www.postnest.in/logo.png',
     },
     description: 'Modern blog publishing and content syndication platform for tech writers and companies.',
   };

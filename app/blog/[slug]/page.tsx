@@ -35,22 +35,28 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     };
   }
 
+  const baseUrl = (process.env.NEXT_PUBLIC_APP_URL || 'https://www.postnest.in').replace(/\/$/, '');
+
   return {
-    title: `${post.title} | PostNest.in - Publish Like a Pro`,
+    title: `${post.title} | PostNest`,
     description: post.excerpt,
+    alternates: {
+      canonical: `${baseUrl}/blog/${post.slug}`,
+    },
     openGraph: {
       title: post.title,
       description: post.excerpt,
       type: 'article',
+      url: `${baseUrl}/blog/${post.slug}`,
       publishedTime: post.publishedAt?.toISOString() || post.createdAt.toISOString(),
       authors: [post.author.name],
-      images: post.featuredImage ? [{ url: post.featuredImage }] : [],
+      images: post.featuredImage ? [{ url: post.featuredImage }] : [`${baseUrl}/logo.png`],
     },
     twitter: {
       card: 'summary_large_image',
       title: post.title,
       description: post.excerpt,
-      images: post.featuredImage ? [post.featuredImage] : [],
+      images: post.featuredImage ? [post.featuredImage] : [`${baseUrl}/logo.png`],
     },
   };
 }
@@ -111,13 +117,15 @@ export default async function BlogDetailPage({ params }: Props) {
   // Format blog body to ensure pasted image URLs and markdown images render as proper <img> elements
   const formattedHtml = formatBlogContent(post.content);
 
+  const baseUrl = (process.env.NEXT_PUBLIC_APP_URL || 'https://www.postnest.in').replace(/\/$/, '');
+
   // JSON-LD Structured Data for Google Ranking
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'BlogPosting',
     headline: post.title,
     description: post.excerpt,
-    image: post.featuredImage ? [post.featuredImage] : [],
+    image: post.featuredImage ? [post.featuredImage] : [`${baseUrl}/logo.png`],
     datePublished: post.publishedAt || post.createdAt,
     dateModified: post.updatedAt,
     author: {
@@ -126,15 +134,16 @@ export default async function BlogDetailPage({ params }: Props) {
     },
     publisher: {
       '@type': 'Organization',
-      name: 'PostNest.in',
+      name: 'PostNest',
+      url: baseUrl,
       logo: {
         '@type': 'ImageObject',
-        url: 'https://postnest.in/logo.png',
+        url: `${baseUrl}/logo.png`,
       },
     },
     mainEntityOfPage: {
       '@type': 'WebPage',
-      '@id': `https://postnest.in/blog/${post.slug}`,
+      '@id': `${baseUrl}/blog/${post.slug}`,
     },
   };
 

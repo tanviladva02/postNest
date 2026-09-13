@@ -14,21 +14,24 @@ import {
 import FaqAccordion from '@/components/FaqAccordion';
 
 export const metadata: Metadata = {
-  title: 'Contact Us | PostNest.in - Publish Like a Pro',
+  title: 'Contact Us | PostNest - Publish Like a Pro',
   description:
     'Have questions, feedback, or partnership proposals? Contact the PostNest team at +91 70411 67089 or support@postnest.in. We typically respond within 24 business hours.',
   keywords: [
     'contact postnest',
+    'PostNest support',
     'editorial inquiries',
     'tech blog support',
     'publish like a pro',
-    'postnest support',
     'postnest phone number',
   ],
+  alternates: {
+    canonical: 'https://www.postnest.in/contact',
+  },
   openGraph: {
-    title: 'Contact PostNest.in - Publish Like a Pro',
+    title: 'Contact PostNest - Publish Like a Pro',
     description: 'Get in touch with the PostNest editorial, technical, and partnership teams.',
-    url: 'https://postnest.in/contact',
+    url: 'https://www.postnest.in/contact',
   },
 };
 
@@ -36,14 +39,15 @@ export default function ContactPage() {
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'ContactPage',
-    name: 'Contact PostNest.in',
+    name: 'Contact PostNest',
     description: 'Get in touch with the PostNest editorial, technical, and partnership teams.',
-    url: 'https://postnest.in/contact',
+    url: 'https://www.postnest.in/contact',
     telephone: '+91 70411 67089',
     publisher: {
       '@type': 'Organization',
-      name: 'PostNest.in',
-      url: 'https://postnest.in',
+      name: 'PostNest',
+      url: 'https://www.postnest.in',
+      logo: 'https://www.postnest.in/logo.png',
     },
   };
 

@@ -77,14 +77,14 @@ export default async function HomePage() {
 
           {/* Hero Headline */}
           <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-tight">
-            Where developers & tech teams <br className="hidden sm:block" />
-            <span className="bg-gradient-to-r from-orange-700 via-orange-700 to-amber-600 bg-clip-text text-transparent">
+            PostNest — Where developers & tech teams <br className="hidden sm:block" />
+            <span className="bg-gradient-to-r from-orange-600 via-orange-500 to-amber-500 bg-clip-text text-transparent">
               publish like a pro.
             </span>
           </h1>
 
           <p className="max-w-2xl mx-auto text-base sm:text-lg text-slate-600 dark:text-slate-300 leading-relaxed font-normal">
-            Distraction-free blogging, zero paywalls for readers, automated Google-first SEO, and verified company hubs. Share your engineering stories and product guides with thousands of readers worldwide.
+            PostNest is the distraction-free tech blogging platform with zero paywalls for readers, automated Google-first SEO, and verified company hubs. Share your engineering stories and product guides with thousands of readers worldwide.
           </p>
 
           {/* Action CTA Buttons */}

@@ -26,6 +26,7 @@ export const metadata: Metadata = {
   description:
     'PostNest is the premier SaaS guest posting and content syndication platform. Publish articles, build high-authority backlinks, gain massive impressions, and rank your website faster on Google.',
   keywords: [
+    'PostNest',
     'guest posting platform',
     'upload blog backlink',
     'guest post website',
@@ -35,11 +36,14 @@ export const metadata: Metadata = {
     'postnest about',
     'saas publishing suite',
   ],
+  alternates: {
+    canonical: 'https://www.postnest.in/about',
+  },
   openGraph: {
     title: 'About PostNest - The Modern Guest Posting & Backlink Engine',
     description:
       'Boost your search rankings and gain verified backlinks. PostNest provides fast indexing, Google Schema markup, and high-traffic reader hubs for developers, marketers, and brands.',
-    url: 'https://postnest.in/about',
+    url: 'https://www.postnest.in/about',
     type: 'website',
   },
 };
@@ -49,13 +53,14 @@ export default function AboutPage() {
     '@context': 'https://schema.org',
     '@type': 'AboutPage',
     name: 'About PostNest',
+    url: 'https://www.postnest.in/about',
     description:
       'PostNest is a modern guest blogging and backlink platform designed to help writers, businesses, and SEO teams publish articles, earn authoritative backlinks, and rank higher on search engines.',
     publisher: {
       '@type': 'Organization',
-      name: 'PostNest.in',
-      url: 'https://postnest.in',
-      logo: 'https://postnest.in/logo.png',
+      name: 'PostNest',
+      url: 'https://www.postnest.in',
+      logo: 'https://www.postnest.in/logo.png',
     },
   };
 
