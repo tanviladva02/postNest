@@ -136,31 +136,36 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Column 4: Topic Hubs */}
+          {/* Column 4: Topic Hubs & Solutions */}
           <div className="space-y-3">
             <h4 className="text-xs font-bold text-slate-200 tracking-wider uppercase flex items-center space-x-1.5">
               <Cpu className="w-3.5 h-3.5 text-orange-500" />
-              <span>Topic Hubs</span>
+              <span>Solutions & SEO</span>
             </h4>
             <ul className="space-y-2 text-xs">
               <li>
-                <Link href="/category/technology" className="hover:text-white transition-colors">
-                  Technology & Cloud
+                <Link href="/best-blogging-platform" className="hover:text-white transition-colors">
+                  Best Blogging Platform
                 </Link>
               </li>
               <li>
-                <Link href="/category/ai-tools" className="hover:text-white transition-colors">
-                  AI & Developer Tools
+                <Link href="/free-guest-post-site" className="hover:text-white transition-colors">
+                  Free Guest Post Upload Site
                 </Link>
               </li>
               <li>
-                <Link href="/category/digital-marketing" className="hover:text-white transition-colors">
-                  Digital Marketing & Growth
+                <Link href="/backlink-creator-site" className="hover:text-white transition-colors">
+                  Backlink Creator Site
                 </Link>
               </li>
               <li>
-                <Link href="/dashboard/create-post" className="hover:text-white transition-colors text-orange-400 font-medium">
-                  + Submit an Article
+                <Link href="/free-blog-upload-platform" className="hover:text-white transition-colors">
+                  Free Blog Upload Platform
+                </Link>
+              </li>
+              <li>
+                <Link href="/top-blogging-platforms" className="hover:text-white transition-colors">
+                  Top Blogging Platforms
                 </Link>
               </li>
             </ul>
