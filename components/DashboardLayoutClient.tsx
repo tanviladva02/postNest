@@ -20,6 +20,7 @@ import {
   X,
   Home,
   MessageSquare,
+  User,
 } from 'lucide-react';
 
 interface DashboardLayoutClientProps {
@@ -39,7 +40,8 @@ export default function DashboardLayoutClient({ user, planName, children }: Dash
     { href: '/dashboard/bulk-upload', label: 'Bulk Upload', icon: UploadCloud },
     { href: '/dashboard/company', label: 'Company Profile', icon: Building2 },
     { href: '/dashboard/api-access', label: 'API Access', icon: Key },
-    { href: '/dashboard/subscription', label: 'Subscription', icon: CreditCard }
+    { href: '/dashboard/subscription', label: 'Subscription', icon: CreditCard },
+    { href: '/dashboard/settings', label: 'Account Settings', icon: User },
   ];
 
   const closeMenu = () => setMobileMenuOpen(false);

@@ -18,6 +18,7 @@ model User {
   role         String   @default("USER") // USER, ADMIN
   image        String?
   bio          String?
+  mobileNumber String?
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
