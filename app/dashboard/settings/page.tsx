@@ -76,8 +76,18 @@ export default function SettingsPage() {
   };
 
   const handleProfileSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setProfileMessage(null);
+    // Client-side mobile number validation (10 digits without country code or 12 digits with country code)
+    if (mobileNumber && mobileNumber.trim().length > 0) {
+      const digitsOnly = mobileNumber.trim().replace(/\D/g, '');
+      if (digitsOnly.length !== 10 && digitsOnly.length !== 12) {
+        setProfileMessage({
+          type: 'error',
+          text: 'Mobile number must be 10 digits (without country code, e.g. 9876543210) or 12 digits (with country code, e.g. 919876543210)',
+        });
+        return;
+      }
+    }
+
     setProfileSaving(true);
 
     try {
@@ -327,10 +337,13 @@ export default function SettingsPage() {
                     type="tel"
                     value={mobileNumber}
                     onChange={(e) => setMobileNumber(e.target.value)}
-                    placeholder="+91 9876543210"
+                    placeholder="9876543210 or +91 9876543210"
                     className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white text-xs focus:outline-none focus:border-orange-500 transition-colors"
                   />
                 </div>
+                <p className="text-[10px] text-slate-500 dark:text-slate-400">
+                  Must be 10 digits (e.g. <span className="font-mono">9876543210</span>) or 12 digits with country code (e.g. <span className="font-mono">919876543210</span>).
+                </p>
               </div>
             </div>
 

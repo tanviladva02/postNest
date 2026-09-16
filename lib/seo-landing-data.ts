@@ -708,4 +708,148 @@ export const SEO_LANDING_PAGES: Record<string, SeoPageData> = {
       },
     ],
   },
+
+  'write-for-us': {
+    slug: 'write-for-us',
+    metaTitle: 'Write For Us | Submit High-Ranking, Natural Human Language Guest Posts | PostNest',
+    metaDescription:
+      'Write for us on PostNest! We welcome high-ranking, 100% natural human-written guest posts on tech, SEO, software engineering, business & marketing. Fast Google indexing & zero paywalls.',
+    keywords: [
+      'write for us',
+      'submit guest post',
+      'write for us high ranking content',
+      'natural human language content write for us',
+      'human written guest post submission',
+      'tech blog write for us',
+      'seo write for us',
+      'guest post submission site 2026',
+      'write for us guest blogging',
+    ],
+    canonicalUrl: 'https://www.postnest.in/write-for-us',
+    hero: {
+      badgeText: '100% Natural Human Language & High SEO Standards',
+      title: 'Write For Us: Publish High-Ranking,',
+      highlightTitle: 'Natural Human-Written Articles',
+      description:
+        'Share your expertise, expand your organic audience, and rank at the top of Google search. PostNest welcomes natural, insightful, human-authored guides and technical articles with zero AI fluff.',
+      primaryCtaText: 'Submit Your Article Free',
+      primaryCtaHref: '/register',
+      secondaryCtaText: 'Explore Content Guidelines',
+      secondaryCtaHref: '#guidelines',
+      stats: [
+        { label: 'Human Tone Standard', value: '100% Natural' },
+        { label: 'Google Search Indexing', value: 'Fast Crawl' },
+        { label: 'Monthly Allowance', value: '30 Free Posts' },
+        { label: 'Author Profile & Links', value: 'Supported' },
+      ],
+    },
+    features: {
+      title: 'Our High-Ranking & Natural Content Standards',
+      subtitle: 'To guarantee top search engine rankings and genuine reader engagement, we enforce strict quality guidelines.',
+      items: [
+        {
+          iconName: 'FileText',
+          title: '100% Natural Human Language',
+          description:
+            'We value genuine human tone, personal experiences, and narrative clarity. Articles must avoid mechanical AI jargon, repetitive phrasing, and generic buzzwords.',
+        },
+        {
+          iconName: 'TrendingUp',
+          title: 'High-Ranking SEO Architecture',
+          description:
+            'Well-structured headers (H2, H3), search intent fulfillment, logical keyword placement, and actionable takeaways engineered to win Google Featured Snippets.',
+        },
+        {
+          iconName: 'ShieldCheck',
+          title: 'Google E-E-A-T & Original Insights',
+          description:
+            'Demonstrate real Experience, Expertise, Authoritativeness, and Trustworthiness. Include real-world code snippets, step-by-step solutions, or case studies.',
+        },
+        {
+          iconName: 'Link',
+          title: 'Contextual Links & Author Profile',
+          description:
+            'Include up to 2 relevant contextual backlinks inside your article body, plus a custom author bio card pointing to your website or portfolio.',
+        },
+        {
+          iconName: 'Search',
+          title: 'Zero AI Fluff Policy',
+          description:
+            'We strictly filter out low-quality AI filler ("In today\'s fast-paced digital world..."). Authentic human insight ranks better and converts readers faster.',
+        },
+        {
+          iconName: 'Zap',
+          title: 'Instant Server-Side Indexing',
+          description:
+            'Every approved article is server-side rendered, automatically added to XML sitemaps, and optimized with Schema.org markup for fast indexation.',
+        },
+      ],
+    },
+    comparison: {
+      title: 'Natural Human Content vs Low-Quality AI Spam',
+      subtitle: 'Why search algorithms and human readers favor authentic, human-written content.',
+      headers: ['Quality Indicator', 'PostNest Human-Written Standard', 'Low-Quality AI Generated Content'],
+      rows: [
+        { feature: 'Google E-E-A-T Compliance', postNest: '100% High Trust & Value', others: 'Flagged by Helpful Content System' },
+        { feature: 'Reader Engagement & Dwell Time', postNest: 'High Dwell Time & Low Bounce', others: 'High Bounce (Generic AI Cliché)' },
+        { feature: 'Search Indexing Stability', postNest: 'Fast & Permanent Indexing', others: 'Risk of De-indexing / Penalty' },
+        { feature: 'Original Insights & Case Studies', postNest: true, others: false },
+        { feature: 'Contextual Author Links & Bios', postNest: true, others: 'Flagged as Spam Link Farm' },
+      ],
+    },
+    steps: {
+      title: 'How to Write For Us & Publish on PostNest',
+      subtitle: 'Get your natural, high-ranking article live in 3 easy steps.',
+      items: [
+        {
+          step: '01',
+          title: 'Create Your Free Author Profile',
+          description: 'Sign up in 10 seconds to get immediate access to your publishing dashboard with 30 free monthly credits.',
+        },
+        {
+          step: '02',
+          title: 'Draft Your Human-Written Article',
+          description: 'Write an 800+ word informative article in natural human language using our rich Markdown editor. Add headers, code snippets, and images.',
+        },
+        {
+          step: '03',
+          title: 'Publish & Win Top Search Rankings',
+          description: 'Click publish to make your article live with automatic XML sitemap inclusion, Schema.org markup, and rapid Google indexation.',
+        },
+      ],
+    },
+    faqs: [
+      {
+        question: 'What topics can I write about for the "Write For Us" program?',
+        answer:
+          'We welcome articles across technology, software engineering, AI & machine learning, web development, digital marketing, SEO strategies, startup growth, SaaS, product design, and modern blogging.',
+      },
+      {
+        question: 'Why do you insist on natural human language content?',
+        answer:
+          'Google\'s Helpful Content System and E-E-A-T guidelines specifically penalize generic, unverified AI content. Natural human writing with genuine insight, personal experience, real code snippets, and original examples ranks significantly higher and retains readers.',
+      },
+      {
+        question: 'What are the word count and formatting guidelines?',
+        answer:
+          'Articles should be at least 800 to 1,500+ words long, structured with logical headings (H2, H3), short readable paragraphs, bullet points, and high-quality Markdown formatting.',
+      },
+      {
+        question: 'Can I include backlinks to my website or portfolio?',
+        answer:
+          'Yes! You can include up to 2 relevant contextual links within the main body of your article, plus links to your personal website or social profiles in your author bio card.',
+      },
+      {
+        question: 'Is it free to submit a "Write For Us" article on PostNest?',
+        answer:
+          'Yes, PostNest is 100% free to start. Every registered writer receives 30 free article publications every month.',
+      },
+      {
+        question: 'How fast will search engines index my published article?',
+        answer:
+          'Thanks to server-side rendering, instant XML sitemaps, and structured JSON-LD schema, search engine crawlers typically index new articles within 24 to 48 hours.',
+      },
+    ],
+  },
 };
+
