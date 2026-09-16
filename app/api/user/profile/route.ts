@@ -75,13 +75,28 @@ export async function PUT(request: Request) {
       );
     }
 
+    // Mobile number validation (10 digits without country code OR 12 digits with country code)
+    let formattedMobile: string | null = null;
+    if (mobileNumber && String(mobileNumber).trim().length > 0) {
+      const rawMobile = String(mobileNumber).trim();
+      const digitsOnly = rawMobile.replace(/\D/g, '');
+
+      if (digitsOnly.length !== 10 && digitsOnly.length !== 12) {
+        return NextResponse.json(
+          { error: 'Mobile number must be 10 digits (without country code) or 12 digits (with country code, e.g., 919876543210)' },
+          { status: 400 }
+        );
+      }
+      formattedMobile = rawMobile.startsWith('+') ? `+${digitsOnly}` : digitsOnly;
+    }
+
     // Update user profile
     const updatedUser = await prisma.user.update({
       where: { id: user.id },
       data: {
         name: name.trim(),
         username: cleanUsername,
-        mobileNumber: mobileNumber ? String(mobileNumber).trim() : null,
+        mobileNumber: formattedMobile,
         bio: bio ? String(bio).trim() : null,
         image: image ? String(image).trim() : user.image,
       },

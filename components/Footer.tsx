@@ -168,6 +168,11 @@ export default function Footer() {
                   Top Blogging Platforms
                 </Link>
               </li>
+              <li>
+                <Link href="/write-for-us" className="text-orange-400 font-semibold hover:text-orange-300 transition-colors">
+                  Write For Us Guidelines
+                </Link>
+              </li>
             </ul>
           </div>
 
