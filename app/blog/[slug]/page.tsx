@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { Metadata } from 'next';
 import { prisma } from '@/lib/prisma';
+import { getSiteUrl } from '@/lib/site';
 import { formatBlogContent } from '@/lib/formatContent';
 import {
   Calendar,
@@ -35,7 +36,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     };
   }
 
-  const baseUrl = (process.env.NEXT_PUBLIC_APP_URL || 'https://www.postnest.in').replace(/\/$/, '');
+  const baseUrl = getSiteUrl();
 
   return {
     title: `${post.title} | PostNest`,
@@ -117,7 +118,7 @@ export default async function BlogDetailPage({ params }: Props) {
   // Format blog body to ensure pasted image URLs and markdown images render as proper <img> elements
   const formattedHtml = formatBlogContent(post.content);
 
-  const baseUrl = (process.env.NEXT_PUBLIC_APP_URL || 'https://www.postnest.in').replace(/\/$/, '');
+  const baseUrl = getSiteUrl();
 
   // JSON-LD Structured Data for Google Ranking
   const jsonLd = {

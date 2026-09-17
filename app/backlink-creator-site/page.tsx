@@ -1,5 +1,6 @@
 import { Metadata } from 'next';
 import { prisma } from '@/lib/prisma';
+import { getSiteUrl } from '@/lib/site';
 import { SEO_LANDING_PAGES } from '@/lib/seo-landing-data';
 import SeoLandingTemplate from '@/components/seo/SeoLandingTemplate';
 
@@ -8,17 +9,20 @@ export const revalidate = 60;
 const pageData = SEO_LANDING_PAGES['backlink-creator-site'];
 
 export function generateMetadata(): Metadata {
+  const siteUrl = getSiteUrl();
+  const canonicalUrl = `${siteUrl}/backlink-creator-site`;
+
   return {
     title: pageData.metaTitle,
     description: pageData.metaDescription,
     keywords: pageData.keywords,
     alternates: {
-      canonical: pageData.canonicalUrl,
+      canonical: canonicalUrl,
     },
     openGraph: {
       title: pageData.metaTitle,
       description: pageData.metaDescription,
-      url: pageData.canonicalUrl,
+      url: canonicalUrl,
       type: 'website',
       siteName: 'PostNest',
     },
@@ -31,6 +35,9 @@ export function generateMetadata(): Metadata {
 }
 
 export default async function BacklinkCreatorSitePage() {
+  const siteUrl = getSiteUrl();
+  const canonicalUrl = `${siteUrl}/backlink-creator-site`;
+
   let recentPosts: any[] = [];
   let categories: any[] = [];
 
@@ -64,11 +71,39 @@ export default async function BacklinkCreatorSitePage() {
     console.error('Error loading live data for SEO landing page:', error);
   }
 
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Home',
+        item: siteUrl,
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: 'Backlink Creator Site',
+        item: canonicalUrl,
+      },
+    ],
+  };
+
   return (
-    <SeoLandingTemplate
-      data={pageData}
-      recentPosts={recentPosts}
-      categories={categories}
-    />
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
+      <SeoLandingTemplate
+        data={{
+          ...pageData,
+          canonicalUrl,
+        }}
+        recentPosts={recentPosts}
+        categories={categories}
+      />
+    </>
   );
 }

@@ -2,6 +2,7 @@ import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { prisma } from '@/lib/prisma';
+import { getSiteUrl } from '@/lib/site';
 import { Building2, CheckCircle2, ExternalLink, Globe, ArrowLeft } from 'lucide-react';
 
 interface Props {
@@ -22,7 +23,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     };
   }
 
-  const baseUrl = (process.env.NEXT_PUBLIC_APP_URL || 'https://www.postnest.in').replace(/\/$/, '');
+  const baseUrl = getSiteUrl();
 
   return {
     title: `${company.companyName} Tech Blog & Hub | PostNest`,

@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Script from 'next/script';
+import { getSiteUrl } from '@/lib/site';
 // import { Analytics } from '@vercel/analytics/next';
 import './globals.css';
 import Navbar from '@/components/Navbar';
@@ -8,7 +9,8 @@ import { ThemeProvider } from '@/components/ThemeProvider';
 import LayoutContent from '@/components/LayoutContent';
 
 const gaId = process.env.NEXT_PUBLIC_GA_ID || '';
-const siteUrl = (process.env.NEXT_PUBLIC_APP_URL || 'https://www.postnest.in').replace(/\/$/, '');
+const adSenseId = process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID || 'ca-pub-1496798572797187';
+const siteUrl = getSiteUrl();
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -43,7 +45,7 @@ export const metadata: Metadata = {
     telephone: false,
   },
   alternates: {
-    canonical: siteUrl,
+    canonical: './',
   },
   openGraph: {
     title: 'PostNest — Publish Like a Pro | Modern Tech Publishing Platform',
@@ -215,6 +217,16 @@ export default function RootLayout({
               `}
             </Script>
           </>
+        )}
+
+        {/* Google AdSense Auto-Ads Script */}
+        {adSenseId && (
+          <Script
+            async
+            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adSenseId}`}
+            crossOrigin="anonymous"
+            strategy="afterInteractive"
+          />
         )}
 
         {/* Anti-flash inline theme loader */}
