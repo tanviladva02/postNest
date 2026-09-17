@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
 import { prisma } from '@/lib/prisma';
+import { getSiteUrl } from '@/lib/site';
 import { SEO_LANDING_PAGES } from '@/lib/seo-landing-data';
 import SeoLandingTemplate from '@/components/seo/SeoLandingTemplate';
 import {
@@ -26,17 +27,20 @@ export const revalidate = 60;
 const pageData = SEO_LANDING_PAGES['write-for-us'];
 
 export function generateMetadata(): Metadata {
+  const siteUrl = getSiteUrl();
+  const canonicalUrl = `${siteUrl}/write-for-us`;
+
   return {
     title: pageData.metaTitle,
     description: pageData.metaDescription,
     keywords: pageData.keywords,
     alternates: {
-      canonical: pageData.canonicalUrl,
+      canonical: canonicalUrl,
     },
     openGraph: {
       title: pageData.metaTitle,
       description: pageData.metaDescription,
-      url: pageData.canonicalUrl,
+      url: canonicalUrl,
       type: 'website',
       siteName: 'PostNest',
     },
