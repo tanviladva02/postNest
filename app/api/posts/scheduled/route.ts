@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { incrementUserPublishUsage } from '@/lib/publishing-limits';
 
+export const dynamic = 'force-dynamic';
+
 export async function POST(req: Request) {
   try {
     const now = new Date();

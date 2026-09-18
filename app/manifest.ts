@@ -2,7 +2,7 @@ import { MetadataRoute } from 'next';
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: 'PostNest — Modern Tech Publishing Platform',
+    name: 'PostNest Best Free Blogging Platform',
     short_name: 'PostNest',
     description: 'Where developers, startups, and tech writers publish like a pro. Distraction-free publishing, SEO-first distribution, and high-impact company blogs.',
     start_url: '/',

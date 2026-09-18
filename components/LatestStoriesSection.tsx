@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import Link from 'next/link';
 import {
   Search,
@@ -14,6 +14,8 @@ import {
   BookOpen,
   Calendar,
   Layers,
+  ChevronLeft,
+  ChevronRight,
 } from 'lucide-react';
 
 export interface StoryPost {
@@ -54,6 +56,8 @@ interface LatestStoriesSectionProps {
   categories: CategoryOption[];
 }
 
+const ITEMS_PER_PAGE = 9; // Only 9 blogs show per page as requested
+
 export default function LatestStoriesSection({
   posts,
   categories,
@@ -61,6 +65,7 @@ export default function LatestStoriesSection({
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('ALL');
   const [sortBy, setSortBy] = useState<'newest' | 'popular'>('newest');
+  const [currentPage, setCurrentPage] = useState<number>(1);
 
   // Filter and sort stories
   const filteredPosts = useMemo(() => {
@@ -96,11 +101,39 @@ export default function LatestStoriesSection({
       });
   }, [posts, searchQuery, selectedCategory, sortBy]);
 
+  // Reset to page 1 whenever filters or search query change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery, selectedCategory, sortBy]);
+
+  // Calculate pagination totals
+  const totalPages = Math.max(1, Math.ceil(filteredPosts.length / ITEMS_PER_PAGE));
+
+  // Slice posts for current page (9 posts max per page)
+  const paginatedPosts = useMemo(() => {
+    const start = (currentPage - 1) * ITEMS_PER_PAGE;
+    return filteredPosts.slice(start, start + ITEMS_PER_PAGE);
+  }, [filteredPosts, currentPage]);
+
   const handleResetFilters = () => {
     setSearchQuery('');
     setSelectedCategory('ALL');
     setSortBy('newest');
+    setCurrentPage(1);
   };
+
+  const handlePageChange = (page: number) => {
+    if (page >= 1 && page <= totalPages) {
+      setCurrentPage(page);
+      const section = document.getElementById('stories');
+      if (section) {
+        section.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  };
+
+  const startItemIndex = (currentPage - 1) * ITEMS_PER_PAGE + 1;
+  const endItemIndex = Math.min(currentPage * ITEMS_PER_PAGE, filteredPosts.length);
 
   return (
     <section id="stories" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
@@ -109,13 +142,13 @@ export default function LatestStoriesSection({
         <div className="space-y-1">
           <div className="inline-flex items-center space-x-1.5 text-xs font-semibold text-orange-600 dark:text-orange-400">
             <Sparkles className="w-3.5 h-3.5" />
-            <span>Discover & Learn</span>
+            <span>Discover & Learn on PostNest</span>
           </div>
           <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
-            Latest Tech Stories
+            Latest Tech Stories & Free Guest Posts
           </h2>
           <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400">
-            Fresh insights published directly by engineers, founders, and domain experts
+            Explore articles published on the best blogging platform for developers and tech teams
           </p>
         </div>
 
@@ -123,7 +156,7 @@ export default function LatestStoriesSection({
           href="/dashboard/create-post"
           className="inline-flex items-center self-start sm:self-auto space-x-1.5 px-4 py-2 rounded-xl bg-orange-500/10 hover:bg-orange-500/20 text-orange-600 dark:text-orange-400 border border-orange-500/30 text-xs font-bold transition-all hover:scale-[1.02] active:scale-[0.98]"
         >
-          <span>+ Write an Article</span>
+          <span>+ Free Blog Upload</span>
         </Link>
       </div>
 
@@ -137,7 +170,7 @@ export default function LatestStoriesSection({
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search blog by title, keyword, topic, author, or company..."
+              placeholder="Search blog by title, keyword, topic, author, or guest post site..."
               className="w-full pl-10 pr-10 py-2.5 rounded-xl bg-white dark:bg-slate-950 border border-slate-300 dark:border-slate-700/80 text-slate-900 dark:text-slate-100 text-xs sm:text-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all shadow-inner"
             />
             {searchQuery && (
@@ -224,16 +257,22 @@ export default function LatestStoriesSection({
           </div>
 
           <div className="text-xs text-slate-500 dark:text-slate-400 font-medium">
-            Showing <span className="font-bold text-slate-900 dark:text-slate-100">{filteredPosts.length}</span> of{' '}
-            {posts.length} articles
+            {filteredPosts.length > 0 ? (
+              <span>
+                Showing <span className="font-bold text-slate-900 dark:text-slate-100">{startItemIndex}-{endItemIndex}</span> of{' '}
+                <span className="font-bold text-slate-900 dark:text-slate-100">{filteredPosts.length}</span> articles
+              </span>
+            ) : (
+              <span>0 articles</span>
+            )}
           </div>
         </div>
       </div>
 
-      {/* 3. Post Grid or Empty State */}
-      {filteredPosts.length > 0 ? (
+      {/* 3. Post Grid (Paginated to 9 blogs) */}
+      {paginatedPosts.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-          {filteredPosts.map((post) => {
+          {paginatedPosts.map((post) => {
             const wordCount = (post.content || '')
               .replace(/<[^>]+>/g, ' ')
               .trim()
@@ -349,6 +388,77 @@ export default function LatestStoriesSection({
           >
             <span>Clear Search & Filters</span>
           </button>
+        </div>
+      )}
+
+      {/* 4. Pagination Controls (Only 9 blogs per page) */}
+      {totalPages > 1 && (
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-6 border-t border-slate-200 dark:border-slate-800/80">
+          <div className="text-xs text-slate-500 dark:text-slate-400 font-medium">
+            Page <span className="font-bold text-slate-900 dark:text-slate-100">{currentPage}</span> of{' '}
+            <span className="font-bold text-slate-900 dark:text-slate-100">{totalPages}</span> ({filteredPosts.length} total blogs)
+          </div>
+
+          <div className="flex items-center space-x-2">
+            {/* Previous Button */}
+            <button
+              type="button"
+              onClick={() => handlePageChange(currentPage - 1)}
+              disabled={currentPage === 1}
+              className="inline-flex items-center space-x-1 px-3.5 py-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-40 disabled:pointer-events-none transition-colors"
+            >
+              <ChevronLeft className="w-4 h-4" />
+              <span>Previous</span>
+            </button>
+
+            {/* Numeric Page Buttons */}
+            <div className="flex items-center space-x-1">
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => {
+                // Show first, last, current, and adjacent pages for clean look
+                if (
+                  pageNum === 1 ||
+                  pageNum === totalPages ||
+                  (pageNum >= currentPage - 1 && pageNum <= currentPage + 1)
+                ) {
+                  return (
+                    <button
+                      key={pageNum}
+                      type="button"
+                      onClick={() => handlePageChange(pageNum)}
+                      className={`w-9 h-9 rounded-xl text-xs font-bold transition-all ${
+                        pageNum === currentPage
+                          ? 'bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-md shadow-orange-500/25'
+                          : 'bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800'
+                      }`}
+                    >
+                      {pageNum}
+                    </button>
+                  );
+                } else if (
+                  pageNum === currentPage - 2 ||
+                  pageNum === currentPage + 2
+                ) {
+                  return (
+                    <span key={pageNum} className="text-slate-400 dark:text-slate-600 text-xs px-1">
+                      ...
+                    </span>
+                  );
+                }
+                return null;
+              })}
+            </div>
+
+            {/* Next Button */}
+            <button
+              type="button"
+              onClick={() => handlePageChange(currentPage + 1)}
+              disabled={currentPage === totalPages}
+              className="inline-flex items-center space-x-1 px-3.5 py-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-40 disabled:pointer-events-none transition-colors"
+            >
+              <span>Next</span>
+              <ChevronRight className="w-4 h-4" />
+            </button>
+          </div>
         </div>
       )}
     </section>

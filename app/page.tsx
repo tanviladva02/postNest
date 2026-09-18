@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { prisma } from '@/lib/prisma';
 import LatestStoriesSection from '@/components/LatestStoriesSection';
+import NewsletterSection from '@/components/NewsletterSection';
 import {
   Sparkles,
   ArrowRight,
@@ -10,12 +11,15 @@ import {
   Cpu,
   BookOpen,
   PlusCircle,
+  ShieldCheck,
+  Zap,
+  Search,
 } from 'lucide-react';
 
 export const revalidate = 60; // Revalidate cache every 60s for sub-50ms TTFB
 
 export default async function HomePage() {
-  // Ultra-Fast Parallel Data Fetching via Promise.all
+  // Parallel Data Fetching via Prisma
   const [posts, categories, companies] = await Promise.all([
     prisma.post.findMany({
       where: { status: 'PUBLISHED' },
@@ -40,7 +44,7 @@ export default async function HomePage() {
         },
       },
       orderBy: { publishedAt: 'desc' },
-      take: 30,
+      take: 100, // Fetch up to 100 articles for smooth 9-blog pagination
     }),
     prisma.category.findMany({
       select: { id: true, name: true, slug: true },
@@ -54,39 +58,56 @@ export default async function HomePage() {
   ]);
 
   const featuredPost = posts[0];
-  const regularPosts = posts.slice(1);
 
   return (
     <div className="space-y-16 pb-16">
-      {/* 1. Hero Section with Hashnode-Inspired Aesthetics */}
+      {/* 1. Hero Section — SEO Optimized & High-Converting Headline */}
       <section className="relative overflow-hidden pt-12 pb-20 px-4 sm:px-6 lg:px-8 border-b border-slate-200 dark:border-slate-800/80">
         {/* Ambient Top Glow */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-96 bg-gradient-to-b from-orange-500/10 via-amber-500/5 to-transparent blur-3xl -z-10 pointer-events-none" />
 
         <div className="max-w-5xl mx-auto text-center space-y-8">
           {/* Tagline Badge */}
-          <div className="inline-flex items-center space-x-2 px-4 py-1.5 rounded-full bg-orange-50 dark:bg-slate-900 border border-orange-200 dark:border-orange-500/30 shadow-sm">
+          <div className="inline-flex items-center space-x-2 px-4 py-1.5 rounded-full bg-orange-50 dark:bg-slate-900 border border-orange-200 dark:border-orange-500/30 shadow-sm flex-wrap justify-center gap-y-1">
             <Sparkles className="w-4 h-4 text-orange-500 animate-pulse" />
             <span className="text-xs font-semibold text-slate-800 dark:text-slate-200">
-              The Modern Tech Publication Platform • <span className="text-orange-600 dark:text-orange-400 font-bold">Publish like a pro</span>
+              #1 Best Blogging Platform & Guest Posting Submission Site
             </span>
-            <span className="text-[10px] bg-orange-500/15 text-orange-600 dark:text-orange-300 px-2 py-0.5 rounded-full font-mono uppercase font-semibold">
-              Free 30 Posts
+            <span className="text-[10px] bg-orange-500/15 text-orange-600 dark:text-orange-300 px-2 py-0.5 rounded-full font-mono uppercase font-bold">
+              100% Forever Free
             </span>
           </div>
 
-          {/* Hero Headline */}
-          <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-tight">
-            PostNest — Where developers & tech teams <br className="hidden sm:block" />
+          {/* Hero Headline — Client Attractive & Heavy SEO Keyword Target */}
+          <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight text-slate-900 dark:text-white leading-tight">
+            PostNest Best Free Blogging Platform & <br className="hidden sm:block" />
             <span className="bg-gradient-to-r from-orange-600 via-orange-500 to-amber-500 bg-clip-text text-transparent">
-              publish like a pro.
+              Free Guest Posting Submission Site
             </span>
           </h1>
 
-          <p className="max-w-2xl mx-auto text-base sm:text-lg text-slate-600 dark:text-slate-300 leading-relaxed font-normal">
-            PostNest is the distraction-free tech blogging platform with zero paywalls for readers, automated Google-first SEO, and verified company hubs. Share your engineering stories and product guides with thousands of readers worldwide.
+          <p className="max-w-3xl mx-auto text-base sm:text-lg text-slate-600 dark:text-slate-300 leading-relaxed font-normal">
+            Where developers, tech teams, & SEO specialists publish like a pro. PostNest is a <strong>free blog upload platform</strong> with zero paywalls for readers, automated Google-first SEO indexing, verified company hubs, and <strong>100% full free platform use forever</strong>.
           </p>
 
+          {/* Top Search Keywords Badge Bar for Instant Search Crawler & Client Recognition */}
+          <div className="flex flex-wrap items-center justify-center gap-2 max-w-3xl mx-auto pt-1">
+            <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800/80 px-2.5 py-1 rounded-lg border border-slate-200 dark:border-slate-700">
+              ⚡ Guest Posting Sites Free
+            </span>
+            <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800/80 px-2.5 py-1 rounded-lg border border-slate-200 dark:border-slate-700">
+              🚀 Best Blogging Platform
+            </span>
+            <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800/80 px-2.5 py-1 rounded-lg border border-slate-200 dark:border-slate-700">
+              🔥 Free Guest Post Sites
+            </span>
+            <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800/80 px-2.5 py-1 rounded-lg border border-slate-200 dark:border-slate-700">
+              🎯 Guest Posting Submission Sites
+            </span>
+            <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800/80 px-2.5 py-1 rounded-lg border border-slate-200 dark:border-slate-700">
+              ✨ Free Blog Upload
+            </span>
+          </div>
 
           {/* Action CTA Buttons */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
@@ -96,35 +117,35 @@ export default async function HomePage() {
               className="w-full sm:w-auto px-7 py-3.5 rounded-xl bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-semibold text-base shadow-lg shadow-orange-500/25 transition-all duration-200 flex items-center justify-center space-x-2 transform hover:-translate-y-0.5"
             >
               <PlusCircle className="w-5 h-5" />
-              <span>Write an Article</span>
+              <span>Publish Free Guest Post</span>
             </Link>
 
             <Link
-              href="#explore"
+              href="#stories"
               className="w-full sm:w-auto px-7 py-3.5 rounded-xl bg-white dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-300 dark:border-slate-700 font-semibold text-base transition-all duration-200 flex items-center justify-center space-x-2"
             >
               <BookOpen className="w-5 h-5 text-orange-500" />
-              <span>Explore Articles</span>
+              <span>Explore All Articles</span>
             </Link>
           </div>
 
           {/* Quick Value Metrics */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-10 border-t border-slate-200 dark:border-slate-800 max-w-4xl mx-auto">
             <div className="text-center p-3">
-              <p className="text-2xl font-bold text-slate-900 dark:text-white">30 / Mo</p>
-              <p className="text-xs text-slate-500 dark:text-slate-400">Early Bird Free Posts</p>
+              <p className="text-2xl font-bold text-slate-900 dark:text-white">100% Free</p>
+              <p className="text-xs text-slate-500 dark:text-slate-400">Use Platform Forever Free</p>
             </div>
             <div className="text-center p-3">
               <p className="text-2xl font-bold text-slate-900 dark:text-white">Zero Paywalls</p>
               <p className="text-xs text-slate-500 dark:text-slate-400">Open-Web Readers</p>
             </div>
             <div className="text-center p-3">
-              <p className="text-2xl font-bold text-slate-900 dark:text-white">Folder Upload</p>
-              <p className="text-xs text-slate-500 dark:text-slate-400">PNG, JPG, WebP, URLs</p>
+              <p className="text-2xl font-bold text-slate-900 dark:text-white">Free Blog Upload</p>
+              <p className="text-xs text-slate-500 dark:text-slate-400">Markdown, Images & Code</p>
             </div>
             <div className="text-center p-3">
-              <p className="text-2xl font-bold text-slate-900 dark:text-white">REST API</p>
-              <p className="text-xs text-slate-500 dark:text-slate-400">Headless Publishing</p>
+              <p className="text-2xl font-bold text-slate-900 dark:text-white">High SEO Rank</p>
+              <p className="text-xs text-slate-500 dark:text-slate-400">Fast Google Indexing</p>
             </div>
           </div>
         </div>
@@ -227,35 +248,11 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* 5. Interactive Latest Articles Grid with Real-Time Search & Filters */}
+      {/* 4. Interactive Latest Stories Grid with 9-Blog Pagination & Filters */}
       <LatestStoriesSection posts={posts} categories={categories} />
 
-      {/* 7. Newsletter Digest Subscription */}
-      <section className="max-w-4xl mx-auto px-4">
-        <div className="glass-panel p-8 sm:p-12 rounded-3xl border border-orange-200 dark:border-orange-500/20 text-center space-y-4 bg-gradient-to-b from-orange-500/5 dark:from-orange-950/20 to-transparent">
-          <h3 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white">
-            Subscribe to the PostNest Digest
-          </h3>
-          <p className="text-slate-600 dark:text-slate-300 text-sm max-w-lg mx-auto">
-            Get top curated technical guides, engineering case studies, and developer insights delivered directly to your inbox. Zero spam, unsubscribe anytime.
-          </p>
-
-          <form className="flex flex-col sm:flex-row items-center justify-center gap-3 max-w-md mx-auto pt-2">
-            <input
-              type="email"
-              placeholder="Enter your email address"
-              className="w-full px-4 py-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-slate-200 text-sm focus:outline-none focus:border-orange-500 transition-colors"
-              required
-            />
-            <button
-              type="submit"
-              className="w-full sm:w-auto px-6 py-3 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-semibold text-sm transition-colors whitespace-nowrap shadow-md shadow-orange-500/20"
-            >
-              Subscribe Free
-            </button>
-          </form>
-        </div>
-      </section>
+      {/* 5. Newsletter Digest Subscription with Interactive Backend API */}
+      <NewsletterSection source="HOMEPAGE" />
     </div>
   );
 }
