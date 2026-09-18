@@ -15,16 +15,23 @@ const siteUrl = getSiteUrl();
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: 'PostNest — Publish Like a Pro | Modern Tech Publishing Platform',
+    default: 'PostNest Best Free Blogging Platform & Guest Posting Submission Site',
     template: '%s | PostNest',
   },
   description:
-    'PostNest is where developers, engineering teams, and startups publish like a pro. Distraction-free tech blogging, SEO-first backlink distribution, and verified company hubs.',
+    'PostNest is the #1 best blogging platform & free guest posting site for developers, tech teams, and writers. Enjoy free blog upload with zero paywalls & 100% forever free platform access.',
   keywords: [
     'PostNest',
-    'PostNest.in',
     'postnest',
     'post nest',
+    'PostNest.in',
+    'guest posting sites free',
+    'best blogging platform',
+    'free guest post sites',
+    'guest posting submission sites',
+    'free blog upload',
+    'free blog upload platform',
+    'forever free platform',
     'publish like a pro',
     'tech blogging platform',
     'developer blogging',
@@ -32,8 +39,6 @@ export const metadata: Metadata = {
     'SEO blog publishing',
     'company blog',
     'developer guest post',
-    'startup tech stories',
-    'engineering blogs',
     'backlinks for startups',
   ],
   authors: [{ name: 'PostNest Team', url: siteUrl }],
@@ -48,9 +53,9 @@ export const metadata: Metadata = {
     canonical: './',
   },
   openGraph: {
-    title: 'PostNest — Publish Like a Pro | Modern Tech Publishing Platform',
+    title: 'PostNest Best Free Blogging Platform & Guest Posting Submission Site',
     description:
-      'The modern publication platform for developers, tech writers, and forward-thinking companies. Distraction-free blogging and automated SEO distribution.',
+      'The #1 free guest post site and blogging platform for developers, tech writers, and companies. Free blog upload & automated Google SEO ranking.',
     url: siteUrl,
     siteName: 'PostNest',
     images: [
@@ -58,7 +63,7 @@ export const metadata: Metadata = {
         url: `${siteUrl}/logo.png`,
         width: 1200,
         height: 630,
-        alt: 'PostNest — Publish Like a Pro',
+        alt: 'PostNest — Best Free Blogging Platform & Guest Posting Site',
       },
     ],
     locale: 'en_US',
@@ -66,9 +71,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'PostNest — Publish Like a Pro | Modern Tech Publishing Platform',
+    title: 'PostNest Best Free Blogging Platform & Guest Posting Submission Site',
     description:
-      'The modern publication platform for developers, tech writers, and forward-thinking companies.',
+      'Where developers & tech teams publish like a pro. Free guest posting sites, free blog upload, and automated SEO distribution.',
     images: [`${siteUrl}/logo.png`],
   },
   robots: {
@@ -84,6 +89,9 @@ export const metadata: Metadata = {
   },
   verification: {
     google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || 'e41f8b61f9225429',
+  },
+  other: {
+    'google-adsense-account': process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID || 'ca-pub-1496798572797187',
   },
 };
 
@@ -219,14 +227,17 @@ export default function RootLayout({
           </>
         )}
 
-        {/* Google AdSense Auto-Ads Script */}
+        {/* Google AdSense Auto-Ads Script & Account Verification Meta Tag */}
         {adSenseId && (
-          <Script
-            async
-            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adSenseId}`}
-            crossOrigin="anonymous"
-            strategy="afterInteractive"
-          />
+          <>
+            <meta name="google-adsense-account" content={adSenseId} />
+            <Script
+              async
+              src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adSenseId}`}
+              crossOrigin="anonymous"
+              strategy="afterInteractive"
+            />
+          </>
         )}
 
         {/* Anti-flash inline theme loader */}
