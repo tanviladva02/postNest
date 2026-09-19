@@ -23,6 +23,7 @@ import {
   Lock,
   ArrowRight,
   Info,
+  Loader2,
 } from 'lucide-react';
 
 export default function CreatePostPage() {
@@ -44,9 +45,9 @@ export default function CreatePostPage() {
   const [featuredImageMode, setFeaturedImageMode] = useState<'upload' | 'url'>('upload');
   const [excerpt, setExcerpt] = useState('');
   const [content, setContent] = useState('');
-  const [tags, setTags] = useState('');
+  const [tags, setTags] = useState<string[]>([]);
+  const [tagInput, setTagInput] = useState('');
 
-  // Scheduling State
   const [publishMode, setPublishMode] = useState<'immediate' | 'schedule'>('immediate');
   const [scheduledAt, setScheduledAt] = useState('');
 
@@ -59,7 +60,27 @@ export default function CreatePostPage() {
   const [uploadingFeatured, setUploadingFeatured] = useState(false);
 
   const [loading, setLoading] = useState(false);
+  const [publishingStep, setPublishingStep] = useState<number>(0);
+  const [publishingAction, setPublishingAction] = useState<'publish' | 'schedule' | 'draft'>('publish');
+  const [csrfToken, setCsrfToken] = useState<string>('');
   const [statusMsg, setStatusMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+
+  // Helper to fetch fresh single-use CSRF token
+  const fetchFreshCsrfToken = async (): Promise<string> => {
+    try {
+      const res = await fetch('/api/csrf');
+      if (res.ok) {
+        const data = await res.json();
+        if (data.csrfToken) {
+          setCsrfToken(data.csrfToken);
+          return data.csrfToken;
+        }
+      }
+    } catch (err) {
+      console.error('Error fetching CSRF token:', err);
+    }
+    return '';
+  };
 
   // Auto-generate URL slug from title
   useEffect(() => {
@@ -73,10 +94,12 @@ export default function CreatePostPage() {
     }
   }, [title, postId]);
 
-  // Load Categories, Companies, Limits, and Existing Post
+  // Load Categories, Companies, Limits, CSRF Token, and Existing Post
   useEffect(() => {
     async function initData() {
       try {
+        fetchFreshCsrfToken();
+
         const catRes = await fetch('/api/categories');
         const catData = await catRes.json();
         if (catData.categories) {
@@ -238,9 +261,21 @@ export default function CreatePostPage() {
       }
     }
 
+    const actionType = publish && publishMode === 'schedule' ? 'schedule' : publish ? 'publish' : 'draft';
+    setPublishingAction(actionType);
+    setPublishingStep(1);
     setLoading(true);
 
     try {
+      // Step 1: Quality & SEO validation done
+      await new Promise((res) => setTimeout(res, 400));
+      setPublishingStep(2); // Step 2: Payload & content formatting
+
+      let activeToken = csrfToken;
+      if (!activeToken) {
+        activeToken = await fetchFreshCsrfToken();
+      }
+
       const payload: any = {
         id: postId || undefined,
         title,
@@ -252,6 +287,7 @@ export default function CreatePostPage() {
         content,
         tags,
         shouldPublish: publishMode === 'immediate' && publish,
+        csrfToken: activeToken,
       };
 
       if (publish && publishMode === 'schedule') {
@@ -263,19 +299,31 @@ export default function CreatePostPage() {
 
       const res = await fetch('/api/posts/publish', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'x-postnest-csrf-token': activeToken,
+        },
         body: JSON.stringify(payload),
       });
 
       const data = await res.json();
 
       if (!res.ok) {
+        // Fetch a new CSRF token for next attempt
+        fetchFreshCsrfToken();
         if (data.qualityReport && data.qualityReport.errors) {
           setQualityErrors(data.qualityReport.errors);
           setQualityModalOpen(true);
         }
         throw new Error(data.error || 'Failed to process article.');
       }
+
+      // Step 3: Registering sitemaps & API indexing
+      setPublishingStep(3);
+      await new Promise((res) => setTimeout(res, 600));
+
+      // Step 4: Celebration completion
+      setPublishingStep(4);
 
       setStatusMsg({
         type: 'success',
@@ -284,11 +332,11 @@ export default function CreatePostPage() {
 
       setTimeout(() => {
         router.push('/dashboard/posts');
-      }, 1500);
+      }, 1200);
     } catch (err: any) {
-      setStatusMsg({ type: 'error', text: err.message });
-    } finally {
+      setPublishingStep(0);
       setLoading(false);
+      setStatusMsg({ type: 'error', text: err.message });
     }
   };
 
@@ -322,8 +370,17 @@ export default function CreatePostPage() {
             disabled={loading}
             className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-semibold text-xs flex items-center space-x-1.5 border border-slate-200 dark:border-slate-700 transition-colors disabled:opacity-50"
           >
-            <Save className="w-3.5 h-3.5" />
-            <span>Save Draft</span>
+            {loading && publishingAction === 'draft' ? (
+              <>
+                <Loader2 className="w-3.5 h-3.5 animate-spin text-orange-500" />
+                <span>Saving Draft...</span>
+              </>
+            ) : (
+              <>
+                <Save className="w-3.5 h-3.5" />
+                <span>Save Draft</span>
+              </>
+            )}
           </button>
 
           <button
@@ -332,8 +389,17 @@ export default function CreatePostPage() {
             disabled={loading}
             className="px-5 py-2 rounded-xl bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-semibold text-xs flex items-center space-x-1.5 shadow-md shadow-orange-500/20 transition-all disabled:opacity-50"
           >
-            <Send className="w-3.5 h-3.5" />
-            <span>{publishMode === 'schedule' ? 'Schedule Article' : 'Publish Article'}</span>
+            {loading && (publishingAction === 'publish' || publishingAction === 'schedule') ? (
+              <>
+                <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                <span>{publishMode === 'schedule' ? 'Scheduling...' : 'Publishing...'}</span>
+              </>
+            ) : (
+              <>
+                <Send className="w-3.5 h-3.5" />
+                <span>{publishMode === 'schedule' ? 'Schedule Article' : 'Publish Article'}</span>
+              </>
+            )}
           </button>
         </div>
       </div>
@@ -789,6 +855,123 @@ export default function CreatePostPage() {
               >
                 Return to Editor & Fix
               </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Interactive Publishing Progress Loading Overlay Modal */}
+      {loading && publishingStep > 0 && (
+        <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 animate-in fade-in duration-200">
+          <div className="glass-panel max-w-md w-full p-8 rounded-3xl border border-orange-500/30 bg-slate-900 text-white space-y-6 text-center shadow-2xl relative overflow-hidden">
+            {/* Ambient Background Glow */}
+            <div className="absolute -top-12 left-1/2 -translate-x-1/2 w-64 h-32 bg-orange-500/20 blur-3xl pointer-events-none -z-10" />
+
+            {/* Icon Header */}
+            <div className="relative inline-flex items-center justify-center">
+              <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-orange-500/20 via-amber-500/20 to-orange-500/10 border border-orange-500/40 flex items-center justify-center shadow-lg">
+                {publishingStep === 4 ? (
+                  <CheckCircle2 className="w-8 h-8 text-emerald-400 animate-bounce" />
+                ) : (
+                  <Loader2 className="w-8 h-8 text-orange-500 animate-spin" />
+                )}
+              </div>
+            </div>
+
+            <div>
+              <h3 className="text-xl font-extrabold text-white tracking-tight">
+                {publishingStep === 4
+                  ? (publishingAction === 'schedule'
+                      ? '🎉 Article Scheduled Successfully!'
+                      : publishingAction === 'publish'
+                      ? '🎉 Article Published Successfully!'
+                      : '✅ Draft Saved!')
+                  : (publishingAction === 'schedule'
+                      ? 'Scheduling Your Article...'
+                      : publishingAction === 'publish'
+                      ? 'Publishing Your Article...'
+                      : 'Saving Draft...')}
+              </h3>
+              <p className="text-xs text-slate-400 mt-1 leading-relaxed">
+                {publishingStep === 4
+                  ? 'Redirecting to your articles dashboard...'
+                  : 'Please keep this window open while we process your submission.'}
+              </p>
+            </div>
+
+            {/* Smooth Fill Progress Bar */}
+            <div className="w-full bg-slate-800 rounded-full h-2 overflow-hidden">
+              <div
+                className={`h-full transition-all duration-500 ease-out ${
+                  publishingStep === 4
+                    ? 'bg-emerald-500 w-full'
+                    : publishingStep === 3
+                    ? 'bg-gradient-to-r from-orange-500 to-amber-500 w-4/5'
+                    : publishingStep === 2
+                    ? 'bg-gradient-to-r from-orange-500 to-amber-500 w-1/2'
+                    : 'bg-orange-500 w-1/4'
+                }`}
+              />
+            </div>
+
+            {/* Live Progress Steps */}
+            <div className="space-y-2 text-left text-xs pt-2 border-t border-slate-800/80">
+              <div
+                className={`flex items-center space-x-2.5 transition-colors ${
+                  publishingStep >= 1 ? 'text-slate-200' : 'text-slate-600'
+                }`}
+              >
+                <div
+                  className={`w-4 h-4 rounded-full flex items-center justify-center text-[10px] font-bold ${
+                    publishingStep >= 1
+                      ? 'bg-orange-500/20 text-orange-400 border border-orange-500/40'
+                      : 'bg-slate-800 text-slate-600'
+                  }`}
+                >
+                  {publishingStep > 1 ? '✓' : '1'}
+                </div>
+                <span className={publishingStep === 1 ? 'font-bold text-orange-400 animate-pulse' : ''}>
+                  Analyzing SEO quality score & readability...
+                </span>
+              </div>
+
+              <div
+                className={`flex items-center space-x-2.5 transition-colors ${
+                  publishingStep >= 2 ? 'text-slate-200' : 'text-slate-600'
+                }`}
+              >
+                <div
+                  className={`w-4 h-4 rounded-full flex items-center justify-center text-[10px] font-bold ${
+                    publishingStep >= 2
+                      ? 'bg-orange-500/20 text-orange-400 border border-orange-500/40'
+                      : 'bg-slate-800 text-slate-600'
+                  }`}
+                >
+                  {publishingStep > 2 ? '✓' : '2'}
+                </div>
+                <span className={publishingStep === 2 ? 'font-bold text-orange-400 animate-pulse' : ''}>
+                  Formatting HTML & optimizing cover images...
+                </span>
+              </div>
+
+              <div
+                className={`flex items-center space-x-2.5 transition-colors ${
+                  publishingStep >= 3 ? 'text-slate-200' : 'text-slate-600'
+                }`}
+              >
+                <div
+                  className={`w-4 h-4 rounded-full flex items-center justify-center text-[10px] font-bold ${
+                    publishingStep >= 3
+                      ? 'bg-orange-500/20 text-orange-400 border border-orange-500/40'
+                      : 'bg-slate-800 text-slate-600'
+                  }`}
+                >
+                  {publishingStep >= 4 ? '✓' : '3'}
+                </div>
+                <span className={publishingStep === 3 ? 'font-bold text-orange-400 animate-pulse' : ''}>
+                  Syndicating to PostNest network & sitemaps...
+                </span>
+              </div>
             </div>
           </div>
         </div>

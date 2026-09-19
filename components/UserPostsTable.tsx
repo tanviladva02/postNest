@@ -10,9 +10,11 @@ interface PostItem {
   slug: string;
   status: string;
   scheduledAt?: string | Date | null;
+  publishedAt?: string | Date | null;
+  createdAt?: string | Date;
+  updatedAt: string | Date;
   rejectionReason?: string | null;
   views: number;
-  updatedAt: string | Date;
   category?: { name: string } | null;
   company?: { companyName: string } | null;
 }
@@ -130,7 +132,11 @@ export default function UserPostsTable({ initialPosts }: { initialPosts: PostIte
                 </td>
                 <td className="p-4 text-slate-700 dark:text-slate-300 font-mono">{post.views}</td>
                 <td className="p-4 text-slate-500 dark:text-slate-400">
-                  {new Date(post.updatedAt).toLocaleDateString()}
+                  {new Date(post.publishedAt || post.createdAt || post.updatedAt).toLocaleDateString(undefined, {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric',
+                  })}
                 </td>
                 <td className="p-4 text-right">
                   <div className="flex items-center justify-end space-x-2.5">

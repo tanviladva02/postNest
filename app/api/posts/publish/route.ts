@@ -8,9 +8,19 @@ import {
   incrementUserPublishUsage,
 } from '@/lib/publishing-limits';
 import { validatePostQuality, PostStatus } from '@/lib/moderation';
+import { validateSameOrigin, verifyAndConsumeCsrfToken } from '@/lib/csrf';
 
 export async function POST(req: Request) {
   try {
+    // 1. Layer 1 Security: Enforce Same-Origin & Referer Check (Blocks Cross-Origin & Malicious Websites)
+    const originCheck = validateSameOrigin(req);
+    if (!originCheck.valid) {
+      return NextResponse.json(
+        { error: originCheck.error },
+        { status: originCheck.statusCode || 403 }
+      );
+    }
+
     const user = await getCurrentUser();
     if (!user) {
       return NextResponse.json({ error: 'Unauthorized session. Please log in.' }, { status: 401 });
@@ -29,12 +39,26 @@ export async function POST(req: Request) {
       shouldPublish,
       scheduledAt,
       action,
+      csrfToken,
     } = body;
 
     // Fast-path: Real-time Quality Check inspection only
     if (action === 'check-quality') {
       const modResult = await validatePostQuality(title || '', content || '', excerpt || '', id || undefined);
       return NextResponse.json({ success: true, qualityReport: modResult });
+    }
+
+    // 2. Layer 2 & 3 Security: Anti-CSRF & Single-Use Anti-Replay Nonce Verification
+    // Extract CSRF token from custom header or JSON payload
+    const tokenFromHeader = req.headers.get('x-postnest-csrf-token');
+    const tokenToValidate = tokenFromHeader || csrfToken;
+
+    const csrfCheck = verifyAndConsumeCsrfToken(tokenToValidate, user.id, 'web-publish');
+    if (!csrfCheck.valid) {
+      return NextResponse.json(
+        { error: csrfCheck.error },
+        { status: csrfCheck.statusCode || 403 }
+      );
     }
 
     if (!title || !content || !categoryId) {

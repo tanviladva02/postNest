@@ -31,6 +31,7 @@ const requiredFiles = [
   'app/dashboard/api-access/page.tsx',
   'app/dashboard/subscription/page.tsx',
   'app/admin/page.tsx',
+  'app/admin/newsletter/page.tsx',
   'app/admin/moderation/page.tsx',
   'app/admin/settings/page.tsx',
   'app/api/v1/posts/route.ts',
