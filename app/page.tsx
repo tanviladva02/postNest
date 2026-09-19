@@ -70,7 +70,7 @@ export default async function HomePage() {
           {/* Tagline Badge */}
           <div className="inline-flex items-center space-x-2 px-4 py-1.5 rounded-full bg-orange-50 dark:bg-slate-900 border border-orange-200 dark:border-orange-500/30 shadow-sm flex-wrap justify-center gap-y-1">
             <Sparkles className="w-4 h-4 text-orange-500 animate-pulse" />
-            <span className="text-xs font-semibold text-slate-800 dark:text-slate-200">
+            <span className="text-xs font-semibold text-slate-800">
               #1 Best Blogging Platform & Guest Posting Submission Site
             </span>
             <span className="text-[10px] bg-orange-500/15 text-orange-600 dark:text-orange-300 px-2 py-0.5 rounded-full font-mono uppercase font-bold">
@@ -81,7 +81,7 @@ export default async function HomePage() {
           {/* Hero Headline — Client Attractive & Heavy SEO Keyword Target */}
           <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight text-slate-900 dark:text-white leading-tight">
             PostNest Best Free Blogging Platform & <br className="hidden sm:block" />
-            <span className="bg-gradient-to-r from-orange-600 via-orange-500 to-amber-500 bg-clip-text text-transparent">
+            <span className="text-orange-600 dark:text-orange-400">
               Free Guest Posting Submission Site
             </span>
           </h1>

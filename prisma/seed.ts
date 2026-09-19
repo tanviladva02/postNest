@@ -87,6 +87,7 @@ async function main() {
     { name: 'Finance', slug: 'finance', description: 'Fintech, investments, crypto, and wealth management.', icon: 'DollarSign' },
     { name: 'Health & Lifestyle', slug: 'health-lifestyle', description: 'Wellness, productivity, and modern living.', icon: 'Heart' },
     { name: 'AI & Tools', slug: 'ai-tools', description: 'Artificial intelligence software, reviews, and workflows.', icon: 'Sparkles' },
+    { name: 'Jobs & Opportunities', slug: 'jobs-opportunities', description: 'Career guidance, tech hiring, remote work, and job opportunities.', icon: 'Briefcase' },
   ];
 
   for (const cat of categories) {

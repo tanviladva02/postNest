@@ -34,6 +34,8 @@ export default async function DashboardOverviewPage() {
           slug: true,
           status: true,
           views: true,
+          publishedAt: true,
+          createdAt: true,
           updatedAt: true,
           category: { select: { name: true } },
         },
@@ -228,7 +230,13 @@ export default async function DashboardOverviewPage() {
                         {post.status}
                       </span>
                     </td>
-                    <td className="p-3 text-slate-500 dark:text-slate-400">{new Date(post.updatedAt).toLocaleDateString()}</td>
+                    <td className="p-3 text-slate-500 dark:text-slate-400">
+                      {new Date(post.publishedAt || post.createdAt || post.updatedAt).toLocaleDateString(undefined, {
+                        year: 'numeric',
+                        month: 'short',
+                        day: 'numeric',
+                      })}
+                    </td>
                     <td className="p-3 text-right">
                       <Link
                         href={post.status === 'PUBLISHED' ? `/blog/${post.slug}` : `/dashboard/create-post?id=${post.id}`}

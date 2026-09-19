@@ -17,6 +17,7 @@ import {
   X,
   Users,
   BarChart3,
+  Send,
 } from 'lucide-react';
 
 interface AdminLayoutClientProps {
@@ -30,6 +31,7 @@ export default function AdminLayoutClient({ user, children }: AdminLayoutClientP
 
   const navItems = [
     { href: '/admin', label: 'Platform Overview', icon: BarChart3 },
+    { href: '/admin/newsletter', label: 'Newsletter Broadcast', icon: Send },
     { href: '/admin/messages', label: 'Inquiries & Contact', icon: MessageSquare },
     { href: '/admin/moderation', label: 'Moderation Queue', icon: AlertCircle },
     { href: '/admin/settings', label: 'Plan Quota Settings', icon: Settings },

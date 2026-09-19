@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { sendNewsletterWelcomeEmail } from '@/lib/email';
 
 export async function POST(req: Request) {
   try {
@@ -35,6 +36,12 @@ export async function POST(req: Request) {
           where: { email: cleanEmail },
           data: { status: 'ACTIVE' },
         });
+
+        // Send Welcome email asynchronously
+        sendNewsletterWelcomeEmail({ toEmail: cleanEmail }).catch((err) =>
+          console.error('Error sending welcome email on reactivation:', err)
+        );
+
         return NextResponse.json({
           message: 'Welcome back! Your newsletter subscription has been reactivated.',
           subscriber: cleanEmail,
@@ -56,9 +63,14 @@ export async function POST(req: Request) {
       },
     });
 
+    // Send Welcome email asynchronously
+    sendNewsletterWelcomeEmail({ toEmail: cleanEmail }).catch((err) =>
+      console.error('Error sending welcome email on new subscription:', err)
+    );
+
     return NextResponse.json(
       {
-        message: 'Thank you for subscribing to PostNest Digest! You will receive our weekly developer & tech updates.',
+        message: 'Thank you for subscribing to PostNest Digest! A welcome email has been sent to your inbox.',
         subscriber: subscriber.email,
       },
       { status: 201 }
